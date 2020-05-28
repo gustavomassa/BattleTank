@@ -64,10 +64,10 @@ void UTankAimingComponent::AimAt(FVector TargetLocation, float LaunchSpeed)
 		false,
 		0,
 		0,
-		ESuggestProjVelocityTraceOption::OnlyTraceWhileAscending,
+		ESuggestProjVelocityTraceOption::DoNotTrace,
 		FCollisionResponseParams::DefaultResponseParam,
 		ActorsToIgnore,
-		true);
+		false);
 
 	if (bProjectileVelocitySuccess)
 	{
@@ -75,8 +75,10 @@ void UTankAimingComponent::AimAt(FVector TargetLocation, float LaunchSpeed)
 		if (!AimDirection.IsZero())
 		{
 
-			ATank *ControlledTank = Cast<ATank>(GetOwner());
-			ControlledTank->MoveBarrel(AimDirection);
+			//ATank *ControlledTank = Cast<ATank>(GetOwner());
+			//ControlledTank->MoveBarrel(AimDirection);
+			TankBarrelComponent->Elevate(LaunchSpeed);
+
 			UE_LOG(LogTemp, Warning, TEXT("%s: Firing at %s with speed %f"), *GetOwner()->GetName(), *TargetLocation.ToString(), LaunchSpeed);
 		}
 	}
