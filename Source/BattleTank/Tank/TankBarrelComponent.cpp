@@ -2,6 +2,7 @@
 
 #include "TankBarrelComponent.h"
 #include "UObject/ConstructorHelpers.h"
+#include "Math/UnrealMathUtility.h"
 
 UTankBarrelComponent::UTankBarrelComponent()
 {
@@ -9,7 +10,23 @@ UTankBarrelComponent::UTankBarrelComponent()
     this->SetStaticMesh(BarrelAsset.Object);
 }
 
+FVector UTankBarrelComponent::GetProjectileLaunchLocation()
+{
+    FVector StartLocation = this->GetSocketLocation(FName("Projectile"));
+    // Make sure we get the Projectile socket location
+    if (StartLocation == this->GetComponentLocation())
+    {
+        UE_LOG(LogTemp, Error, TEXT("%s: Failed to get Tank Barrel Projectile Location!"), *GetOwner()->GetName());
+        return FVector::ZeroVector;
+    }
+    return StartLocation;
+}
+
 void UTankBarrelComponent::Elevate(float RelativeSpeed)
 {
-    UE_LOG(LogTemp, Warning, TEXT("TOCSON"));
+    //RelativeSpeed = FMath::Clamp<float>(RelativeSpeed, -1.0f, +1.0f);
+    float ElevationChange = (RelativeSpeed * MaxDegressPerSecond * GetWorld()->DeltaTimeSeconds);
+    float RawNewElevation = (RelativeRotation.Pitch + ElevationChange);
+    float TargetElevation = FMath::Clamp<float>(RawNewElevation, MinElevationDegress, MaxElevationDegress);
+    SetRelativeRotation(FRotator(TargetElevation, 0, 0));
 }

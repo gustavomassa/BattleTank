@@ -1,7 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "Tank.h"
-#include "TankBarrelComponent.h"
+//#include "TankBarrelComponent.h"
 #include "TankAimingComponent.h"
 
 // Sets default values
@@ -34,19 +34,5 @@ void ATank::SetTankBarrelReference(UTankBarrelComponent *TankBarrelToSet)
 
 void ATank::AimAt(FVector &HitLocation)
 {
-	TankAimingComponent->AimAt(HitLocation, LaunchSpeed);
+	TankAimingComponent->AimAt(HitLocation);
 }
-
-/* void ATank::MoveBarrel(FVector &TargetLocation)
-{
-	if (!TankBarrelComponent)
-	{
-		UE_LOG(LogTemp, Error, TEXT("%s: Failed to get Tank Barrel Reference!"), *GetOwner()->GetName());
-		return;
-	}
-	FRotator DeltaRotator = (TargetLocation.Rotation() - TankBarrelComponent->GetForwardVector().Rotation());
-	UE_LOG(LogTemp, Warning, TEXT("Delta Rotator: %s"), *DeltaRotator.ToString());
-	// TODO: Limit Barrel Rotation
-
-	//TankBarrelComponent->
-} */

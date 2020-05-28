@@ -36,21 +36,26 @@ void UTankAimingComponent::SetTankBarrelReference(UTankBarrelComponent *TankBarr
 	TankBarrelComponent = TankBarrelComponentToSet;
 }
 
-void UTankAimingComponent::AimAt(FVector TargetLocation, float LaunchSpeed)
+void UTankAimingComponent::MoveBarrel(FVector &TargetLocation)
 {
 	if (!TankBarrelComponent)
 	{
 		UE_LOG(LogTemp, Error, TEXT("%s: Failed to get Tank Barrel Reference!"), *GetOwner()->GetName());
 		return;
 	}
-	FVector StartLocation = TankBarrelComponent->GetSocketLocation(FName("Projectile"));
-	// Make sure we get the Projectile socket location
-	if (StartLocation == TankBarrelComponent->GetComponentLocation())
+	FRotator DeltaRotator = (TargetLocation.Rotation() - TankBarrelComponent->GetForwardVector().Rotation());
+	TankBarrelComponent->Elevate(DeltaRotator.Pitch);
+}
+
+void UTankAimingComponent::AimAt(FVector TargetLocation)
+{
+	if (!TankBarrelComponent)
 	{
-		UE_LOG(LogTemp, Error, TEXT("%s: Failed to get Tank Barrel Projectile Location!"), *GetOwner()->GetName());
+		UE_LOG(LogTemp, Error, TEXT("%s: Failed to get Tank Barrel Reference!"), *GetOwner()->GetName());
 		return;
 	}
 
+	FVector StartLocation = TankBarrelComponent->GetProjectileLaunchLocation();
 	FVector LaunchVelocity{FVector::ZeroVector};
 	TArray<AActor *> ActorsToIgnore{GetOwner()};
 
@@ -77,7 +82,7 @@ void UTankAimingComponent::AimAt(FVector TargetLocation, float LaunchSpeed)
 
 			//ATank *ControlledTank = Cast<ATank>(GetOwner());
 			//ControlledTank->MoveBarrel(AimDirection);
-			TankBarrelComponent->Elevate(LaunchSpeed);
+			MoveBarrel(AimDirection);
 
 			UE_LOG(LogTemp, Warning, TEXT("%s: Firing at %s with speed %f"), *GetOwner()->GetName(), *TargetLocation.ToString(), LaunchSpeed);
 		}

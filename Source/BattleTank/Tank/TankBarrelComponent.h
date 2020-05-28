@@ -18,10 +18,11 @@ public:
 	UTankBarrelComponent();
 	// -1 is max downward speed and +1 is max upward speed
 	void Elevate(float RelativeSpeed);
+	FVector GetProjectileLaunchLocation();
 
 private:
 	UPROPERTY(EditAnyWhere, Category = "Setup")
-	float MaxDegressPerSecond{20.0f};
+	float MaxDegressPerSecond{5.0f};
 
 	UPROPERTY(EditAnyWhere, Category = "Setup")
 	float MaxElevationDegress{45.0f};

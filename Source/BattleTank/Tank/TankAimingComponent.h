@@ -20,7 +20,8 @@ public:
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction *ThisTickFunction) override;
 	void SetTankBarrelReference(UTankBarrelComponent *TankBarrelComponentToSet);
-	void AimAt(FVector TargetLocation, float LaunchSpeed);
+	void MoveBarrel(FVector &TargetLocation);
+	void AimAt(FVector TargetLocation);
 
 protected:
 	// Called when the game starts
@@ -28,4 +29,7 @@ protected:
 
 private:
 	UTankBarrelComponent *TankBarrelComponent{nullptr};
+
+	UPROPERTY(EditDefaultsOnly, Category = "Firing")
+	float LaunchSpeed{4000.0f};
 };

@@ -23,9 +23,7 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "Setup")
 	void SetTankBarrelReference(UTankBarrelComponent *TankBarrelToSet);
-
 	void AimAt(FVector &HitLocation);
-	//void MoveBarrel(FVector &TargetLocation);
 
 protected:
 	// Called when the game starts or when spawned
@@ -34,7 +32,4 @@ protected:
 private:
 	UTankBarrelComponent *TankBarrelComponent{nullptr};
 	UTankAimingComponent *TankAimingComponent{nullptr};
-
-	UPROPERTY(EditAnyWhere, Category = "Firing")
-	float LaunchSpeed{100000.0f}; //1000 m/s
 };
