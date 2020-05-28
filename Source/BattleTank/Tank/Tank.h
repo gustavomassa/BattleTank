@@ -7,8 +7,9 @@
 #include "Tank.generated.h"
 
 //Foward Declarations
-class UTankAimingComponent;
+class UTankTurretComponent;
 class UTankBarrelComponent;
+class UTankAimingComponent;
 
 UCLASS()
 class BATTLETANK_API ATank : public APawn
@@ -22,14 +23,23 @@ public:
 	virtual void SetupPlayerInputComponent(class UInputComponent *PlayerInputComponent) override;
 
 	UFUNCTION(BlueprintCallable, Category = "Setup")
-	void SetTankBarrelReference(UTankBarrelComponent *TankBarrelToSet);
+	void SetTankTurretReference(UTankTurretComponent *TurretToSet);
+
+	UFUNCTION(BlueprintCallable, Category = "Setup")
+	void SetTankBarrelReference(UTankBarrelComponent *BarrelToSet);
+
+	UTankTurretComponent *GetTurretComponent();
+	UTankBarrelComponent *GetBarrelComponent();
+
 	void AimAt(FVector &HitLocation);
+	void Aim(FVector &TargetLocation);
 
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
 private:
+	UTankTurretComponent *TankTurretComponent{nullptr};
 	UTankBarrelComponent *TankBarrelComponent{nullptr};
 	UTankAimingComponent *TankAimingComponent{nullptr};
 };

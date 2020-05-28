@@ -2,6 +2,8 @@
 
 #include "TankPlayerController.h"
 #include "Tank.h"
+#include "TankTurretComponent.h"
+#include "TankBarrelComponent.h"
 #include "GameFramework/PlayerController.h"
 #include "Components/ActorComponent.h"
 #include "Components/PrimitiveComponent.h"
@@ -27,6 +29,7 @@ void ATankPlayerController::Tick(float DeltaSeconds)
     Super::Tick(DeltaSeconds);
 
     AimTowardsCrosshair();
+    //FollowCrosshair();
 }
 
 ATank *ATankPlayerController::GetControlledTank() const
@@ -47,6 +50,21 @@ void ATankPlayerController::AimTowardsCrosshair()
     if (GetSightRayHitLocation(CrosshairHitLocation))
     {
         ControlledTank->AimAt(CrosshairHitLocation);
+    }
+}
+
+void ATankPlayerController::FollowCrosshair()
+{
+    if (!ControlledTank)
+    {
+        return;
+    }
+
+    FVector2D ScreenLocation = GetCrosshairScreenLocation();
+    FVector LookDirection{FVector::ZeroVector};
+    if (GetLookDirection(ScreenLocation, LookDirection))
+    {
+        ControlledTank->Aim(LookDirection);
     }
 }
 
@@ -93,7 +111,9 @@ bool ATankPlayerController::GetLookDirectionHitResult(FVector &LookDirection, FH
 
     // Ignore the Controlled Tank, we don't want to hit ourself
     FCollisionQueryParams TraceParams = FCollisionQueryParams::DefaultQueryParam;
-    TraceParams.AddIgnoredActor(ControlledTank);
+    TraceParams.AddIgnoredActor(ControlledTank->GetUniqueID());
+    TraceParams.AddIgnoredActor(ControlledTank->GetTurretComponent()->GetUniqueID());
+    TraceParams.AddIgnoredActor(ControlledTank->GetBarrelComponent()->GetUniqueID());
 
     return (GetWorld()->LineTraceSingleByChannel(
         Out_HitResult,

@@ -37,4 +37,5 @@ private:
 	bool GetSightRayHitLocation(FVector &Out_HitLocation) const;
 	bool GetLookDirectionHitResult(FVector &LookDirection, FHitResult &Out_HitResult) const;
 	void AimTowardsCrosshair();
+	void FollowCrosshair();
 };

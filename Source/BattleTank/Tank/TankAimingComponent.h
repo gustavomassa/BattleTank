@@ -7,6 +7,7 @@
 #include "TankAimingComponent.generated.h"
 
 //Foward Declaration
+class UTankTurretComponent;
 class UTankBarrelComponent;
 
 UCLASS(ClassGroup = (Custom), meta = (BlueprintSpawnableComponent))
@@ -19,17 +20,22 @@ public:
 	UTankAimingComponent();
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction *ThisTickFunction) override;
+	void SetTankTurretReference(UTankTurretComponent *TankTurretComponentToSet);
 	void SetTankBarrelReference(UTankBarrelComponent *TankBarrelComponentToSet);
-	void MoveBarrel(FVector &TargetLocation);
 	void AimAt(FVector TargetLocation);
+	void Aim(FVector TargetLocation);
 
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
 
 private:
+	UTankTurretComponent *TankTurretComponent{nullptr};
 	UTankBarrelComponent *TankBarrelComponent{nullptr};
 
 	UPROPERTY(EditDefaultsOnly, Category = "Firing")
-	float LaunchSpeed{4000.0f};
+	float LaunchSpeed{8000.0f};
+
+	void MoveTurret(FVector &TargetLocation);
+	void MoveBarrel(FVector &TargetLocation);
 };

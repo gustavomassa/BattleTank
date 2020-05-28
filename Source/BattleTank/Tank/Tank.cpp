@@ -26,13 +26,34 @@ void ATank::SetupPlayerInputComponent(UInputComponent *PlayerInputComponent)
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 }
 
-void ATank::SetTankBarrelReference(UTankBarrelComponent *TankBarrelToSet)
+void ATank::SetTankTurretReference(UTankTurretComponent *TurretToSet)
 {
-	TankBarrelComponent = TankBarrelToSet;
-	TankAimingComponent->SetTankBarrelReference(TankBarrelToSet);
+	TankTurretComponent = TurretToSet;
+	TankAimingComponent->SetTankTurretReference(TurretToSet);
+}
+
+void ATank::SetTankBarrelReference(UTankBarrelComponent *BarrelToSet)
+{
+	TankBarrelComponent = BarrelToSet;
+	TankAimingComponent->SetTankBarrelReference(BarrelToSet);
+}
+
+UTankTurretComponent *ATank::GetTurretComponent()
+{
+	return TankTurretComponent;
+}
+
+UTankBarrelComponent *ATank::GetBarrelComponent()
+{
+	return TankBarrelComponent;
 }
 
 void ATank::AimAt(FVector &HitLocation)
 {
 	TankAimingComponent->AimAt(HitLocation);
+}
+
+void ATank::Aim(FVector &TargetLocation)
+{
+	TankAimingComponent->Aim(TargetLocation);
 }

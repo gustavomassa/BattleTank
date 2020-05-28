@@ -2,6 +2,7 @@
 
 #include "TankAimingComponent.h"
 #include "Tank.h"
+#include "TankTurretComponent.h"
 #include "TankBarrelComponent.h"
 #include "Kismet/GameplayStatics.h"
 
@@ -31,9 +32,26 @@ void UTankAimingComponent::TickComponent(float DeltaTime, ELevelTick TickType, F
 	// ...
 }
 
+void UTankAimingComponent::SetTankTurretReference(UTankTurretComponent *TankTurretComponentToSet)
+{
+	TankTurretComponent = TankTurretComponentToSet;
+}
+
 void UTankAimingComponent::SetTankBarrelReference(UTankBarrelComponent *TankBarrelComponentToSet)
 {
 	TankBarrelComponent = TankBarrelComponentToSet;
+}
+
+void UTankAimingComponent::MoveTurret(FVector &TargetLocation)
+{
+	if (!TankTurretComponent)
+	{
+		UE_LOG(LogTemp, Error, TEXT("%s: Failed to get Tank Turret Reference!"), *GetOwner()->GetName());
+		return;
+	}
+
+	FRotator DeltaRotator = (TargetLocation.Rotation() - TankTurretComponent->GetForwardVector().Rotation());
+	TankTurretComponent->Rotate(DeltaRotator.Yaw);
 }
 
 void UTankAimingComponent::MoveBarrel(FVector &TargetLocation)
@@ -82,9 +100,16 @@ void UTankAimingComponent::AimAt(FVector TargetLocation)
 
 			//ATank *ControlledTank = Cast<ATank>(GetOwner());
 			//ControlledTank->MoveBarrel(AimDirection);
+			MoveTurret(AimDirection);
 			MoveBarrel(AimDirection);
 
-			UE_LOG(LogTemp, Warning, TEXT("%s: Firing at %s with speed %f"), *GetOwner()->GetName(), *TargetLocation.ToString(), LaunchSpeed);
+			//UE_LOG(LogTemp, Warning, TEXT("%s: Firing at %s with speed %f"), *GetOwner()->GetName(), *TargetLocation.ToString(), LaunchSpeed);
 		}
 	}
+}
+
+void UTankAimingComponent::Aim(FVector TargetLocation)
+{
+	MoveTurret(TargetLocation);
+	MoveBarrel(TargetLocation);
 }
