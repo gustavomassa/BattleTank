@@ -20,6 +20,7 @@ public:
 	UTankAimingComponent();
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction *ThisTickFunction) override;
+	float GetProjectileLaunchSpeed() const;
 	void SetTankTurretReference(UTankTurretComponent *TankTurretComponentToSet);
 	void SetTankBarrelReference(UTankBarrelComponent *TankBarrelComponentToSet);
 	void AimAt(FVector TargetLocation);
@@ -33,9 +34,9 @@ private:
 	UTankTurretComponent *TankTurretComponent{nullptr};
 	UTankBarrelComponent *TankBarrelComponent{nullptr};
 
-	UPROPERTY(EditDefaultsOnly, Category = "Firing")
-	float LaunchSpeed{8000.0f};
-
 	void MoveTurret(FVector &TargetLocation);
 	void MoveBarrel(FVector &TargetLocation);
+
+	UPROPERTY(EditDefaultsOnly, Category = "Firing")
+	float ProjectileLaunchSpeed{8000.0f};
 };

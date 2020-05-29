@@ -19,16 +19,32 @@ UTankBarrelComponent::UTankBarrelComponent()
     this->SetRelativeLocation(FVector::ZeroVector);
 }
 
-FVector UTankBarrelComponent::GetProjectileLaunchLocation()
+FName UTankBarrelComponent::GetProjectileSocketName() const
 {
-    FVector StartLocation = this->GetSocketLocation(FName("Projectile"));
-    // Make sure we get the Projectile socket location
+    return ProjectileSocketName;
+}
+
+FVector UTankBarrelComponent::GetProjectileLaunchLocation() const
+{
+    FVector StartLocation = this->GetSocketLocation(ProjectileSocketName);
     if (StartLocation == this->GetComponentLocation())
     {
         UE_LOG(LogTemp, Error, TEXT("%s: Failed to get Tank Barrel Projectile Location!"), *GetOwner()->GetName());
         return FVector::ZeroVector;
     }
     return StartLocation;
+}
+
+FRotator UTankBarrelComponent::GetProjectileLaunchRotation() const
+{
+    /*     FRotator StartRotation = this->GetSocketRotation(ProjectileSocketName);
+    if (StartRotation == this->GetComponentRotation())
+    {
+        UE_LOG(LogTemp, Error, TEXT("%s: Failed to get Tank Barrel Projectile Rotation!"), *GetOwner()->GetName());
+        return FRotator::ZeroRotator;
+    }
+    return StartRotation; */
+    return this->GetSocketRotation(ProjectileSocketName);
 }
 
 void UTankBarrelComponent::Elevate(float TargetAngle)

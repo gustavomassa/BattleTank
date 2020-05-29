@@ -32,6 +32,11 @@ void UTankAimingComponent::TickComponent(float DeltaTime, ELevelTick TickType, F
 	// ...
 }
 
+float UTankAimingComponent::GetProjectileLaunchSpeed() const
+{
+	return ProjectileLaunchSpeed;
+}
+
 void UTankAimingComponent::SetTankTurretReference(UTankTurretComponent *TankTurretComponentToSet)
 {
 	TankTurretComponent = TankTurretComponentToSet;
@@ -83,7 +88,7 @@ void UTankAimingComponent::AimAt(FVector TargetLocation)
 		LaunchVelocity,
 		StartLocation,
 		TargetLocation,
-		LaunchSpeed,
+		ProjectileLaunchSpeed,
 		false,
 		0,
 		0,

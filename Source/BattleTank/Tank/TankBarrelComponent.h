@@ -16,10 +16,14 @@ class BATTLETANK_API UTankBarrelComponent : public UStaticMeshComponent
 
 public:
 	UTankBarrelComponent();
+	FName GetProjectileSocketName() const;
+	FVector GetProjectileLaunchLocation() const;
+	FRotator GetProjectileLaunchRotation() const;
 	void Elevate(float TargetAngle);
-	FVector GetProjectileLaunchLocation();
 
 private:
+	FName ProjectileSocketName{FName("Projectile")};
+
 	UPROPERTY(EditAnyWhere, Category = "Setup")
 	float MaxDegressPerSecond{10.0f};
 

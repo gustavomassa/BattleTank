@@ -56,7 +56,7 @@ void ATankPlayerController::RegisterInputBind() const
 
     ControlledTank->InputComponent->BindAxis("AimAzimuth", this, &ATankPlayerController::OnAxisAzimuth);
     ControlledTank->InputComponent->BindAxis("AimElevation", this, &ATankPlayerController::OnAxisElevation);
-    ControlledTank->InputComponent->BindAction(FireBind, IE_Pressed, ControlledTank, &ATank::OnFire);
+    ControlledTank->InputComponent->BindAction(FireBind, IE_Pressed, ControlledTank, &ATank::Fire);
 }
 
 // Yaw

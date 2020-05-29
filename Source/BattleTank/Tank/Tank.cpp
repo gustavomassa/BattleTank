@@ -5,6 +5,7 @@
 #include "TankTurretComponent.h"
 #include "TankBarrelComponent.h"
 #include "TankAimingComponent.h"
+#include "TankProjectile.h"
 
 // Sets default values
 ATank::ATank()
@@ -83,6 +84,11 @@ UTankBarrelComponent *ATank::GetBarrelComponent() const
 	return TankBarrelComponent;
 }
 
+/* float ATank::GetProjectileLaunchSpeed() const
+{
+	return ProjectileLaunchSpeed;
+} */
+
 void ATank::AimAt(FVector &HitLocation)
 {
 	TankAimingComponent->AimAt(HitLocation);
@@ -93,7 +99,22 @@ void ATank::Aim(FVector &TargetLocation)
 	TankAimingComponent->Aim(TargetLocation);
 }
 
-void ATank::OnFire()
+void ATank::Fire()
 {
-	UE_LOG(LogTemp, Warning, TEXT("Fire!"));
+	// Check if we are reloaded
+	if (TankBarrelComponent && ((FPlatformTime::Seconds() - LastFireTime) > ReloadTimeInSeconds))
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Fire!"));
+
+		auto Projectile = GetWorld()->SpawnActor<ATankProjectile>(
+			TankProjectile,
+			TankBarrelComponent->GetProjectileLaunchLocation(),
+			TankBarrelComponent->GetProjectileLaunchRotation());
+		if (Projectile)
+		{
+			Projectile->Launch(TankAimingComponent->GetProjectileLaunchSpeed());
+			// Reset the timer
+			LastFireTime = FPlatformTime::Seconds();
+		}
+	}
 }

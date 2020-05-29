@@ -24,6 +24,4 @@ private:
 	ATank *ControlledTank{nullptr};
 	ATank *PlayerTank{nullptr};
 	FVector PlayerTankLocation{FVector::ZeroVector};
-
-	ATank *GetPlayerTank() const;
 };

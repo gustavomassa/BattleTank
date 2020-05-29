@@ -15,7 +15,7 @@ void ATankAIController::BeginPlay()
     }
     UE_LOG(LogTemp, Warning, TEXT("AIController: Controlled Tank %s"), *ControlledTank->GetName());
 
-    PlayerTank = GetPlayerTank();
+    PlayerTank = Cast<ATank>(GetWorld()->GetFirstPlayerController()->GetPawn());
     if (!ensure(PlayerTank))
     {
         UE_LOG(LogTemp, Error, TEXT("AIController: Failed to get Player Tank"));
@@ -33,6 +33,8 @@ void ATankAIController::Tick(float DeltaSeconds)
     PlayerTankLocation = PlayerTank->GetActorLocation();
     ControlledTank->AimAt(PlayerTankLocation);
 
+    // TODO: Don't fire every frame
+    ControlledTank->Fire();
     // Fire if ready
 }
 
@@ -40,9 +42,4 @@ ATank *ATankAIController::GetControlledTank() const
 {
     // Tank is a especialization of the Pawn (Subtype - Runtime Polymorphism)
     return Cast<ATank>(GetPawn());
-}
-
-ATank *ATankAIController::GetPlayerTank() const
-{
-    return Cast<ATank>(GetWorld()->GetFirstPlayerController()->GetPawn());
 }

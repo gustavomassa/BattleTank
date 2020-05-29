@@ -11,6 +11,7 @@ class USpringArmComponent;
 class UTankTurretComponent;
 class UTankBarrelComponent;
 class UTankAimingComponent;
+class ATankProjectile;
 
 UCLASS()
 class BATTLETANK_API ATank : public APawn
@@ -33,11 +34,12 @@ public:
 	void SetTankBarrelReference(UTankBarrelComponent *BarrelToSet);
 
 	UFUNCTION(BlueprintCallable, Category = "Input Action")
-	void OnFire();
+	void Fire();
 
 	USpringArmComponent *GetCameraComponent() const;
 	UTankTurretComponent *GetTurretComponent() const;
 	UTankBarrelComponent *GetBarrelComponent() const;
+	float GetProjectileLaunchSpeed() const;
 
 	void AimAt(FVector &HitLocation);
 	void Aim(FVector &TargetLocation);
@@ -52,4 +54,15 @@ private:
 	UTankTurretComponent *TankTurretComponent{nullptr};
 	UTankBarrelComponent *TankBarrelComponent{nullptr};
 	UTankAimingComponent *TankAimingComponent{nullptr};
+
+	UPROPERTY(EditAnywhere, Category = "Setup")
+	TSubclassOf<ATankProjectile> TankProjectile;
+
+	UPROPERTY(EditAnywhere, Category = "Setup")
+	float ReloadTimeInSeconds{3.0f};
+
+	double LastFireTime{0};
+
+	/* 	UPROPERTY(EditDefaultsOnly, Category = "Setup")
+	float ProjectileLaunchSpeed{8000.0f}; */
 };
