@@ -17,8 +17,6 @@ class ITankControllerInterface
 	GENERATED_BODY()
 
 protected:
-	ATank *ControlledTank{nullptr};
-
 	virtual void BeginPlay() = 0;
 	virtual void Tick(float DeltaSeconds) = 0;
 	virtual ATank *GetControlledTank() const = 0;

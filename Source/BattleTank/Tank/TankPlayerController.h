@@ -20,17 +20,39 @@ protected:
 	ATank *GetControlledTank() const override;
 
 private:
+	ATank *ControlledTank{nullptr};
 	FVector CrosshairHitLocation{FVector::ZeroVector};
 
 	// Crosshair X is 50% alignment
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, Category = "Crosshair")
 	float CrosshairLocationX{0.5f};
 	// Crosshair Y is 33.3% alignment
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, Category = "Crosshair")
 	float CrosshairLocationY{0.33333f};
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, Category = "Crosshair")
 	float CrosshairReachDistance{1000000.0f};
+
+	UPROPERTY(EditAnywhere, Category = "Input Axis")
+	FName AzimuthBind{"AimAzimuth"};
+	UPROPERTY(EditAnywhere, Category = "Input Axis")
+	float AzimuthSensitivity{100.0f};
+	UPROPERTY(EditAnywhere, Category = "Input Axis")
+	FName ElevationBind{"AimElevation"};
+	UPROPERTY(EditAnywhere, Category = "Input Axis")
+	float MinElevationAngle{-30.0f};
+	UPROPERTY(EditAnywhere, Category = "Input Axis")
+	float MaxElevationAngle{10.0f};
+	UPROPERTY(EditAnywhere, Category = "Input Axis")
+	float ElevationSensitivity{100.0f};
+
+	UPROPERTY(EditAnywhere, Category = "Input Action")
+	FName FireBind{"Fire"};
+
+	UFUNCTION(BlueprintCallable, Category = "Input Axis")
+	void OnAxisAzimuth(float AxisValue);
+	UFUNCTION(BlueprintCallable, Category = "Input Axis")
+	void OnAxisElevation(float AxisValue);
 
 	FVector2D GetCrosshairScreenLocation() const;
 	bool GetLookDirection(FVector2D &ScreenLocation, FVector &Out_LookDirection) const;

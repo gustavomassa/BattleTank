@@ -21,6 +21,21 @@ void ATankPlayerController::BeginPlay()
         UE_LOG(LogTemp, Error, TEXT("%s: Failed to get Controlled Tank!"), *GetOwner()->GetName());
     }
 
+    if (!ensure(ControlledTank) || !ensure(ControlledTank->InputComponent))
+    {
+        UE_LOG(LogTemp, Error, TEXT("%s: Failed to find Controlled Tank Input Component!"), *GetOwner()->GetName());
+    }
+
+    /*     if (!ensure(ControlledTank) || !ensure(ControlledTank->GetCameraComponent()))
+    {
+        UE_LOG(LogTemp, Error, TEXT("%s: Failed to find Controlled Tank Camera Component!"), *GetOwner()->GetName());
+    } */
+
+    // Register Input Binds
+    ControlledTank->InputComponent->BindAxis("AimAzimuth", this, &ATankPlayerController::OnAxisAzimuth);
+    ControlledTank->InputComponent->BindAxis("AimElevation", this, &ATankPlayerController::OnAxisElevation);
+    ControlledTank->InputComponent->BindAction(FireBind, IE_Pressed, ControlledTank, &ATank::OnFire);
+
     UE_LOG(LogTemp, Warning, TEXT("PlayerController tank: %s!"), *ControlledTank->GetName());
 }
 
@@ -36,6 +51,32 @@ ATank *ATankPlayerController::GetControlledTank() const
 {
     // Tank is a especialization of the Pawn (Subtype - Runtime Polymorphism)
     return Cast<ATank>(GetPawn());
+}
+
+void ATankPlayerController::OnAxisAzimuth(float AxisValue)
+{
+    if (!ControlledTank || !ControlledTank->GetCameraComponent())
+    {
+        UE_LOG(LogTemp, Error, TEXT("%s: Failed to find Controlled Tank Camera Component!"), *GetOwner()->GetName());
+        return;
+    }
+    float AxisChange = (AxisValue * AzimuthSensitivity * GetWorld()->DeltaTimeSeconds);
+    FRotator TargetRotator = ControlledTank->GetCameraComponent()->GetRelativeRotation();
+    TargetRotator.Yaw = (TargetRotator.Yaw + AxisChange);
+    ControlledTank->GetCameraComponent()->SetRelativeRotation(TargetRotator);
+}
+
+void ATankPlayerController::OnAxisElevation(float AxisValue)
+{
+    if (!ControlledTank || !ControlledTank->GetCameraComponent())
+    {
+        UE_LOG(LogTemp, Error, TEXT("%s: Failed to find Controlled Tank Camera Component!"), *GetOwner()->GetName());
+        return;
+    }
+    float AxisChange = (AxisValue * AzimuthSensitivity * GetWorld()->DeltaTimeSeconds);
+    FRotator TargetRotator = ControlledTank->GetCameraComponent()->GetRelativeRotation();
+    TargetRotator.Pitch = FMath::Clamp<float>((TargetRotator.Pitch + AxisChange), MinElevationAngle, MaxElevationAngle);
+    ControlledTank->GetCameraComponent()->SetRelativeRotation(TargetRotator);
 }
 
 // Move the Tank Barrel aiming where the player crosshair intersects the world

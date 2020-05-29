@@ -23,13 +23,20 @@ public:
 	virtual void SetupPlayerInputComponent(class UInputComponent *PlayerInputComponent) override;
 
 	UFUNCTION(BlueprintCallable, Category = "Setup")
+	void SetTankCameraReference(USceneComponent *CameraToSet);
+
+	UFUNCTION(BlueprintCallable, Category = "Setup")
 	void SetTankTurretReference(UTankTurretComponent *TurretToSet);
 
 	UFUNCTION(BlueprintCallable, Category = "Setup")
 	void SetTankBarrelReference(UTankBarrelComponent *BarrelToSet);
 
-	UTankTurretComponent *GetTurretComponent();
-	UTankBarrelComponent *GetBarrelComponent();
+	UFUNCTION(BlueprintCallable, Category = "Input Action")
+	void OnFire();
+
+	USceneComponent *GetCameraComponent() const;
+	UTankTurretComponent *GetTurretComponent() const;
+	UTankBarrelComponent *GetBarrelComponent() const;
 
 	void AimAt(FVector &HitLocation);
 	void Aim(FVector &TargetLocation);
@@ -39,6 +46,8 @@ protected:
 	virtual void BeginPlay() override;
 
 private:
+	USceneComponent *TankCameraComponent{nullptr};
+
 	UTankTurretComponent *TankTurretComponent{nullptr};
 	UTankBarrelComponent *TankBarrelComponent{nullptr};
 	UTankAimingComponent *TankAimingComponent{nullptr};
