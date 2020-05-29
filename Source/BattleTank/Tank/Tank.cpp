@@ -1,6 +1,9 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "Tank.h"
+#include "GameFramework/SpringArmComponent.h"
+#include "TankTurretComponent.h"
+#include "TankBarrelComponent.h"
 #include "TankAimingComponent.h"
 
 // Sets default values
@@ -17,6 +20,28 @@ ATank::ATank()
 void ATank::BeginPlay()
 {
 	Super::BeginPlay();
+
+	// Find Components
+	TankCameraComponent = FindComponentByClass<USpringArmComponent>();
+	if (!TankCameraComponent)
+	{
+		UE_LOG(LogTemp, Error, TEXT("%s: Failed to find Tank Camera Component"), *GetOwner()->GetName());
+	}
+	SetTankCameraReference(TankCameraComponent);
+
+	TankTurretComponent = FindComponentByClass<UTankTurretComponent>();
+	if (!TankTurretComponent)
+	{
+		UE_LOG(LogTemp, Error, TEXT("%s: Failed to find Tank Turret Component"), *GetOwner()->GetName());
+	}
+	SetTankTurretReference(TankTurretComponent);
+
+	TankBarrelComponent = FindComponentByClass<UTankBarrelComponent>();
+	if (!TankBarrelComponent)
+	{
+		UE_LOG(LogTemp, Error, TEXT("%s: Failed to find Tank Barrel Component"), *GetOwner()->GetName());
+	}
+	SetTankBarrelReference(TankBarrelComponent);
 }
 
 // Called to bind functionality to input
@@ -26,7 +51,7 @@ void ATank::SetupPlayerInputComponent(UInputComponent *PlayerInputComponent)
 }
 
 // TODO: Create a TankCameraComponent
-void ATank::SetTankCameraReference(USceneComponent *CameraToSet)
+void ATank::SetTankCameraReference(USpringArmComponent *CameraToSet)
 {
 	TankCameraComponent = CameraToSet;
 }
@@ -43,7 +68,7 @@ void ATank::SetTankBarrelReference(UTankBarrelComponent *BarrelToSet)
 	TankAimingComponent->SetTankBarrelReference(BarrelToSet);
 }
 
-USceneComponent *ATank::GetCameraComponent() const
+USpringArmComponent *ATank::GetCameraComponent() const
 {
 	return TankCameraComponent;
 }

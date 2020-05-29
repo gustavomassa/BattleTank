@@ -7,6 +7,7 @@
 #include "Tank.generated.h"
 
 //Foward Declarations
+class USpringArmComponent;
 class UTankTurretComponent;
 class UTankBarrelComponent;
 class UTankAimingComponent;
@@ -23,7 +24,7 @@ public:
 	virtual void SetupPlayerInputComponent(class UInputComponent *PlayerInputComponent) override;
 
 	UFUNCTION(BlueprintCallable, Category = "Setup")
-	void SetTankCameraReference(USceneComponent *CameraToSet);
+	void SetTankCameraReference(USpringArmComponent *CameraToSet);
 
 	UFUNCTION(BlueprintCallable, Category = "Setup")
 	void SetTankTurretReference(UTankTurretComponent *TurretToSet);
@@ -34,7 +35,7 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Input Action")
 	void OnFire();
 
-	USceneComponent *GetCameraComponent() const;
+	USpringArmComponent *GetCameraComponent() const;
 	UTankTurretComponent *GetTurretComponent() const;
 	UTankBarrelComponent *GetBarrelComponent() const;
 
@@ -46,7 +47,7 @@ protected:
 	virtual void BeginPlay() override;
 
 private:
-	USceneComponent *TankCameraComponent{nullptr};
+	USpringArmComponent *TankCameraComponent{nullptr};
 
 	UTankTurretComponent *TankTurretComponent{nullptr};
 	UTankBarrelComponent *TankBarrelComponent{nullptr};

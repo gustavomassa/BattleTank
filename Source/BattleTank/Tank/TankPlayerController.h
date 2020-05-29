@@ -6,6 +6,8 @@
 #include "../Interface/TankControllerInterface.h"
 #include "TankPlayerController.generated.h"
 
+//Forward Declarations
+class USpringArmComponent;
 /**
  * 
  */
@@ -40,7 +42,7 @@ private:
 	UPROPERTY(EditAnywhere, Category = "Input Axis")
 	FName ElevationBind{"AimElevation"};
 	UPROPERTY(EditAnywhere, Category = "Input Axis")
-	float MinElevationAngle{-30.0f};
+	float MinElevationAngle{-20.0f};
 	UPROPERTY(EditAnywhere, Category = "Input Axis")
 	float MaxElevationAngle{10.0f};
 	UPROPERTY(EditAnywhere, Category = "Input Axis")
@@ -54,6 +56,7 @@ private:
 	UFUNCTION(BlueprintCallable, Category = "Input Axis")
 	void OnAxisElevation(float AxisValue);
 
+	void RegisterInputBind() const;
 	FVector2D GetCrosshairScreenLocation() const;
 	bool GetLookDirection(FVector2D &ScreenLocation, FVector &Out_LookDirection) const;
 	bool GetSightRayHitLocation(FVector &Out_HitLocation) const;

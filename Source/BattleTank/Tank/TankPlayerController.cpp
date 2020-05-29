@@ -7,6 +7,7 @@
 #include "GameFramework/PlayerController.h"
 #include "Components/ActorComponent.h"
 #include "Components/PrimitiveComponent.h"
+#include "GameFramework/SpringArmComponent.h"
 #include "Engine/World.h"
 
 void ATankPlayerController::BeginPlay()
@@ -26,15 +27,8 @@ void ATankPlayerController::BeginPlay()
         UE_LOG(LogTemp, Error, TEXT("%s: Failed to find Controlled Tank Input Component!"), *GetOwner()->GetName());
     }
 
-    /*     if (!ensure(ControlledTank) || !ensure(ControlledTank->GetCameraComponent()))
-    {
-        UE_LOG(LogTemp, Error, TEXT("%s: Failed to find Controlled Tank Camera Component!"), *GetOwner()->GetName());
-    } */
-
     // Register Input Binds
-    ControlledTank->InputComponent->BindAxis("AimAzimuth", this, &ATankPlayerController::OnAxisAzimuth);
-    ControlledTank->InputComponent->BindAxis("AimElevation", this, &ATankPlayerController::OnAxisElevation);
-    ControlledTank->InputComponent->BindAction(FireBind, IE_Pressed, ControlledTank, &ATank::OnFire);
+    RegisterInputBind();
 
     UE_LOG(LogTemp, Warning, TEXT("PlayerController tank: %s!"), *ControlledTank->GetName());
 }
@@ -53,6 +47,19 @@ ATank *ATankPlayerController::GetControlledTank() const
     return Cast<ATank>(GetPawn());
 }
 
+void ATankPlayerController::RegisterInputBind() const
+{
+    if (!ControlledTank)
+    {
+        UE_LOG(LogTemp, Error, TEXT("%s: Failed to get Controlled Tank!"), *GetOwner()->GetName());
+    }
+
+    ControlledTank->InputComponent->BindAxis("AimAzimuth", this, &ATankPlayerController::OnAxisAzimuth);
+    ControlledTank->InputComponent->BindAxis("AimElevation", this, &ATankPlayerController::OnAxisElevation);
+    ControlledTank->InputComponent->BindAction(FireBind, IE_Pressed, ControlledTank, &ATank::OnFire);
+}
+
+// Yaw
 void ATankPlayerController::OnAxisAzimuth(float AxisValue)
 {
     if (!ControlledTank || !ControlledTank->GetCameraComponent())
@@ -66,6 +73,7 @@ void ATankPlayerController::OnAxisAzimuth(float AxisValue)
     ControlledTank->GetCameraComponent()->SetRelativeRotation(TargetRotator);
 }
 
+// Pitch
 void ATankPlayerController::OnAxisElevation(float AxisValue)
 {
     if (!ControlledTank || !ControlledTank->GetCameraComponent())
