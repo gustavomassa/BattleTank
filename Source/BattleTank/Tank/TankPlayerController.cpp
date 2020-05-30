@@ -9,6 +9,8 @@
 #include "Components/PrimitiveComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Engine/World.h"
+#include "../Widget/MenuWidget.h"
+#include "../Widget/PlayerWidget.h"
 
 void ATankPlayerController::BeginPlay()
 {
@@ -39,6 +41,16 @@ void ATankPlayerController::Tick(float DeltaSeconds)
 
     AimTowardsCrosshair();
     //FollowCrosshair();
+}
+
+void ATankPlayerController::SetMainMenuWidgetReference(UMenuWidget *MenuWidgetToSet)
+{
+    MenuWidget = MenuWidgetToSet;
+}
+
+void ATankPlayerController::SetPlayerWidgetReference(UPlayerWidget *PlayerWidgetToSet)
+{
+    PlayerWidget = PlayerWidgetToSet;
 }
 
 ATank *ATankPlayerController::GetControlledTank() const

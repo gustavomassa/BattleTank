@@ -8,6 +8,8 @@
 
 //Forward Declarations
 class USpringArmComponent;
+class UMenuWidget;
+class UPlayerWidget;
 /**
  * 
  */
@@ -16,12 +18,19 @@ class BATTLETANK_API ATankPlayerController : public APlayerController, public IT
 {
 	GENERATED_BODY()
 
+public:
+	void SetMainMenuWidgetReference(UMenuWidget *MenuWidgetToSet);
+	void SetPlayerWidgetReference(UPlayerWidget *PlayerWidgetToSet);
+
 protected:
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaSeconds) override;
 	ATank *GetControlledTank() const override;
 
 private:
+	UMenuWidget *MenuWidget{nullptr};
+	UPlayerWidget *PlayerWidget{nullptr};
+
 	ATank *ControlledTank{nullptr};
 	FVector CrosshairHitLocation{FVector::ZeroVector};
 

@@ -6,6 +6,7 @@
 
 UTankBarrelComponent::UTankBarrelComponent()
 {
+    // Class finder must be done in the constructor to make sure cooking project works fine
     static ConstructorHelpers::FObjectFinder<UStaticMesh> BarrelAsset(TEXT("/Game/Source/Models/SM_Tank_Barrel"));
     //this->SetStaticMesh(BarrelAsset.Object);
     //this->SetWorldLocation(FVector::ZeroVector);
