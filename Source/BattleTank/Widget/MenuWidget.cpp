@@ -4,6 +4,7 @@
 #include "../Tank/TankPlayerController.h"
 #include "Components/Button.h"
 #include "Kismet/GameplayStatics.h"
+#include "Kismet/KismetSystemLibrary.h"
 
 void UMenuWidget::Setup()
 {
@@ -18,6 +19,7 @@ void UMenuWidget::Setup()
     PlayerController->bShowMouseCursor = true;
 
     StartGameButton->OnClicked.AddDynamic(this, &UMenuWidget::OnStartGameButtonClicked);
+    QuitGameButton->OnClicked.AddDynamic(this, &UMenuWidget::OnQuitGameButtonClicked);
 }
 
 void UMenuWidget::OnStartGameButtonClicked()
@@ -25,4 +27,13 @@ void UMenuWidget::OnStartGameButtonClicked()
     UE_LOG(LogTemp, Warning, TEXT("OnStartGameButtonClicked"));
 
     UGameplayStatics::OpenLevel(GetWorld(), FName("BattleGround"));
+}
+
+void UMenuWidget::OnOptionsGameButtonClicked()
+{
+}
+
+void UMenuWidget::OnQuitGameButtonClicked()
+{
+    UKismetSystemLibrary::QuitGame(GetWorld(), GetWorld()->GetFirstPlayerController(), EQuitPreference::Quit, false);
 }

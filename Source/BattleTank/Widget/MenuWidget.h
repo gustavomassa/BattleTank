@@ -20,11 +20,15 @@ public:
 private:
 	UPROPERTY(meta = (BindWidget))
 	class UButton *StartGameButton;
-	UPROPERTY(meta = (BindWidgetOptional))
+	UPROPERTY(meta = (BindWidget))
+	class UButton *OptionsGameButton;
+	UPROPERTY(meta = (BindWidget))
 	class UButton *QuitGameButton;
-	UPROPERTY(meta = (BindWidgetOptional))
-	class UButton *ConfigGameButton;
 
 	UFUNCTION()
 	void OnStartGameButtonClicked();
+	UFUNCTION()
+	void OnOptionsGameButtonClicked();
+	UFUNCTION()
+	void OnQuitGameButtonClicked();
 };
