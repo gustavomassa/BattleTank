@@ -10,6 +10,7 @@
 class USpringArmComponent;
 class UTankTurretComponent;
 class UTankBarrelComponent;
+class UTankTrackComponent;
 class UTankAimingComponent;
 class ATankProjectile;
 
@@ -33,12 +34,20 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Setup")
 	void SetTankBarrelReference(UTankBarrelComponent *BarrelToSet);
 
+	UFUNCTION(BlueprintCallable, Category = "Setup")
+	void SetTankTrackLeftReference(UTankTrackComponent *TrackLeftToSet);
+
+	UFUNCTION(BlueprintCallable, Category = "Setup")
+	void SetTankTrackRightReference(UTankTrackComponent *TrackRightToSet);
+
 	UFUNCTION(BlueprintCallable, Category = "Input Action")
 	void Fire();
 
 	USpringArmComponent *GetCameraComponent() const;
 	UTankTurretComponent *GetTurretComponent() const;
 	UTankBarrelComponent *GetBarrelComponent() const;
+	UTankTrackComponent *GetTankTrackLeftComponent() const;
+	UTankTrackComponent *GetTankTrackRightComponent() const;
 	float GetProjectileLaunchSpeed() const;
 
 	void AimAt(FVector &HitLocation);
@@ -53,6 +62,9 @@ private:
 
 	UTankTurretComponent *TankTurretComponent{nullptr};
 	UTankBarrelComponent *TankBarrelComponent{nullptr};
+	UTankTrackComponent *TankTrackLeftComponent{nullptr};
+	UTankTrackComponent *TankTrackRightComponent{nullptr};
+
 	UTankAimingComponent *TankAimingComponent{nullptr};
 
 	UPROPERTY(EditAnywhere, Category = "Setup")
@@ -62,6 +74,8 @@ private:
 	float ReloadTimeInSeconds{3.0f};
 
 	double LastFireTime{0};
+
+	void FindTankTrackComponents();
 
 	/* 	UPROPERTY(EditDefaultsOnly, Category = "Setup")
 	float ProjectileLaunchSpeed{8000.0f}; */

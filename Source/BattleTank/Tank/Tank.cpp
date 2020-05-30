@@ -4,6 +4,7 @@
 #include "GameFramework/SpringArmComponent.h"
 #include "TankTurretComponent.h"
 #include "TankBarrelComponent.h"
+#include "TankTrackComponent.h"
 #include "TankAimingComponent.h"
 #include "TankProjectile.h"
 
@@ -43,12 +44,44 @@ void ATank::BeginPlay()
 		UE_LOG(LogTemp, Error, TEXT("%s: Failed to find Tank Barrel Component"), *GetOwner()->GetName());
 	}
 	SetTankBarrelReference(TankBarrelComponent);
+
+	FindTankTrackComponents();
 }
 
 // Called to bind functionality to input
 void ATank::SetupPlayerInputComponent(UInputComponent *PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
+}
+
+void ATank::FindTankTrackComponents()
+{
+	TArray<UTankTrackComponent *> TankTrackComponents;
+	GetComponents<UTankTrackComponent>(TankTrackComponents, false);
+
+	if (TankTrackComponents.Num() == 0)
+	{
+		UE_LOG(LogTemp, Error, TEXT("%s: Failed to find Tank Track Components"), *GetOwner()->GetName());
+		return;
+	}
+	for (auto TankTrackComponent : TankTrackComponents)
+	{
+		if (TankTrackComponent)
+		{
+			if (TankTrackComponent->GetName() == "TrackLeft")
+			{
+				SetTankTrackLeftReference(TankTrackComponent);
+			}
+			else if (TankTrackComponent->GetName() == "TrackRight")
+			{
+				SetTankTrackRightReference(TankTrackComponent);
+			}
+			else
+			{
+				UE_LOG(LogTemp, Error, TEXT("%s: Failed to find Tank Track Components by Name"), *GetOwner()->GetName());
+			}
+		}
+	}
 }
 
 // TODO: Create a TankCameraComponent
@@ -69,6 +102,16 @@ void ATank::SetTankBarrelReference(UTankBarrelComponent *BarrelToSet)
 	TankAimingComponent->SetTankBarrelReference(BarrelToSet);
 }
 
+void ATank::SetTankTrackLeftReference(UTankTrackComponent *TrackLeftToSet)
+{
+	TankTrackLeftComponent = TrackLeftToSet;
+}
+
+void ATank::SetTankTrackRightReference(UTankTrackComponent *TrackRightToSet)
+{
+	TankTrackRightComponent = TrackRightToSet;
+}
+
 USpringArmComponent *ATank::GetCameraComponent() const
 {
 	return TankCameraComponent;
@@ -82,6 +125,16 @@ UTankTurretComponent *ATank::GetTurretComponent() const
 UTankBarrelComponent *ATank::GetBarrelComponent() const
 {
 	return TankBarrelComponent;
+}
+
+UTankTrackComponent *ATank::GetTankTrackLeftComponent() const
+{
+	return TankTrackLeftComponent;
+}
+
+UTankTrackComponent *ATank::GetTankTrackRightComponent() const
+{
+	return TankTrackRightComponent;
 }
 
 /* float ATank::GetProjectileLaunchSpeed() const
