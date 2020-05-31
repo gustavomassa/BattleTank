@@ -60,17 +60,20 @@ private:
 	FName ThrottleLeftBind{"LeftTrackThrottle"};
 	UPROPERTY(EditAnywhere, Category = "Input Axis")
 	FName ThrottleRightBind{"RightTrackThrottle"};
+	UPROPERTY(EditAnywhere, Category = "Input Axis")
+	FName MoveForwardBind{"MoveForward"};
+	UPROPERTY(EditAnywhere, Category = "Input Axis")
+	FName MoveBackwardBind{"MoveBackward"};
 
 	UPROPERTY(EditAnywhere, Category = "Input Action")
 	FName FireBind{"Fire"};
 
+	//TODO: Create a camera component and delegate
 	UFUNCTION(BlueprintCallable, Category = "Input Axis")
 	void OnAxisAzimuth(float AxisValue);
 	UFUNCTION(BlueprintCallable, Category = "Input Axis")
 	void OnAxisElevation(float AxisValue);
 	UFUNCTION(BlueprintCallable, Category = "Input Axis")
-	void OnThrottleLeft(float Throttle);
-	void OnThrottleRight(float Throttle);
 
 	void RegisterInputBind() const;
 	FVector2D GetCrosshairScreenLocation() const;

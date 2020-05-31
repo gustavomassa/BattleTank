@@ -12,6 +12,7 @@ class UTankBodyComponent;
 class UTankTurretComponent;
 class UTankBarrelComponent;
 class UTankTrackComponent;
+class UTankMovementComponent;
 class UTankAimingComponent;
 class ATankProjectile;
 
@@ -48,6 +49,7 @@ public:
 	void Fire();
 
 	USpringArmComponent *GetCameraComponent() const;
+	UTankMovementComponent *GetTankMovementComponent() const;
 	UTankBodyComponent *GetBodyComponent() const;
 	UTankTurretComponent *GetTurretComponent() const;
 	UTankBarrelComponent *GetBarrelComponent() const;
@@ -74,6 +76,7 @@ private:
 	UTankTrackComponent *TankTrackLeftComponent{nullptr};
 	UTankTrackComponent *TankTrackRightComponent{nullptr};
 
+	UTankMovementComponent *TankMovementComponent{nullptr};
 	UTankAimingComponent *TankAimingComponent{nullptr};
 
 	UPROPERTY(EditAnywhere, Category = "Setup")
@@ -87,6 +90,10 @@ private:
 
 	double LastFireTime{0};
 
+	void FindCameraComponent();
+	void FindBodyComponent();
+	void FindTurretComponent();
+	void FindBarrelComponent();
 	void FindTankTrackComponents();
 
 	/* 	UPROPERTY(EditDefaultsOnly, Category = "Setup")

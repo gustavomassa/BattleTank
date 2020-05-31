@@ -6,6 +6,7 @@
 #include "TankTurretComponent.h"
 #include "TankBarrelComponent.h"
 #include "TankTrackComponent.h"
+#include "TankMovementComponent.h"
 #include "TankAimingComponent.h"
 #include "TankProjectile.h"
 
@@ -16,6 +17,7 @@ ATank::ATank()
 	PrimaryActorTick.bCanEverTick = false;
 
 	// Register Components
+	TankMovementComponent = CreateDefaultSubobject<UTankMovementComponent>(FName("Movement Component"));
 	TankAimingComponent = CreateDefaultSubobject<UTankAimingComponent>(FName("Aiming Component"));
 }
 
@@ -25,35 +27,12 @@ void ATank::BeginPlay()
 	Super::BeginPlay();
 
 	// Find Components
-	TankCameraComponent = FindComponentByClass<USpringArmComponent>();
-	if (!TankCameraComponent)
-	{
-		UE_LOG(LogTemp, Error, TEXT("%s: Failed to find Tank Camera Component"), *GetOwner()->GetName());
-	}
-	SetTankCameraReference(TankCameraComponent);
-
-	TankTurretComponent = FindComponentByClass<UTankTurretComponent>();
-	if (!TankTurretComponent)
-	{
-		UE_LOG(LogTemp, Error, TEXT("%s: Failed to find Tank Turret Component"), *GetOwner()->GetName());
-	}
-	SetTankTurretReference(TankTurretComponent);
-
-	TankBarrelComponent = FindComponentByClass<UTankBarrelComponent>();
-	if (!TankBarrelComponent)
-	{
-		UE_LOG(LogTemp, Error, TEXT("%s: Failed to find Tank Barrel Component"), *GetOwner()->GetName());
-	}
-	SetTankBarrelReference(TankBarrelComponent);
-
+	FindCameraComponent();
+	FindBodyComponent();
+	FindTurretComponent();
+	FindBarrelComponent();
 	FindTankTrackComponents();
 
-	TankBodyComponent = FindComponentByClass<UTankBodyComponent>();
-	if (!TankBodyComponent)
-	{
-		UE_LOG(LogTemp, Error, TEXT("%s: Failed to find Tank Body Component"), *GetOwner()->GetName());
-	}
-	SetTankBodyReference(TankBodyComponent);
 	TankBodyComponent->SetupPhysics();
 }
 
@@ -61,6 +40,46 @@ void ATank::BeginPlay()
 void ATank::SetupPlayerInputComponent(UInputComponent *PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
+}
+
+void ATank::FindCameraComponent()
+{
+	TankCameraComponent = FindComponentByClass<USpringArmComponent>();
+	if (!TankCameraComponent)
+	{
+		UE_LOG(LogTemp, Error, TEXT("%s: Failed to find Tank Camera Component"), *GetOwner()->GetName());
+	}
+	SetTankCameraReference(TankCameraComponent);
+}
+
+void ATank::FindBodyComponent()
+{
+	TankBodyComponent = FindComponentByClass<UTankBodyComponent>();
+	if (!TankBodyComponent)
+	{
+		UE_LOG(LogTemp, Error, TEXT("%s: Failed to find Tank Body Component"), *GetOwner()->GetName());
+	}
+	SetTankBodyReference(TankBodyComponent);
+}
+
+void ATank::FindTurretComponent()
+{
+	TankTurretComponent = FindComponentByClass<UTankTurretComponent>();
+	if (!TankTurretComponent)
+	{
+		UE_LOG(LogTemp, Error, TEXT("%s: Failed to find Tank Turret Component"), *GetOwner()->GetName());
+	}
+	SetTankTurretReference(TankTurretComponent);
+}
+
+void ATank::FindBarrelComponent()
+{
+	TankBarrelComponent = FindComponentByClass<UTankBarrelComponent>();
+	if (!TankBarrelComponent)
+	{
+		UE_LOG(LogTemp, Error, TEXT("%s: Failed to find Tank Barrel Component"), *GetOwner()->GetName());
+	}
+	SetTankBarrelReference(TankBarrelComponent);
 }
 
 void ATank::FindTankTrackComponents()
@@ -119,16 +138,23 @@ void ATank::SetTankBarrelReference(UTankBarrelComponent *BarrelToSet)
 void ATank::SetTankTrackLeftReference(UTankTrackComponent *TrackLeftToSet)
 {
 	TankTrackLeftComponent = TrackLeftToSet;
+	TankMovementComponent->SetTankTrackLeftReference(TrackLeftToSet);
 }
 
 void ATank::SetTankTrackRightReference(UTankTrackComponent *TrackRightToSet)
 {
 	TankTrackRightComponent = TrackRightToSet;
+	TankMovementComponent->SetTankTrackRightReference(TrackRightToSet);
 }
 
 USpringArmComponent *ATank::GetCameraComponent() const
 {
 	return TankCameraComponent;
+}
+
+UTankMovementComponent *ATank::GetTankMovementComponent() const
+{
+	return TankMovementComponent;
 }
 
 UTankBodyComponent *ATank::GetBodyComponent() const

@@ -5,6 +5,7 @@
 #include "TankTurretComponent.h"
 #include "TankBarrelComponent.h"
 #include "TankTrackComponent.h"
+#include "TankMovementComponent.h"
 #include "GameFramework/PlayerController.h"
 #include "Components/ActorComponent.h"
 #include "Components/PrimitiveComponent.h"
@@ -67,14 +68,19 @@ void ATankPlayerController::RegisterInputBind() const
         UE_LOG(LogTemp, Error, TEXT("%s: Failed to get Controlled Tank!"), *GetOwner()->GetName());
     }
 
+    // Axis
     ControlledTank->InputComponent->BindAxis(AzimuthBind, this, &ATankPlayerController::OnAxisAzimuth);
     ControlledTank->InputComponent->BindAxis(ElevationBind, this, &ATankPlayerController::OnAxisElevation);
-    ControlledTank->InputComponent->BindAxis(ThrottleLeftBind, this, &ATankPlayerController::OnThrottleLeft);
-    ControlledTank->InputComponent->BindAxis(ThrottleRightBind, this, &ATankPlayerController::OnThrottleRight);
+    ControlledTank->InputComponent->BindAxis(ThrottleLeftBind, ControlledTank->GetTankMovementComponent(), &UTankMovementComponent::IntendMoveLeft);
+    ControlledTank->InputComponent->BindAxis(ThrottleRightBind, ControlledTank->GetTankMovementComponent(), &UTankMovementComponent::IntendMoveRight);
+    ControlledTank->InputComponent->BindAxis(MoveForwardBind, ControlledTank->GetTankMovementComponent(), &UTankMovementComponent::IntendMoveForward);
+    ControlledTank->InputComponent->BindAxis(MoveBackwardBind, ControlledTank->GetTankMovementComponent(), &UTankMovementComponent::IntendMoveBackward);
+
+    // Actions
     ControlledTank->InputComponent->BindAction(FireBind, IE_Pressed, ControlledTank, &ATank::Fire);
 }
 
-// Yaw
+// Yaw //TODO: Create a Camera Component and put the logic there
 void ATankPlayerController::OnAxisAzimuth(float AxisValue)
 {
     if (!ControlledTank || !ControlledTank->GetCameraComponent())
@@ -100,35 +106,6 @@ void ATankPlayerController::OnAxisElevation(float AxisValue)
     FRotator TargetRotator = ControlledTank->GetCameraComponent()->GetRelativeRotation();
     TargetRotator.Pitch = FMath::Clamp<float>((TargetRotator.Pitch + AxisChange), MinElevationAngle, MaxElevationAngle);
     ControlledTank->GetCameraComponent()->SetRelativeRotation(TargetRotator);
-}
-
-void ATankPlayerController::OnThrottleLeft(float Throttle)
-{
-    if (Throttle != 0.0f)
-    {
-        //UE_LOG(LogTemp, Warning, TEXT("OnThrottleLeft: %f"), Throttle);
-
-        ControlledTank->GetTankTrackLeftComponent()->SetThrottle(Throttle);
-
-        //TODO: LIMIT INPUT
-        //TODO: Apply acceleration over time to a maximum value
-        // Force = mass * acceleration
-        // Acceleration = m/s
-        // Calculate friction
-        // Tank mass is about 40 000 kg
-
-        // Example: accel = 10ms²
-    }
-}
-
-void ATankPlayerController::OnThrottleRight(float Throttle)
-{
-    if (Throttle != 0.0f)
-    {
-        //UE_LOG(LogTemp, Warning, TEXT("OnThrottleRight: %f"), Throttle);
-
-        ControlledTank->GetTankTrackRightComponent()->SetThrottle(Throttle);
-    }
 }
 
 // Move the Tank Barrel aiming where the player crosshair intersects the world

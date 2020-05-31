@@ -22,18 +22,17 @@ void UTankTrackComponent::SetThrottle(float Throttle)
 
     //TODO: LIMIT INPUT
     //TODO: Apply acceleration over time to a maximum value
+    //TODO: Limit speed due to dual control
     // Force = mass * acceleration
     // Acceleration = m/s
     // Calculate friction about 0.2
     // Tank mass is about 40 000 kg
 
-    //TODO: Set tank mass from C++
-
     auto Tank = Cast<ATank>(GetOwner());
 
     float GravityAcceleration = 9.81f;
     float TankMass = Tank->GetMass();
-    float TrackMaxDrivingForce = (TankMass * GravityAcceleration * (TankMass / 1000) * 2);
+    float TrackMaxDrivingForce = (TankMass * GravityAcceleration * (TankMass / 1000) * 2.3);
 
     UE_LOG(LogTemp, Warning, TEXT("TrackMaxDrivingForce: %f"), TrackMaxDrivingForce);
 
