@@ -18,4 +18,7 @@ public:
 	UTankTrackComponent();
 	void SetupPhysics();
 	void SetThrottle(float Throttle);
+
+private:
+	float CurrentThrottle{0.0f};
 };

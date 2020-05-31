@@ -16,14 +16,16 @@ void UTankMovementComponent::IntendMoveLeft(float Throw)
 {
     UE_LOG(LogTemp, Warning, TEXT("IntendMoveLeft: %f"), Throw);
 
-    TankTrackLeftComponent->SetThrottle(Throw);
+    TankTrackLeftComponent->SetThrottle(-Throw);
+    TankTrackRightComponent->SetThrottle(Throw);
 }
 
 void UTankMovementComponent::IntendMoveRight(float Throw)
 {
     UE_LOG(LogTemp, Warning, TEXT("IntendMoveRight: %f"), Throw);
 
-    TankTrackRightComponent->SetThrottle(Throw);
+    TankTrackLeftComponent->SetThrottle(Throw);
+    TankTrackRightComponent->SetThrottle(-Throw);
 }
 
 void UTankMovementComponent::IntendMoveBackward(float Throw)

@@ -19,26 +19,25 @@ void UTankTrackComponent::SetupPhysics()
 
 void UTankTrackComponent::SetThrottle(float Throttle)
 {
-
-    //TODO: LIMIT INPUT
     //TODO: Apply acceleration over time to a maximum value
     //TODO: Limit speed due to dual control
-    // Force = mass * acceleration
-    // Acceleration = m/s
-    // Calculate friction about 0.2
-    // Tank mass is about 40 000 kg
 
-    auto Tank = Cast<ATank>(GetOwner());
+    if (Throttle == 0.0f)
+    {
+        return;
+    }
 
     float GravityAcceleration = 9.81f;
-    float TankMass = Tank->GetMass();
-    float TrackMaxDrivingForce = (TankMass * GravityAcceleration * (TankMass / 1000) * 2.3);
+    float TankMass = Cast<ATank>(GetOwner())->GetMass();
+    float ForceAdjustment = 2.3f;
+    float TrackMaxDrivingForce = (TankMass * GravityAcceleration * (TankMass / 1000) * ForceAdjustment);
+    float ThrottleChange = (FMath::Clamp<float>(Throttle, -1.0f, 1.0f) * TrackMaxDrivingForce);
 
-    UE_LOG(LogTemp, Warning, TEXT("TrackMaxDrivingForce: %f"), TrackMaxDrivingForce);
+    FVector ForceApplied = (GetForwardVector() * ThrottleChange);
+    ForceApplied.X = FMath::Clamp<float>(ForceApplied.X, -TrackMaxDrivingForce / ForceAdjustment, TrackMaxDrivingForce / ForceAdjustment);
+    ForceApplied.Y = FMath::Clamp<float>(ForceApplied.Y, -TrackMaxDrivingForce / ForceAdjustment, TrackMaxDrivingForce / ForceAdjustment);
+    ForceApplied.Z = FMath::Clamp<float>(ForceApplied.Z, -TrackMaxDrivingForce / ForceAdjustment, TrackMaxDrivingForce / ForceAdjustment);
 
-    FVector ForceApplied = (GetForwardVector() * Throttle * TrackMaxDrivingForce);
-    FVector ForceLocation = GetComponentLocation();
-
-    auto TankRoot = Cast<UPrimitiveComponent>(Tank->GetRootComponent());
-    TankRoot->AddForceAtLocation(ForceApplied, ForceLocation);
+    auto TankRoot = Cast<UPrimitiveComponent>(GetOwner()->GetRootComponent());
+    TankRoot->AddForceAtLocation(ForceApplied, GetComponentLocation());
 }
