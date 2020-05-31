@@ -56,6 +56,10 @@ private:
 	float MaxElevationAngle{10.0f};
 	UPROPERTY(EditAnywhere, Category = "Input Axis")
 	float ElevationSensitivity{100.0f};
+	UPROPERTY(EditAnywhere, Category = "Input Axis")
+	FName ThrottleLeftBind{"LeftTrackThrottle"};
+	UPROPERTY(EditAnywhere, Category = "Input Axis")
+	FName ThrottleRightBind{"RightTrackThrottle"};
 
 	UPROPERTY(EditAnywhere, Category = "Input Action")
 	FName FireBind{"Fire"};
@@ -64,6 +68,9 @@ private:
 	void OnAxisAzimuth(float AxisValue);
 	UFUNCTION(BlueprintCallable, Category = "Input Axis")
 	void OnAxisElevation(float AxisValue);
+	UFUNCTION(BlueprintCallable, Category = "Input Axis")
+	void OnThrottleLeft(float Throttle);
+	void OnThrottleRight(float Throttle);
 
 	void RegisterInputBind() const;
 	FVector2D GetCrosshairScreenLocation() const;

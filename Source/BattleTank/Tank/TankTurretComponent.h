@@ -9,13 +9,14 @@
 /**
  * 
  */
-UCLASS(ClassGroup = (Custom), meta = (BlueprintSpawnableComponent))
+UCLASS(ClassGroup = (Custom), meta = (BlueprintSpawnableComponent), hideCategories = (Physics, Collision, Events))
 class BATTLETANK_API UTankTurretComponent : public UStaticMeshComponent
 {
 	GENERATED_BODY()
 
 public:
 	UTankTurretComponent();
+	void SetupPhysics();
 	void Rotate(float TargetAngle);
 
 private:

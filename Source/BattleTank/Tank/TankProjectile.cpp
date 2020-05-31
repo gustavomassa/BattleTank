@@ -29,7 +29,7 @@ void ATankProjectile::Tick(float DeltaTime)
 
 void ATankProjectile::Launch(float Speed)
 {
-	UE_LOG(LogTemp, Warning, TEXT("%f Projectile fires ate %f"), GetWorld()->GetTimeSeconds(), Speed);
+	UE_LOG(LogTemp, Warning, TEXT("Projectile fired at %f"), Speed);
 	TankProjectileMovementComponent->SetVelocityInLocalSpace(FVector::ForwardVector * Speed);
 	TankProjectileMovementComponent->Activate();
 }

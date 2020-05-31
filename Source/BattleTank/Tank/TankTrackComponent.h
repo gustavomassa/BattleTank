@@ -9,12 +9,13 @@
 /**
  * 
  */
-UCLASS(ClassGroup = (Custom), meta = (BlueprintSpawnableComponent))
+UCLASS(ClassGroup = (Custom), meta = (BlueprintSpawnableComponent), hideCategories = (Physics, Events))
 class BATTLETANK_API UTankTrackComponent : public UStaticMeshComponent
 {
 	GENERATED_BODY()
 
 public:
 	UTankTrackComponent();
-	void SetThrottle(float throttle);
+	void SetupPhysics();
+	void SetThrottle(float Throttle);
 };

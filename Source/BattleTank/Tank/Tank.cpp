@@ -2,6 +2,7 @@
 
 #include "Tank.h"
 #include "GameFramework/SpringArmComponent.h"
+#include "TankBodyComponent.h"
 #include "TankTurretComponent.h"
 #include "TankBarrelComponent.h"
 #include "TankTrackComponent.h"
@@ -46,6 +47,14 @@ void ATank::BeginPlay()
 	SetTankBarrelReference(TankBarrelComponent);
 
 	FindTankTrackComponents();
+
+	TankBodyComponent = FindComponentByClass<UTankBodyComponent>();
+	if (!TankBodyComponent)
+	{
+		UE_LOG(LogTemp, Error, TEXT("%s: Failed to find Tank Body Component"), *GetOwner()->GetName());
+	}
+	SetTankBodyReference(TankBodyComponent);
+	TankBodyComponent->SetupPhysics();
 }
 
 // Called to bind functionality to input
@@ -90,6 +99,11 @@ void ATank::SetTankCameraReference(USpringArmComponent *CameraToSet)
 	TankCameraComponent = CameraToSet;
 }
 
+void ATank::SetTankBodyReference(UTankBodyComponent *BodyToSet)
+{
+	TankBodyComponent = BodyToSet;
+}
+
 void ATank::SetTankTurretReference(UTankTurretComponent *TurretToSet)
 {
 	TankTurretComponent = TurretToSet;
@@ -117,6 +131,11 @@ USpringArmComponent *ATank::GetCameraComponent() const
 	return TankCameraComponent;
 }
 
+UTankBodyComponent *ATank::GetBodyComponent() const
+{
+	return TankBodyComponent;
+}
+
 UTankTurretComponent *ATank::GetTurretComponent() const
 {
 	return TankTurretComponent;
@@ -137,10 +156,20 @@ UTankTrackComponent *ATank::GetTankTrackRightComponent() const
 	return TankTrackRightComponent;
 }
 
+float ATank::GetMass() const
+{
+	return Mass;
+}
+
+float ATank::GetReloadTimeInSeconds() const
+{
+	return ReloadTimeInSeconds;
+}
+
 /* float ATank::GetProjectileLaunchSpeed() const
 {
 	return ProjectileLaunchSpeed;
-} */
+}*/
 
 void ATank::AimAt(FVector &HitLocation)
 {

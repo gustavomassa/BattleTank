@@ -48,6 +48,11 @@ FRotator UTankBarrelComponent::GetProjectileLaunchRotation() const
     return this->GetSocketRotation(ProjectileSocketName);
 }
 
+void UTankBarrelComponent::SetupPhysics()
+{
+    SetSimulatePhysics(false);
+}
+
 void UTankBarrelComponent::Elevate(float TargetAngle)
 {
     /*     // Limit the speed and invert the angle when passing 180 degrees

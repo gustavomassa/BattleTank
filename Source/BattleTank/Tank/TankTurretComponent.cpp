@@ -10,6 +10,11 @@ UTankTurretComponent::UTankTurretComponent()
     this->SetRelativeLocation(FVector::ZeroVector);
 }
 
+void UTankTurretComponent::SetupPhysics()
+{
+    SetSimulatePhysics(false);
+}
+
 void UTankTurretComponent::Rotate(float TargetAngle)
 {
     /*     TargetAngle = (FMath::Abs(TargetAngle) < 180.0f) ? TargetAngle : -TargetAngle;

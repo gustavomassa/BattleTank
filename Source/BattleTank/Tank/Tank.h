@@ -8,6 +8,7 @@
 
 //Foward Declarations
 class USpringArmComponent;
+class UTankBodyComponent;
 class UTankTurretComponent;
 class UTankBarrelComponent;
 class UTankTrackComponent;
@@ -29,6 +30,9 @@ public:
 	void SetTankCameraReference(USpringArmComponent *CameraToSet);
 
 	UFUNCTION(BlueprintCallable, Category = "Setup")
+	void SetTankBodyReference(UTankBodyComponent *BodyToSet);
+
+	UFUNCTION(BlueprintCallable, Category = "Setup")
 	void SetTankTurretReference(UTankTurretComponent *TurretToSet);
 
 	UFUNCTION(BlueprintCallable, Category = "Setup")
@@ -44,11 +48,15 @@ public:
 	void Fire();
 
 	USpringArmComponent *GetCameraComponent() const;
+	UTankBodyComponent *GetBodyComponent() const;
 	UTankTurretComponent *GetTurretComponent() const;
 	UTankBarrelComponent *GetBarrelComponent() const;
 	UTankTrackComponent *GetTankTrackLeftComponent() const;
 	UTankTrackComponent *GetTankTrackRightComponent() const;
+
+	float GetMass() const;
 	float GetProjectileLaunchSpeed() const;
+	float GetReloadTimeInSeconds() const;
 
 	void AimAt(FVector &HitLocation);
 	void Aim(FVector &TargetLocation);
@@ -60,12 +68,16 @@ protected:
 private:
 	USpringArmComponent *TankCameraComponent{nullptr};
 
+	UTankBodyComponent *TankBodyComponent{nullptr};
 	UTankTurretComponent *TankTurretComponent{nullptr};
 	UTankBarrelComponent *TankBarrelComponent{nullptr};
 	UTankTrackComponent *TankTrackLeftComponent{nullptr};
 	UTankTrackComponent *TankTrackRightComponent{nullptr};
 
 	UTankAimingComponent *TankAimingComponent{nullptr};
+
+	UPROPERTY(EditAnywhere, Category = "Setup")
+	float Mass{40000.0f};
 
 	UPROPERTY(EditAnywhere, Category = "Setup")
 	TSubclassOf<ATankProjectile> TankProjectile;
