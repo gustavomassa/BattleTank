@@ -19,9 +19,11 @@ protected:
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaSeconds) override;
 	ATank *GetControlledTank() const override;
+	//MoveToActor
 
 private:
 	ATank *ControlledTank{nullptr};
 	ATank *PlayerTank{nullptr};
 	FVector PlayerTankLocation{FVector::ZeroVector};
+	float AcceptanceRadius{3000.0f};
 };

@@ -20,5 +20,8 @@ public:
 	void SetThrottle(float Throttle);
 
 private:
-	float CurrentThrottle{0.0f};
+	UPROPERTY(EditAnywhere, Category = "Setup")
+	float GravityAcceleration{9.81f};
+	UPROPERTY(EditAnywhere, Category = "Setup")
+	float ForceAdjustment{2.1f};
 };

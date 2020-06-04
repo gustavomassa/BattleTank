@@ -27,16 +27,17 @@ void UTankTrackComponent::SetThrottle(float Throttle)
         return;
     }
 
-    float GravityAcceleration = 9.81f;
+    Throttle = FMath::Clamp<float>(Throttle, -1.0f, 1.0f);
+    float CurrentForceAdjustment = (ForceAdjustment / FMath::Abs(Throttle));
     float TankMass = Cast<ATank>(GetOwner())->GetMass();
-    float ForceAdjustment = 2.3f;
-    float TrackMaxDrivingForce = (TankMass * GravityAcceleration * (TankMass / 1000) * ForceAdjustment);
-    float ThrottleChange = (FMath::Clamp<float>(Throttle, -1.0f, 1.0f) * TrackMaxDrivingForce);
+    float MassRelation = (TankMass >= 1000) ? (TankMass / 1000) : 1;
+    float TrackMaxDrivingForce = (TankMass * GravityAcceleration * MassRelation * CurrentForceAdjustment);
+    float ThrottleChange = (Throttle * TrackMaxDrivingForce);
 
     FVector ForceApplied = (GetForwardVector() * ThrottleChange);
-    ForceApplied.X = FMath::Clamp<float>(ForceApplied.X, -TrackMaxDrivingForce / ForceAdjustment, TrackMaxDrivingForce / ForceAdjustment);
-    ForceApplied.Y = FMath::Clamp<float>(ForceApplied.Y, -TrackMaxDrivingForce / ForceAdjustment, TrackMaxDrivingForce / ForceAdjustment);
-    ForceApplied.Z = FMath::Clamp<float>(ForceApplied.Z, -TrackMaxDrivingForce / ForceAdjustment, TrackMaxDrivingForce / ForceAdjustment);
+    ForceApplied.X = FMath::Clamp<float>(ForceApplied.X, -TrackMaxDrivingForce / CurrentForceAdjustment, TrackMaxDrivingForce / CurrentForceAdjustment);
+    ForceApplied.Y = FMath::Clamp<float>(ForceApplied.Y, -TrackMaxDrivingForce / CurrentForceAdjustment, TrackMaxDrivingForce / CurrentForceAdjustment);
+    ForceApplied.Z = FMath::Clamp<float>(ForceApplied.Z, -TrackMaxDrivingForce / CurrentForceAdjustment, TrackMaxDrivingForce / CurrentForceAdjustment);
 
     auto TankRoot = Cast<UPrimitiveComponent>(GetOwner()->GetRootComponent());
     TankRoot->AddForceAtLocation(ForceApplied, GetComponentLocation());

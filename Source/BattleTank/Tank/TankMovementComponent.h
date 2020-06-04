@@ -25,6 +25,9 @@ public:
 	void IntendMoveRight(float Throw);
 	void IntendMoveBackward(float Throw);
 
+protected:
+	virtual void RequestDirectMove(const FVector& MoveVelocity, bool bForceMaxSpeed) override;
+
 private:
 	UTankTrackComponent *TankTrackLeftComponent{nullptr};
 	UTankTrackComponent *TankTrackRightComponent{nullptr};

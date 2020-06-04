@@ -27,15 +27,20 @@ void ATankAIController::Tick(float DeltaSeconds)
 {
     Super::Tick(DeltaSeconds);
 
-    // TODO: Move towards the player
+    if (PlayerTank)
+    {
+        // Move towards the player
+        auto moved = MoveToActor(PlayerTank, AcceptanceRadius);
+        //EPathFollowingRequestResult::Type
 
-    // Aim towards the player
-    PlayerTankLocation = PlayerTank->GetActorLocation();
-    ControlledTank->AimAt(PlayerTankLocation);
+        // Aim towards the player
+        PlayerTankLocation = PlayerTank->GetActorLocation();
+        ControlledTank->AimAt(PlayerTankLocation);
 
-    // TODO: Don't fire every frame
-    //ControlledTank->Fire();
-    // Fire if ready
+        // TODO: Don't fire every frame
+        //ControlledTank->Fire();
+        // Fire if ready
+    }
 }
 
 ATank *ATankAIController::GetControlledTank() const
