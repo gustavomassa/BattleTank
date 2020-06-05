@@ -10,14 +10,6 @@
 class UTankTurretComponent;
 class UTankBarrelComponent;
 
-UENUM()
-enum class EFiringState : uint8
-{
-	Reloading,
-	Aiming,
-	Locked
-};
-
 UCLASS(ClassGroup = (Custom), meta = (BlueprintSpawnableComponent))
 class BATTLETANK_API UTankAimingComponent : public UActorComponent
 {
@@ -30,7 +22,7 @@ public:
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction *ThisTickFunction) override;
 	void SetTankTurretReference(UTankTurretComponent *TankTurretComponentToSet);
 	void SetTankBarrelReference(UTankBarrelComponent *TankBarrelComponentToSet);
-	void AimAt(FVector TargetLocation);
+	bool AimAt(FVector &TargetLocation);
 	void Aim(FVector TargetLocation);
 
 protected:
@@ -40,8 +32,6 @@ protected:
 private:
 	UTankTurretComponent *TankTurretComponent{nullptr};
 	UTankBarrelComponent *TankBarrelComponent{nullptr};
-	//TODO: Implement observable pattern
-	EFiringState FiringState{EFiringState::Reloading};
 
 	void MoveTurret(FVector &TargetLocation);
 	void MoveBarrel(FVector &TargetLocation);

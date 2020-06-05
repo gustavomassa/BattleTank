@@ -34,6 +34,9 @@ void ATankPlayerController::BeginPlay()
     // Register Input Binds
     RegisterInputBind();
 
+    // Init fire timer
+    //LastFireTime = FPlatformTime::Seconds();
+
     UE_LOG(LogTemp, Warning, TEXT("PlayerController tank: %s!"), *ControlledTank->GetName());
 }
 
@@ -41,8 +44,46 @@ void ATankPlayerController::Tick(float DeltaSeconds)
 {
     Super::Tick(DeltaSeconds);
 
-    AimTowardsCrosshair();
-    //FollowCrosshair();
+    // Check reloading timer
+    if ((FPlatformTime::Seconds() - LastFireTime) > ControlledTank->GetReloadTimeInSeconds())
+    {
+        bReloading = false;
+        UpdateFiringState(EFiringState::Aiming);
+    }
+    else
+    {
+        bReloading = true;
+        UpdateFiringState(EFiringState::Reloading);
+    }
+
+    if (AimTowardsCrosshair())
+    {
+        if (FiringState != EFiringState::Reloading)
+        {
+            FVector2D ScreenLocation = GetCrosshairScreenLocation();
+            FVector LookDirection{FVector::ZeroVector};
+            if (GetLookDirection(ScreenLocation, LookDirection))
+            {
+                // Get Barrel Projectile Launch Location and Rotation
+                float TurretRotation = ControlledTank->GetTurretComponent()->GetComponentRotation().Vector().GetSafeNormal().X;
+                float BarrelRotation = ControlledTank->GetBarrelComponent()->GetComponentRotation().Vector().GetSafeNormal().Y;
+
+                //UE_LOG(LogTemp, Warning, TEXT("LookDirection: %s, TurretRotation: %f BarrelRotation: %f"), *LookDirection.ToString(), TurretRotation, BarrelRotation);
+
+                float DifferenceX = FMath::Abs(LookDirection.X - TurretRotation);
+                float DifferenceY = FMath::Abs(LookDirection.Y - BarrelRotation);
+
+                //UE_LOG(LogTemp, Warning, TEXT("DifferenceX: %f, DifferenceY: %f"), DifferenceX, DifferenceY);
+
+                if (DifferenceX < 0.023f && DifferenceY < 0.023f)
+                {
+                    UpdateFiringState(EFiringState::Locked);
+                }
+            }
+        }
+    }
+
+    PlayerWidget->UpdateFiringStateCrosshairColor(FiringState);
 }
 
 void ATankPlayerController::SetMainMenuWidgetReference(UMenuWidget *MenuWidgetToSet)
@@ -53,6 +94,21 @@ void ATankPlayerController::SetMainMenuWidgetReference(UMenuWidget *MenuWidgetTo
 void ATankPlayerController::SetPlayerWidgetReference(UPlayerWidget *PlayerWidgetToSet)
 {
     PlayerWidget = PlayerWidgetToSet;
+}
+
+UMenuWidget *ATankPlayerController::GetMenuWidget() const
+{
+    return MenuWidget;
+}
+
+UPlayerWidget *ATankPlayerController::GetUPlayerWidget() const
+{
+    return PlayerWidget;
+}
+
+EFiringState ATankPlayerController::GetFiringState() const
+{
+    return FiringState;
 }
 
 ATank *ATankPlayerController::GetControlledTank() const
@@ -77,7 +133,7 @@ void ATankPlayerController::RegisterInputBind() const
     ControlledTank->InputComponent->BindAxis(MoveBackwardBind, ControlledTank->GetTankMovementComponent(), &UTankMovementComponent::IntendMoveBackward);
 
     // Actions
-    ControlledTank->InputComponent->BindAction(FireBind, IE_Pressed, ControlledTank, &ATank::Fire);
+    ControlledTank->InputComponent->BindAction(FireBind, IE_Pressed, this, &ATankPlayerController::OnFire);
 }
 
 // Yaw //TODO: Create a Camera Component and put the logic there
@@ -108,19 +164,40 @@ void ATankPlayerController::OnAxisElevation(float AxisValue)
     ControlledTank->GetCameraComponent()->SetRelativeRotation(TargetRotator);
 }
 
+void ATankPlayerController::OnFire()
+{
+    if (!ControlledTank || !ControlledTank->GetBarrelComponent())
+    {
+        UE_LOG(LogTemp, Error, TEXT("%s: Failed to find Controlled Tank Barrel Component!"), *GetOwner()->GetName());
+        return;
+    }
+
+    // Check if we are reloaded
+    if (FiringState != EFiringState::Reloading)
+    {
+        ControlledTank->Fire();
+        FiringState = EFiringState::Reloading;
+
+        // Reset the timer
+        LastFireTime = FPlatformTime::Seconds();
+    }
+}
+
 // Move the Tank Barrel aiming where the player crosshair intersects the world
-void ATankPlayerController::AimTowardsCrosshair()
+bool ATankPlayerController::AimTowardsCrosshair()
 {
     if (!ControlledTank)
     {
-        return;
+        return false;
     }
 
     CrosshairHitLocation = FVector::ZeroVector;
     if (GetSightRayHitLocation(CrosshairHitLocation))
     {
-        ControlledTank->AimAt(CrosshairHitLocation);
+        return ControlledTank->AimAt(CrosshairHitLocation);
     }
+
+    return false;
 }
 
 void ATankPlayerController::FollowCrosshair()
@@ -135,6 +212,20 @@ void ATankPlayerController::FollowCrosshair()
     if (GetLookDirection(ScreenLocation, LookDirection))
     {
         ControlledTank->Aim(LookDirection);
+    }
+}
+
+void ATankPlayerController::UpdateFiringState(const EFiringState &FiringStateToSet)
+{
+    // Wait the reload
+    if (FiringState == EFiringState::Reloading && bReloading)
+    {
+        return;
+    }
+
+    if (FiringStateToSet != FiringState)
+    {
+        FiringState = FiringStateToSet;
     }
 }
 

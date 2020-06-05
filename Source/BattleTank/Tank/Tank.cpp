@@ -202,14 +202,34 @@ float ATank::GetForceAdjustment() const
 	return ForceAdjustment;
 }
 
+float ATank::GetTurretMaxDegressPerSecond() const
+{
+	return TurretMaxDegressPerSecond;
+}
+
+float ATank::GetBarrelMaxDegressPerSecond() const
+{
+	return BarrelMaxDegressPerSecond;
+}
+
+float ATank::GetBarrelMinElevationDegress() const
+{
+	return BarrelMinElevationDegress;
+}
+
+float ATank::GetBarrelMaxElevationDegress() const
+{
+	return BarrelMaxElevationDegress;
+}
+
 float ATank::GetProjectileLaunchSpeed() const
 {
 	return ProjectileLaunchSpeed;
 }
 
-void ATank::AimAt(FVector &HitLocation)
+bool ATank::AimAt(FVector &HitLocation)
 {
-	TankAimingComponent->AimAt(HitLocation);
+	return TankAimingComponent->AimAt(HitLocation);
 }
 
 void ATank::Aim(FVector &TargetLocation)
@@ -219,20 +239,14 @@ void ATank::Aim(FVector &TargetLocation)
 
 void ATank::Fire()
 {
-	// Check if we are reloaded
-	if (TankBarrelComponent && ((FPlatformTime::Seconds() - LastFireTime) > ReloadTimeInSeconds))
-	{
-		UE_LOG(LogTemp, Warning, TEXT("Fire!"));
+	UE_LOG(LogTemp, Warning, TEXT("Fire!"));
 
-		auto Projectile = GetWorld()->SpawnActor<ATankProjectile>(
-			TankProjectile,
-			TankBarrelComponent->GetProjectileLaunchLocation(),
-			TankBarrelComponent->GetProjectileLaunchRotation());
-		if (Projectile)
-		{
-			Projectile->Launch(ProjectileLaunchSpeed);
-			// Reset the timer
-			LastFireTime = FPlatformTime::Seconds();
-		}
+	auto Projectile = GetWorld()->SpawnActor<ATankProjectile>(
+		TankProjectile,
+		TankBarrelComponent->GetProjectileLaunchLocation(),
+		TankBarrelComponent->GetProjectileLaunchRotation());
+	if (Projectile)
+	{
+		Projectile->Launch(ProjectileLaunchSpeed);
 	}
 }

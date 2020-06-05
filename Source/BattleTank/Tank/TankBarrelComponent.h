@@ -24,13 +24,4 @@ public:
 
 private:
 	FName ProjectileSocketName{FName("Projectile")};
-
-	UPROPERTY(EditAnyWhere, Category = "Setup")
-	float MaxDegressPerSecond{10.0f};
-
-	UPROPERTY(EditAnyWhere, Category = "Setup")
-	float MaxElevationDegress{45.0f};
-
-	UPROPERTY(EditAnyWhere, Category = "Setup")
-	float MinElevationDegress{0.0f};
 };

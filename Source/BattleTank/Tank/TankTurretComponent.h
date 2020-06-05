@@ -18,8 +18,4 @@ public:
 	UTankTurretComponent();
 	void SetupPhysics();
 	void Rotate(float TargetAngle);
-
-private:
-	UPROPERTY(EditAnyWhere, Category = "Setup")
-	float MaxDegressPerSecond{50.0f};
 };

@@ -2,6 +2,7 @@
 
 #include "TankTurretComponent.h"
 #include "UObject/ConstructorHelpers.h"
+#include "../Tank/Tank.h"
 
 UTankTurretComponent::UTankTurretComponent()
 {
@@ -24,7 +25,7 @@ void UTankTurretComponent::Rotate(float TargetAngle)
     // Limit the speed and invert the angle when passing 180 degrees
     TargetAngle = (FMath::Abs(TargetAngle) < 180.0f) ? TargetAngle : -TargetAngle;
     TargetAngle = FMath::Clamp<float>(TargetAngle, -1.0f, +1.0f);
-    float RotationChange = (TargetAngle * MaxDegressPerSecond * GetWorld()->DeltaTimeSeconds);
+    float RotationChange = (TargetAngle * Cast<ATank>(GetOwner())->GetTurretMaxDegressPerSecond() * GetWorld()->DeltaTimeSeconds);
     float CurrentRotation = GetRelativeRotation().Yaw;
     float TargetRotation = (CurrentRotation + RotationChange);
 

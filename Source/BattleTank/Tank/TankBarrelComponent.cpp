@@ -2,7 +2,7 @@
 
 #include "TankBarrelComponent.h"
 #include "UObject/ConstructorHelpers.h"
-//#include "Math/UnrealMathUtility.h"
+#include "../Tank/Tank.h"
 
 UTankBarrelComponent::UTankBarrelComponent()
 {
@@ -62,10 +62,11 @@ void UTankBarrelComponent::Elevate(float TargetAngle)
     float RawNewElevation = (GetRelativeRotation().Pitch + ElevationChange); */
 
     TargetAngle = (FMath::Abs(TargetAngle) < 180.0f) ? TargetAngle : -TargetAngle;
-    float MaxLimitedAngle = (MaxDegressPerSecond * FMath::Sign(TargetAngle) * GetWorld()->DeltaTimeSeconds);
+    auto ControlledTank = Cast<ATank>(GetOwner());
+    float MaxLimitedAngle = (ControlledTank->GetBarrelMaxDegressPerSecond() * FMath::Sign(TargetAngle) * GetWorld()->DeltaTimeSeconds);
     float CurrentElevation = GetRelativeRotation().Pitch;
     float RawNewElevation = (FMath::Abs(TargetAngle) > FMath::Abs(MaxLimitedAngle)) ? CurrentElevation + MaxLimitedAngle : CurrentElevation + TargetAngle;
-    float TargetElevation = FMath::Clamp<float>(RawNewElevation, MinElevationDegress, MaxElevationDegress);
+    float TargetElevation = FMath::Clamp<float>(RawNewElevation, ControlledTank->GetBarrelMinElevationDegress(), ControlledTank->GetBarrelMaxElevationDegress());
 
     //UE_LOG(LogTemp, Warning, TEXT("CurrentElevation: %f"), CurrentElevation);
     //UE_LOG(LogTemp, Warning, TEXT("TargetElevation: %f"), TargetElevation);

@@ -10,6 +10,15 @@
 class USpringArmComponent;
 class UMenuWidget;
 class UPlayerWidget;
+
+UENUM()
+enum class EFiringState : uint8
+{
+	Reloading,
+	Aiming,
+	Locked
+};
+
 /**
  * 
  */
@@ -21,6 +30,10 @@ class BATTLETANK_API ATankPlayerController : public APlayerController, public IT
 public:
 	void SetMainMenuWidgetReference(UMenuWidget *MenuWidgetToSet);
 	void SetPlayerWidgetReference(UPlayerWidget *PlayerWidgetToSet);
+
+	UMenuWidget *GetMenuWidget() const;
+	UPlayerWidget *GetUPlayerWidget() const;
+	EFiringState GetFiringState() const;
 
 protected:
 	virtual void BeginPlay() override;
@@ -34,13 +47,15 @@ private:
 	ATank *ControlledTank{nullptr};
 	FVector CrosshairHitLocation{FVector::ZeroVector};
 
+	//TODO: Implement observable pattern
+	EFiringState FiringState{EFiringState::Reloading};
+	bool bReloading{false};
+	double LastFireTime{0};
+
 	// Crosshair X is 50% alignment
-	UPROPERTY(EditAnywhere, Category = "Crosshair")
 	float CrosshairLocationX{0.5f};
 	// Crosshair Y is 33.3% alignment
-	UPROPERTY(EditAnywhere, Category = "Crosshair")
 	float CrosshairLocationY{0.33333f};
-
 	UPROPERTY(EditAnywhere, Category = "Crosshair")
 	float CrosshairReachDistance{1000000.0f};
 
@@ -53,7 +68,7 @@ private:
 	UPROPERTY(EditAnywhere, Category = "Input Axis")
 	float MinElevationAngle{-20.0f};
 	UPROPERTY(EditAnywhere, Category = "Input Axis")
-	float MaxElevationAngle{10.0f};
+	float MaxElevationAngle{5.0f};
 	UPROPERTY(EditAnywhere, Category = "Input Axis")
 	float ElevationSensitivity{100.0f};
 	UPROPERTY(EditAnywhere, Category = "Input Axis")
@@ -73,13 +88,15 @@ private:
 	void OnAxisAzimuth(float AxisValue);
 	UFUNCTION(BlueprintCallable, Category = "Input Axis")
 	void OnAxisElevation(float AxisValue);
-	UFUNCTION(BlueprintCallable, Category = "Input Axis")
+	UFUNCTION(BlueprintCallable, Category = "Input Action")
+	void OnFire();
 
 	void RegisterInputBind() const;
 	FVector2D GetCrosshairScreenLocation() const;
 	bool GetLookDirection(FVector2D &ScreenLocation, FVector &Out_LookDirection) const;
 	bool GetSightRayHitLocation(FVector &Out_HitLocation) const;
 	bool GetLookDirectionHitResult(FVector &LookDirection, FHitResult &Out_HitResult) const;
-	void AimTowardsCrosshair();
+	bool AimTowardsCrosshair();
 	void FollowCrosshair();
+	void UpdateFiringState(const EFiringState &FiringStateToSet);
 };

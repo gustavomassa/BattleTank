@@ -65,12 +65,12 @@ void UTankAimingComponent::MoveBarrel(FVector &TargetLocation)
 	TankBarrelComponent->Elevate(DeltaRotator.Pitch);
 }
 
-void UTankAimingComponent::AimAt(FVector TargetLocation)
+bool UTankAimingComponent::AimAt(FVector &TargetLocation)
 {
 	if (!TankBarrelComponent)
 	{
 		UE_LOG(LogTemp, Error, TEXT("%s: Failed to get Tank Barrel Reference!"), *GetOwner()->GetName());
-		return;
+		return false;
 	}
 
 	auto ControlledTank = Cast<ATank>(GetOwner());
@@ -98,15 +98,14 @@ void UTankAimingComponent::AimAt(FVector TargetLocation)
 		FVector AimDirection = LaunchVelocity.GetSafeNormal();
 		if (!AimDirection.IsZero())
 		{
-
-			//ATank *ControlledTank = Cast<ATank>(GetOwner());
-			//ControlledTank->MoveBarrel(AimDirection);
 			MoveTurret(AimDirection);
 			MoveBarrel(AimDirection);
 
-			//UE_LOG(LogTemp, Warning, TEXT("%s: Firing at %s with speed %f"), *GetOwner()->GetName(), *TargetLocation.ToString(), LaunchSpeed);
+			return true;
 		}
 	}
+
+	return false;
 }
 
 void UTankAimingComponent::Aim(FVector TargetLocation)

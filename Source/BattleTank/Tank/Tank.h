@@ -47,8 +47,12 @@ public:
 	float GetReloadTimeInSeconds() const;
 	float GetGravityAcceleration() const;
 	float GetForceAdjustment() const;
+	float GetTurretMaxDegressPerSecond() const;
+	float GetBarrelMaxDegressPerSecond() const;
+	float GetBarrelMinElevationDegress() const;
+	float GetBarrelMaxElevationDegress() const;
 
-	void AimAt(FVector &HitLocation);
+	bool AimAt(FVector &HitLocation);
 	void Aim(FVector &TargetLocation);
 	void Fire();
 
@@ -84,7 +88,17 @@ private:
 	UPROPERTY(EditAnywhere, Category = "Setup")
 	float Mass{40000.0f};
 
-	double LastFireTime{0};
+	// Turret
+	UPROPERTY(EditAnyWhere, Category = "Setup")
+	float TurretMaxDegressPerSecond{50.0f};
+
+	// Barrel
+	UPROPERTY(EditAnyWhere, Category = "Setup")
+	float BarrelMaxDegressPerSecond{15.0f};
+	UPROPERTY(EditAnyWhere, Category = "Setup")
+	float BarrelMinElevationDegress{0.0f};
+	UPROPERTY(EditAnyWhere, Category = "Setup")
+	float BarrelMaxElevationDegress{50.0f};
 
 	void FindCameraComponent();
 	void FindBodyComponent();

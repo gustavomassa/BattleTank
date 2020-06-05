@@ -6,6 +6,9 @@
 #include "Blueprint/UserWidget.h"
 #include "PlayerWidget.generated.h"
 
+//Forward Declarations
+enum class EFiringState : uint8;
+
 /**
  * 
  */
@@ -16,8 +19,13 @@ class BATTLETANK_API UPlayerWidget : public UUserWidget
 
 public:
 	void Setup();
+	void UpdateFiringStateCrosshairColor(EFiringState &FiringState);
 
 private:
+	EFiringState CurrentCrossbowFiringState;
+
 	UPROPERTY(meta = (BindWidget))
 	class UImage *Crosshair;
+
+	void Tocson();
 };
