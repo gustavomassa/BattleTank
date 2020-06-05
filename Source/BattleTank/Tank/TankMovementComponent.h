@@ -18,6 +18,7 @@ class BATTLETANK_API UTankMovementComponent : public UNavMovementComponent
 	GENERATED_BODY()
 
 public:
+	void Initialize(UTankTrackComponent *TrackLeftToSet, UTankTrackComponent *TrackRightToSet);
 	void SetTankTrackLeftReference(UTankTrackComponent *TrackLeftToSet);
 	void SetTankTrackRightReference(UTankTrackComponent *TrackRightToSet);
 	void IntendMoveForward(float Throw);
@@ -26,12 +27,9 @@ public:
 	void IntendMoveBackward(float Throw);
 
 protected:
-	virtual void RequestDirectMove(const FVector& MoveVelocity, bool bForceMaxSpeed) override;
+	virtual void RequestDirectMove(const FVector &MoveVelocity, bool bForceMaxSpeed) override;
 
 private:
 	UTankTrackComponent *TankTrackLeftComponent{nullptr};
 	UTankTrackComponent *TankTrackRightComponent{nullptr};
-
-	float CurrentLeftThrottle{0.0f};
-	float CurrentRightThrottle{0.0f};
 };

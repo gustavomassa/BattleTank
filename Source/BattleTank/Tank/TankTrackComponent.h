@@ -18,10 +18,4 @@ public:
 	UTankTrackComponent();
 	void SetupPhysics();
 	void SetThrottle(float Throttle);
-
-private:
-	UPROPERTY(EditAnywhere, Category = "Setup")
-	float GravityAcceleration{9.81f};
-	UPROPERTY(EditAnywhere, Category = "Setup")
-	float ForceAdjustment{2.1f};
 };

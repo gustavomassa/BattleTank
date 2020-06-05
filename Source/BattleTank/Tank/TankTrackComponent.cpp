@@ -27,11 +27,12 @@ void UTankTrackComponent::SetThrottle(float Throttle)
         return;
     }
 
+    auto ControlledTank = Cast<ATank>(GetOwner());
     Throttle = FMath::Clamp<float>(Throttle, -1.0f, 1.0f);
-    float CurrentForceAdjustment = (ForceAdjustment / FMath::Abs(Throttle));
-    float TankMass = Cast<ATank>(GetOwner())->GetMass();
+    float CurrentForceAdjustment = (ControlledTank->GetForceAdjustment() / FMath::Abs(Throttle));
+    float TankMass = ControlledTank->GetMass();
     float MassRelation = (TankMass >= 1000) ? (TankMass / 1000) : 1;
-    float TrackMaxDrivingForce = (TankMass * GravityAcceleration * MassRelation * CurrentForceAdjustment);
+    float TrackMaxDrivingForce = (TankMass * ControlledTank->GetGravityAcceleration() * MassRelation * CurrentForceAdjustment);
     float ThrottleChange = (Throttle * TrackMaxDrivingForce);
 
     FVector ForceApplied = (GetForwardVector() * ThrottleChange);

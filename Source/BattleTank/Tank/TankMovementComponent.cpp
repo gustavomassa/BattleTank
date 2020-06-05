@@ -3,6 +3,22 @@
 #include "TankMovementComponent.h"
 #include "TankTrackComponent.h"
 
+void UTankMovementComponent::Initialize(UTankTrackComponent *TrackLeftToSet, UTankTrackComponent *TrackRightToSet)
+{
+    TankTrackLeftComponent = TrackLeftToSet;
+    TankTrackRightComponent = TrackRightToSet;
+}
+
+void UTankMovementComponent::SetTankTrackLeftReference(UTankTrackComponent *TrackLeftToSet)
+{
+    TankTrackLeftComponent = TrackLeftToSet;
+}
+
+void UTankMovementComponent::SetTankTrackRightReference(UTankTrackComponent *TrackRightToSet)
+{
+    TankTrackRightComponent = TrackRightToSet;
+}
+
 void UTankMovementComponent::IntendMoveForward(float Throw)
 {
     //UE_LOG(LogTemp, Warning, TEXT("IntendMoveForward: %f"), Throw);
@@ -72,14 +88,4 @@ void UTankMovementComponent::RequestDirectMove(const FVector &MoveVelocity, bool
     {
         IntendMoveLeft(FMath::Abs(RightThrow));
     }
-}
-
-void UTankMovementComponent::SetTankTrackLeftReference(UTankTrackComponent *TrackLeftToSet)
-{
-    TankTrackLeftComponent = TrackLeftToSet;
-}
-
-void UTankMovementComponent::SetTankTrackRightReference(UTankTrackComponent *TrackRightToSet)
-{
-    TankTrackRightComponent = TrackRightToSet;
 }

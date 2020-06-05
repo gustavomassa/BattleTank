@@ -27,26 +27,12 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent *PlayerInputComponent) override;
 
-	UFUNCTION(BlueprintCallable, Category = "Setup")
 	void SetTankCameraReference(USpringArmComponent *CameraToSet);
-
-	UFUNCTION(BlueprintCallable, Category = "Setup")
 	void SetTankBodyReference(UTankBodyComponent *BodyToSet);
-
-	UFUNCTION(BlueprintCallable, Category = "Setup")
 	void SetTankTurretReference(UTankTurretComponent *TurretToSet);
-
-	UFUNCTION(BlueprintCallable, Category = "Setup")
 	void SetTankBarrelReference(UTankBarrelComponent *BarrelToSet);
-
-	UFUNCTION(BlueprintCallable, Category = "Setup")
 	void SetTankTrackLeftReference(UTankTrackComponent *TrackLeftToSet);
-
-	UFUNCTION(BlueprintCallable, Category = "Setup")
 	void SetTankTrackRightReference(UTankTrackComponent *TrackRightToSet);
-
-	UFUNCTION(BlueprintCallable, Category = "Input Action")
-	void Fire();
 
 	USpringArmComponent *GetCameraComponent() const;
 	UTankMovementComponent *GetTankMovementComponent() const;
@@ -59,13 +45,19 @@ public:
 	float GetMass() const;
 	float GetProjectileLaunchSpeed() const;
 	float GetReloadTimeInSeconds() const;
+	float GetGravityAcceleration() const;
+	float GetForceAdjustment() const;
 
 	void AimAt(FVector &HitLocation);
 	void Aim(FVector &TargetLocation);
+	void Fire();
 
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
+
+	UTankMovementComponent *TankMovementComponent{nullptr};
+	UTankAimingComponent *TankAimingComponent{nullptr};
 
 private:
 	USpringArmComponent *TankCameraComponent{nullptr};
@@ -76,17 +68,21 @@ private:
 	UTankTrackComponent *TankTrackLeftComponent{nullptr};
 	UTankTrackComponent *TankTrackRightComponent{nullptr};
 
-	UTankMovementComponent *TankMovementComponent{nullptr};
-	UTankAimingComponent *TankAimingComponent{nullptr};
-
-	UPROPERTY(EditAnywhere, Category = "Setup")
-	float Mass{40000.0f};
-
+	// Projectile
 	UPROPERTY(EditAnywhere, Category = "Setup")
 	TSubclassOf<ATankProjectile> TankProjectile;
-
+	UPROPERTY(EditDefaultsOnly, Category = "Setup")
+	float ProjectileLaunchSpeed{10000.0f};
 	UPROPERTY(EditAnywhere, Category = "Setup")
 	float ReloadTimeInSeconds{3.0f};
+
+	// Movement
+	UPROPERTY(EditAnywhere, Category = "Setup")
+	float GravityAcceleration{9.81f};
+	UPROPERTY(EditAnywhere, Category = "Setup")
+	float ForceAdjustment{2.2f};
+	UPROPERTY(EditAnywhere, Category = "Setup")
+	float Mass{40000.0f};
 
 	double LastFireTime{0};
 
@@ -95,7 +91,4 @@ private:
 	void FindTurretComponent();
 	void FindBarrelComponent();
 	void FindTankTrackComponents();
-
-	/* 	UPROPERTY(EditDefaultsOnly, Category = "Setup")
-	float ProjectileLaunchSpeed{8000.0f}; */
 };

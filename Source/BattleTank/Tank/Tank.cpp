@@ -192,10 +192,20 @@ float ATank::GetReloadTimeInSeconds() const
 	return ReloadTimeInSeconds;
 }
 
-/* float ATank::GetProjectileLaunchSpeed() const
+float ATank::GetGravityAcceleration() const
+{
+	return GravityAcceleration;
+}
+
+float ATank::GetForceAdjustment() const
+{
+	return ForceAdjustment;
+}
+
+float ATank::GetProjectileLaunchSpeed() const
 {
 	return ProjectileLaunchSpeed;
-}*/
+}
 
 void ATank::AimAt(FVector &HitLocation)
 {
@@ -220,7 +230,7 @@ void ATank::Fire()
 			TankBarrelComponent->GetProjectileLaunchRotation());
 		if (Projectile)
 		{
-			Projectile->Launch(TankAimingComponent->GetProjectileLaunchSpeed());
+			Projectile->Launch(ProjectileLaunchSpeed);
 			// Reset the timer
 			LastFireTime = FPlatformTime::Seconds();
 		}

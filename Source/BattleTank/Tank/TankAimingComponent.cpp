@@ -32,11 +32,6 @@ void UTankAimingComponent::TickComponent(float DeltaTime, ELevelTick TickType, F
 	// ...
 }
 
-float UTankAimingComponent::GetProjectileLaunchSpeed() const
-{
-	return ProjectileLaunchSpeed;
-}
-
 void UTankAimingComponent::SetTankTurretReference(UTankTurretComponent *TankTurretComponentToSet)
 {
 	TankTurretComponent = TankTurretComponentToSet;
@@ -78,9 +73,10 @@ void UTankAimingComponent::AimAt(FVector TargetLocation)
 		return;
 	}
 
+	auto ControlledTank = Cast<ATank>(GetOwner());
 	FVector StartLocation = TankBarrelComponent->GetProjectileLaunchLocation();
 	FVector LaunchVelocity{FVector::ZeroVector};
-	TArray<AActor *> ActorsToIgnore{GetOwner()};
+	TArray<AActor *> ActorsToIgnore{ControlledTank};
 
 	// Calc the LaunchVelocity
 	bool bProjectileVelocitySuccess = UGameplayStatics::SuggestProjectileVelocity(
@@ -88,7 +84,7 @@ void UTankAimingComponent::AimAt(FVector TargetLocation)
 		LaunchVelocity,
 		StartLocation,
 		TargetLocation,
-		ProjectileLaunchSpeed,
+		ControlledTank->GetProjectileLaunchSpeed(),
 		false,
 		0,
 		0,
