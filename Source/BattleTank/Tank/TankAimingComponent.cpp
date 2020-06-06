@@ -65,7 +65,7 @@ void UTankAimingComponent::MoveBarrel(FVector &TargetLocation)
 	TankBarrelComponent->Elevate(DeltaRotator.Pitch);
 }
 
-bool UTankAimingComponent::AimAt(FVector &TargetLocation)
+bool UTankAimingComponent::AimAt(FVector &TargetLocation, FVector &Out_AimDirection)
 {
 	if (!TankBarrelComponent)
 	{
@@ -95,11 +95,11 @@ bool UTankAimingComponent::AimAt(FVector &TargetLocation)
 
 	if (bProjectileVelocitySuccess)
 	{
-		FVector AimDirection = LaunchVelocity.GetSafeNormal();
-		if (!AimDirection.IsZero())
+		Out_AimDirection = LaunchVelocity.GetSafeNormal();
+		if (!Out_AimDirection.IsZero())
 		{
-			MoveTurret(AimDirection);
-			MoveBarrel(AimDirection);
+			MoveTurret(Out_AimDirection);
+			MoveBarrel(Out_AimDirection);
 
 			return true;
 		}

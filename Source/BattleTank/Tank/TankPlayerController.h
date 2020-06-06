@@ -51,6 +51,7 @@ private:
 	EFiringState FiringState{EFiringState::Aiming};
 	bool bReloading{false};
 	double LastFireTime{0};
+	FVector AimDirection{FVector::ZeroVector};
 
 	// Crosshair X is 50% alignment
 	float CrosshairLocationX{0.5f};
@@ -97,6 +98,7 @@ private:
 	bool GetSightRayHitLocation(FVector &Out_HitLocation) const;
 	bool GetLookDirectionHitResult(const FVector &LookDirection, FHitResult &Out_HitResult) const;
 	bool AimTowardsCrosshair();
+	bool IsCrosshairLocked(float Tolerance);
 	void FollowCrosshair();
 	void UpdateFiringState(const EFiringState &FiringStateToSet);
 };

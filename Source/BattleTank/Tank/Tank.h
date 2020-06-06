@@ -52,7 +52,7 @@ public:
 	float GetBarrelMinElevationDegress() const;
 	float GetBarrelMaxElevationDegress() const;
 
-	bool AimAt(FVector &HitLocation);
+	bool AimAt(FVector &HitLocation, FVector &Out_AimDirection);
 	void Aim(FVector &TargetLocation);
 	void Fire();
 

@@ -36,7 +36,8 @@ void ATankAIController::Tick(float DeltaSeconds)
         // Aim towards the player
         PlayerTankLocation = PlayerTank->GetActorLocation();
         // We don't need to update the crosshair color for AI
-        ControlledTank->AimAt(PlayerTankLocation);
+        FVector AimDirection = FVector::ZeroVector;
+        ControlledTank->AimAt(PlayerTankLocation, AimDirection);
 
         // TODO: Don't fire every frame
         //ControlledTank->Fire();

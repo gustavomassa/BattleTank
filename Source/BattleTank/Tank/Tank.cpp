@@ -227,9 +227,9 @@ float ATank::GetProjectileLaunchSpeed() const
 	return ProjectileLaunchSpeed;
 }
 
-bool ATank::AimAt(FVector &HitLocation)
+bool ATank::AimAt(FVector &HitLocation, FVector &Out_AimDirection)
 {
-	return TankAimingComponent->AimAt(HitLocation);
+	return TankAimingComponent->AimAt(HitLocation, Out_AimDirection);
 }
 
 void ATank::Aim(FVector &TargetLocation)

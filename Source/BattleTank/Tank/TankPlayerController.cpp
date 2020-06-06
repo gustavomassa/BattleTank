@@ -53,28 +53,9 @@ void ATankPlayerController::Tick(float DeltaSeconds)
 
     if (AimTowardsCrosshair())
     {
-        if (FiringState != EFiringState::Reloading)
+        if (FiringState != EFiringState::Reloading && IsCrosshairLocked(0.02f))
         {
-            FVector2D ScreenLocation = GetCrosshairScreenLocation();
-            FVector LookDirection{FVector::ZeroVector};
-            if (GetLookDirection(ScreenLocation, LookDirection))
-            {
-                // Get Barrel Projectile Launch Location and Rotation
-                float TurretRotation = ControlledTank->GetTurretComponent()->GetComponentRotation().Vector().GetSafeNormal().X;
-                float BarrelRotation = ControlledTank->GetBarrelComponent()->GetComponentRotation().Vector().GetSafeNormal().Y;
-
-                //UE_LOG(LogTemp, Warning, TEXT("LookDirection: %s, TurretRotation: %f BarrelRotation: %f"), *LookDirection.ToString(), TurretRotation, BarrelRotation);
-
-                float DifferenceX = FMath::Abs(LookDirection.X - TurretRotation);
-                float DifferenceY = FMath::Abs(LookDirection.Y - BarrelRotation);
-
-                //UE_LOG(LogTemp, Warning, TEXT("DifferenceX: %f, DifferenceY: %f"), DifferenceX, DifferenceY);
-
-                if (DifferenceX < 0.023f && DifferenceY < 0.023f)
-                {
-                    UpdateFiringState(EFiringState::Locked);
-                }
-            }
+            UpdateFiringState(EFiringState::Locked);
         }
     }
 
@@ -189,10 +170,19 @@ bool ATankPlayerController::AimTowardsCrosshair()
     CrosshairHitLocation = FVector::ZeroVector;
     if (GetSightRayHitLocation(CrosshairHitLocation))
     {
-        return ControlledTank->AimAt(CrosshairHitLocation);
+        return ControlledTank->AimAt(CrosshairHitLocation, AimDirection);
     }
 
     return false;
+}
+
+bool ATankPlayerController::IsCrosshairLocked(float Tolerance)
+{
+    FVector BarrelDirection = ControlledTank->GetBarrelComponent()->GetForwardVector();
+    bool bValidateLockX = FMath::Abs(BarrelDirection.X - AimDirection.X) <= Tolerance;
+    bool bValidateLockY = FMath::Abs(BarrelDirection.Y - AimDirection.Y) <= Tolerance;
+    bool bValidateLockZ = (FMath::Abs(BarrelDirection.Z) > Tolerance) ? FMath::Abs(BarrelDirection.Z - AimDirection.Z) <= Tolerance : true;
+    return (bValidateLockX && bValidateLockY && bValidateLockZ);
 }
 
 void ATankPlayerController::FollowCrosshair()

@@ -22,7 +22,7 @@ public:
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction *ThisTickFunction) override;
 	void SetTankTurretReference(UTankTurretComponent *TankTurretComponentToSet);
 	void SetTankBarrelReference(UTankBarrelComponent *TankBarrelComponentToSet);
-	bool AimAt(FVector &TargetLocation);
+	bool AimAt(FVector &TargetLocation, FVector &Out_AimDirection);
 	void Aim(FVector TargetLocation);
 
 protected:
