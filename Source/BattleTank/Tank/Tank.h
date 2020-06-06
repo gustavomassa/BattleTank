@@ -35,12 +35,12 @@ public:
 	void SetTankTrackRightReference(UTankTrackComponent *TrackRightToSet);
 
 	USpringArmComponent *GetCameraComponent() const;
-	UTankMovementComponent *GetTankMovementComponent() const;
-	UTankBodyComponent *GetBodyComponent() const;
-	UTankTurretComponent *GetTurretComponent() const;
-	UTankBarrelComponent *GetBarrelComponent() const;
-	UTankTrackComponent *GetTankTrackLeftComponent() const;
-	UTankTrackComponent *GetTankTrackRightComponent() const;
+	const UTankMovementComponent *GetTankMovementComponent() const;
+	const UTankBodyComponent *GetBodyComponent() const;
+	const UTankTurretComponent *GetTurretComponent() const;
+	const UTankBarrelComponent *GetBarrelComponent() const;
+	const UTankTrackComponent *GetTankTrackLeftComponent() const;
+	const UTankTrackComponent *GetTankTrackRightComponent() const;
 
 	float GetMass() const;
 	float GetProjectileLaunchSpeed() const;

@@ -19,13 +19,11 @@ class BATTLETANK_API UPlayerWidget : public UUserWidget
 
 public:
 	void Setup();
-	void UpdateFiringStateCrosshairColor(EFiringState &FiringState);
+	void UpdateFiringStateCrosshairColor(const EFiringState &FiringState);
 
 private:
 	EFiringState CurrentCrossbowFiringState;
 
 	UPROPERTY(meta = (BindWidget))
 	class UImage *Crosshair;
-
-	void Tocson();
 };

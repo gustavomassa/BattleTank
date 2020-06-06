@@ -1,16 +1,12 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "TankPlayerController.h"
+#include "GameFramework/SpringArmComponent.h"
 #include "Tank.h"
 #include "TankTurretComponent.h"
 #include "TankBarrelComponent.h"
 #include "TankTrackComponent.h"
 #include "TankMovementComponent.h"
-#include "GameFramework/PlayerController.h"
-#include "Components/ActorComponent.h"
-#include "Components/PrimitiveComponent.h"
-#include "GameFramework/SpringArmComponent.h"
-#include "Engine/World.h"
 #include "../Widget/MenuWidget.h"
 #include "../Widget/PlayerWidget.h"
 
@@ -34,8 +30,7 @@ void ATankPlayerController::BeginPlay()
     // Register Input Binds
     RegisterInputBind();
 
-    // Init fire timer
-    //LastFireTime = FPlatformTime::Seconds();
+    LastFireTime = FPlatformTime::Seconds();
 
     UE_LOG(LogTemp, Warning, TEXT("PlayerController tank: %s!"), *ControlledTank->GetName());
 }
@@ -96,17 +91,17 @@ void ATankPlayerController::SetPlayerWidgetReference(UPlayerWidget *PlayerWidget
     PlayerWidget = PlayerWidgetToSet;
 }
 
-UMenuWidget *ATankPlayerController::GetMenuWidget() const
+const UMenuWidget *ATankPlayerController::GetMenuWidget() const
 {
     return MenuWidget;
 }
 
-UPlayerWidget *ATankPlayerController::GetUPlayerWidget() const
+const UPlayerWidget *ATankPlayerController::GetUPlayerWidget() const
 {
     return PlayerWidget;
 }
 
-EFiringState ATankPlayerController::GetFiringState() const
+const EFiringState &ATankPlayerController::GetFiringState() const
 {
     return FiringState;
 }
@@ -236,7 +231,7 @@ FVector2D ATankPlayerController::GetCrosshairScreenLocation() const
     return FVector2D(ViewPortSizeX * CrosshairLocationX, ViewPortSizeY * CrosshairLocationY);
 }
 
-bool ATankPlayerController::GetLookDirection(FVector2D &ScreenLocation, FVector &Out_LookDirection) const
+bool ATankPlayerController::GetLookDirection(const FVector2D &ScreenLocation, FVector &Out_LookDirection) const
 {
     // De-project the screen position of the crosshair to a world direction (Unit Vector based on Pythagorus)
     FVector LookLocation{FVector::ZeroVector};
@@ -265,7 +260,7 @@ bool ATankPlayerController::GetSightRayHitLocation(FVector &Out_HitLocation) con
     return false;
 }
 
-bool ATankPlayerController::GetLookDirectionHitResult(FVector &LookDirection, FHitResult &Out_HitResult) const
+bool ATankPlayerController::GetLookDirectionHitResult(const FVector &LookDirection, FHitResult &Out_HitResult) const
 {
     FVector StartLocation = PlayerCameraManager->GetCameraLocation();
     FVector EndLocation = StartLocation + (LookDirection * CrosshairReachDistance);

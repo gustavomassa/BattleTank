@@ -20,13 +20,15 @@ void UPlayerWidget::Setup()
 
     if (Crosshair)
     {
-        Crosshair->ColorAndOpacityDelegate.BindUFunction(this, FName("Tocson"));
-        Crosshair->SynchronizeProperties();
+        //CurrentCrossbowFiringState = EFiringState::Aiming;
+        UpdateFiringStateCrosshairColor(PlayerController->GetFiringState());
+        //Crosshair->ColorAndOpacityDelegate.BindUFunction(this, FName("Tocson"));
+        //Crosshair->SynchronizeProperties();
         //Crosshair->SetColorAndOpacity();
     }
 }
 
-void UPlayerWidget::UpdateFiringStateCrosshairColor(EFiringState &FiringState)
+void UPlayerWidget::UpdateFiringStateCrosshairColor(const EFiringState &FiringState)
 {
     // Just update crossbow if the state changed
     if (CurrentCrossbowFiringState == FiringState)
@@ -50,8 +52,4 @@ void UPlayerWidget::UpdateFiringStateCrosshairColor(EFiringState &FiringState)
     }
     Crosshair->SetColorAndOpacity(InColorAndOpacity);
     CurrentCrossbowFiringState = FiringState;
-}
-
-void UPlayerWidget::Tocson()
-{
 }

@@ -31,9 +31,9 @@ public:
 	void SetMainMenuWidgetReference(UMenuWidget *MenuWidgetToSet);
 	void SetPlayerWidgetReference(UPlayerWidget *PlayerWidgetToSet);
 
-	UMenuWidget *GetMenuWidget() const;
-	UPlayerWidget *GetUPlayerWidget() const;
-	EFiringState GetFiringState() const;
+	const UMenuWidget *GetMenuWidget() const;
+	const UPlayerWidget *GetUPlayerWidget() const;
+	const EFiringState &GetFiringState() const;
 
 protected:
 	virtual void BeginPlay() override;
@@ -48,7 +48,7 @@ private:
 	FVector CrosshairHitLocation{FVector::ZeroVector};
 
 	//TODO: Implement observable pattern
-	EFiringState FiringState{EFiringState::Reloading};
+	EFiringState FiringState{EFiringState::Aiming};
 	bool bReloading{false};
 	double LastFireTime{0};
 
@@ -93,9 +93,9 @@ private:
 
 	void RegisterInputBind() const;
 	FVector2D GetCrosshairScreenLocation() const;
-	bool GetLookDirection(FVector2D &ScreenLocation, FVector &Out_LookDirection) const;
+	bool GetLookDirection(const FVector2D &ScreenLocation, FVector &Out_LookDirection) const;
 	bool GetSightRayHitLocation(FVector &Out_HitLocation) const;
-	bool GetLookDirectionHitResult(FVector &LookDirection, FHitResult &Out_HitResult) const;
+	bool GetLookDirectionHitResult(const FVector &LookDirection, FHitResult &Out_HitResult) const;
 	bool AimTowardsCrosshair();
 	void FollowCrosshair();
 	void UpdateFiringState(const EFiringState &FiringStateToSet);

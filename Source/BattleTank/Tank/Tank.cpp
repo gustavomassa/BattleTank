@@ -152,32 +152,32 @@ USpringArmComponent *ATank::GetCameraComponent() const
 	return TankCameraComponent;
 }
 
-UTankMovementComponent *ATank::GetTankMovementComponent() const
+const UTankMovementComponent *ATank::GetTankMovementComponent() const
 {
 	return TankMovementComponent;
 }
 
-UTankBodyComponent *ATank::GetBodyComponent() const
+const UTankBodyComponent *ATank::GetBodyComponent() const
 {
 	return TankBodyComponent;
 }
 
-UTankTurretComponent *ATank::GetTurretComponent() const
+const UTankTurretComponent *ATank::GetTurretComponent() const
 {
 	return TankTurretComponent;
 }
 
-UTankBarrelComponent *ATank::GetBarrelComponent() const
+const UTankBarrelComponent *ATank::GetBarrelComponent() const
 {
 	return TankBarrelComponent;
 }
 
-UTankTrackComponent *ATank::GetTankTrackLeftComponent() const
+const UTankTrackComponent *ATank::GetTankTrackLeftComponent() const
 {
 	return TankTrackLeftComponent;
 }
 
-UTankTrackComponent *ATank::GetTankTrackRightComponent() const
+const UTankTrackComponent *ATank::GetTankTrackRightComponent() const
 {
 	return TankTrackRightComponent;
 }
