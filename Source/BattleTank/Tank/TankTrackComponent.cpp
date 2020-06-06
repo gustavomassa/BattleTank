@@ -18,15 +18,24 @@ void UTankTrackComponent::BeginPlay()
 {
     Super::BeginPlay();
 
+    ControlledTank = Cast<ATank>(GetOwner());
+    if (!ensure(ControlledTank))
+    {
+        UE_LOG(LogTemp, Error, TEXT("%s: Failed to get Controlled Tank!"), *GetName());
+    }
+    TankRoot = Cast<UPrimitiveComponent>(GetOwner()->GetRootComponent());
+    if (!ensure(TankRoot))
+    {
+        UE_LOG(LogTemp, Error, TEXT("%s: Failed to get Tank Root!"), *GetName());
+    }
+
     OnComponentHit.AddDynamic(this, &UTankTrackComponent::OnHit);
 }
 
-void UTankTrackComponent::TickComponent(float DeltaTime, enum ELevelTick TickType, FActorComponentTickFunction *ThisTickFunction)
+/* void UTankTrackComponent::TickComponent(float DeltaTime, enum ELevelTick TickType, FActorComponentTickFunction *ThisTickFunction)
 {
     Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
-
-    //CorrectSlippageForce(DeltaTime);
-}
+} */
 
 void UTankTrackComponent::SetupPhysics()
 {
@@ -36,34 +45,32 @@ void UTankTrackComponent::SetupPhysics()
 
 void UTankTrackComponent::SetThrottle(float Throttle)
 {
-    //TODO: Apply acceleration over time to a maximum value
-    //TODO: Limit speed due to dual control
-
     if (Throttle == 0.0f)
     {
         return;
     }
+    CurrentThrottle = FMath::Clamp<float>(CurrentThrottle + Throttle, -1.0f, 1.0f);
+}
 
-    auto ControlledTank = Cast<ATank>(GetOwner());
-    Throttle = FMath::Clamp<float>(Throttle, -1.0f, 1.0f);
+void UTankTrackComponent::DriveTrack()
+{
+    if (CurrentThrottle == 0.0f)
+    {
+        return;
+    }
+
     float TankMass = ControlledTank->GetMass();
-    float MassRelation = (TankMass >= 1000) ? (TankMass / 1000) : 1;
+    float MassRelation = (TankMass >= 1000.0f) ? (TankMass / 1000.0f) : 1.0f;
+    float CurrentForceAdjustment = (ControlledTank->GetForceAdjustment() / FMath::Abs(CurrentThrottle));
+    float TrackMaxDrivingForce = (TankMass * ControlledTank->GetGravityAcceleration() * MassRelation * CurrentForceAdjustment);
 
-    CurrentForceAdjustment = (ControlledTank->GetForceAdjustment() / FMath::Abs(Throttle));
-    TrackMaxDrivingForce = (TankMass * ControlledTank->GetGravityAcceleration() * MassRelation * CurrentForceAdjustment);
+    //UE_LOG(LogTemp, Warning, TEXT("CurrentThrottle: %f, CurrentForceAdjustment: %f"), CurrentThrottle, CurrentForceAdjustment);
 
-    float ThrottleChange = (Throttle * TrackMaxDrivingForce);
-
-    FVector ForceApplied = (GetForwardVector() * ThrottleChange);
-    ForceApplied.X = FMath::Clamp<float>(ForceApplied.X, -TrackMaxDrivingForce / CurrentForceAdjustment, TrackMaxDrivingForce / CurrentForceAdjustment);
-    ForceApplied.Y = FMath::Clamp<float>(ForceApplied.Y, -TrackMaxDrivingForce / CurrentForceAdjustment, TrackMaxDrivingForce / CurrentForceAdjustment);
-    ForceApplied.Z = FMath::Clamp<float>(ForceApplied.Z, -TrackMaxDrivingForce / CurrentForceAdjustment, TrackMaxDrivingForce / CurrentForceAdjustment);
-
-    auto TankRoot = Cast<UPrimitiveComponent>(GetOwner()->GetRootComponent());
+    FVector ForceApplied = (GetForwardVector() * CurrentThrottle * TrackMaxDrivingForce);
     TankRoot->AddForceAtLocation(ForceApplied, GetComponentLocation());
 }
 
-void UTankTrackComponent::CorrectSlippageForce(float DeltaTime)
+void UTankTrackComponent::CorrectSlippageForce()
 {
     // Force = Mass * Acceleration
     // Acceleration = Speed / Time
@@ -75,17 +82,20 @@ void UTankTrackComponent::CorrectSlippageForce(float DeltaTime)
     float SlippageSpeed = FVector::DotProduct(RightVector, CurrentComponentVelocity);
 
     // Work-out the required acceleration on this frame to correct
-    FVector CorrectionAcceleration = -SlippageSpeed / DeltaTime * RightVector;
+    FVector CorrectionAcceleration = -SlippageSpeed / GetWorld()->GetDeltaSeconds() * RightVector;
 
     //UE_LOG(LogTemp, Warning, TEXT("RightVector: %s, CurrentComponentVelocity: %s"), *RightVector.ToString(), *CurrentComponentVelocity.ToString());
     //UE_LOG(LogTemp, Warning, TEXT("SlippageSpeed: %f, CorrectionAcceleration: %s"), SlippageSpeed, *CorrectionAcceleration.ToString());
 
-    auto TankRoot = Cast<UPrimitiveComponent>(GetOwner()->GetRootComponent());
     FVector CorrectionForce = (TankRoot->GetMass() * CorrectionAcceleration) / 2; // Two tracks
     TankRoot->AddForce(CorrectionForce);
 }
 
 void UTankTrackComponent::OnHit(UPrimitiveComponent *HitComponent, AActor *OtherActor, UPrimitiveComponent *OtherComp, FVector NormalImpulse, const FHitResult &Hit)
 {
-    UE_LOG(LogTemp, Warning, TEXT("I'm hit"));
+    DriveTrack();
+    CorrectSlippageForce();
+
+    // Reset throttle
+    CurrentThrottle = 0.0f;
 }

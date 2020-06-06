@@ -6,6 +6,9 @@
 #include "Components/StaticMeshComponent.h"
 #include "TankTrackComponent.generated.h"
 
+// Forward declarations
+class ATank;
+
 /**
  * 
  */
@@ -21,13 +24,15 @@ public:
 
 protected:
 	virtual void BeginPlay() override;
-	virtual void TickComponent(float DeltaTime, enum ELevelTick TickType, FActorComponentTickFunction *ThisTickFunction) override;
+	//virtual void TickComponent(float DeltaTime, enum ELevelTick TickType, FActorComponentTickFunction *ThisTickFunction) override;
 
 private:
-	float CurrentForceAdjustment{1.0f};
-	float TrackMaxDrivingForce{1.0f};
+	ATank *ControlledTank{nullptr};
+	UPrimitiveComponent *TankRoot{nullptr};
+	float CurrentThrottle{0.0f};
 
-	void CorrectSlippageForce(float DeltaTime);
+	void DriveTrack();
+	void CorrectSlippageForce();
 	UFUNCTION()
 	void OnHit(UPrimitiveComponent *HitComponent, AActor *OtherActor, UPrimitiveComponent *OtherComp, FVector NormalImpulse, const FHitResult &Hit);
 };

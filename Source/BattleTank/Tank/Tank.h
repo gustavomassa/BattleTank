@@ -74,31 +74,31 @@ private:
 	UTankTrackComponent *TankTrackRightComponent{nullptr};
 
 	// Projectile
-	UPROPERTY(EditAnywhere, Category = "Setup")
+	UPROPERTY(EditAnywhere, Category = "Firing")
 	TSubclassOf<ATankProjectile> TankProjectile;
-	UPROPERTY(EditDefaultsOnly, Category = "Setup")
+	UPROPERTY(EditDefaultsOnly, Category = "Firing")
 	float ProjectileLaunchSpeed{10000.0f};
-	UPROPERTY(EditAnywhere, Category = "Setup")
+	UPROPERTY(EditAnywhere, Category = "Firing")
 	float ReloadTimeInSeconds{3.0f};
 
 	// Movement
-	UPROPERTY(EditAnywhere, Category = "Setup")
+	UPROPERTY(EditAnywhere, Category = "Movement")
 	float GravityAcceleration{9.81f};
-	UPROPERTY(EditAnywhere, Category = "Setup")
-	float ForceAdjustment{2.2f};
-	UPROPERTY(EditAnywhere, Category = "Setup")
+	UPROPERTY(EditAnywhere, Category = "Movement")
+	float ForceAdjustment{2.0f};
+	UPROPERTY(EditAnywhere, Category = "Movement")
 	float Mass{40000.0f};
 
 	// Turret
-	UPROPERTY(EditAnyWhere, Category = "Setup")
+	UPROPERTY(EditAnyWhere, Category = "Turret")
 	float TurretMaxDegressPerSecond{50.0f};
 
 	// Barrel
-	UPROPERTY(EditAnyWhere, Category = "Setup")
+	UPROPERTY(EditAnyWhere, Category = "Barrel")
 	float BarrelMaxDegressPerSecond{15.0f};
-	UPROPERTY(EditAnyWhere, Category = "Setup")
+	UPROPERTY(EditAnyWhere, Category = "Barrel")
 	float BarrelMinElevationDegress{0.0f};
-	UPROPERTY(EditAnyWhere, Category = "Setup")
+	UPROPERTY(EditAnyWhere, Category = "Barrel")
 	float BarrelMaxElevationDegress{50.0f};
 
 	void FindCameraComponent();
