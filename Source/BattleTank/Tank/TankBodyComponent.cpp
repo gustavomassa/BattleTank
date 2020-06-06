@@ -17,7 +17,7 @@ void UTankBodyComponent::SetupPhysics()
     auto Tank = Cast<ATank>(GetOwner());
     SetSimulatePhysics(true);
     SetEnableGravity(true);
-    SetMassOverrideInKg(NAME_None, Tank->GetMass(), true);
-    SetLinearDamping(0.0f);
-    SetAngularDamping(0.0f);
+    SetMassOverrideInKg(NAME_None, Tank->GetDefaultMass(), true);
+    SetLinearDamping(0.1f);
+    SetAngularDamping(0.2f);
 }

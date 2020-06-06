@@ -33,7 +33,12 @@ void ATank::BeginPlay()
 	FindBarrelComponent();
 	FindTankTrackComponents();
 
+	// Setup Components Physics
 	TankBodyComponent->SetupPhysics();
+	TankTurretComponent->SetupPhysics();
+	TankBarrelComponent->SetupPhysics();
+	TankTrackLeftComponent->SetupPhysics();
+	TankTrackRightComponent->SetupPhysics();
 }
 
 // Called to bind functionality to input
@@ -182,9 +187,14 @@ const UTankTrackComponent *ATank::GetTankTrackRightComponent() const
 	return TankTrackRightComponent;
 }
 
-float ATank::GetMass() const
+float ATank::GetDefaultMass() const
 {
 	return Mass;
+}
+
+float ATank::GetMass() const
+{
+	return Cast<UPrimitiveComponent>(GetRootComponent())->GetMass();
 }
 
 float ATank::GetReloadTimeInSeconds() const

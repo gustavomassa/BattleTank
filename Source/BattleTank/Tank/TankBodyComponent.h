@@ -9,7 +9,7 @@
 /**
  * 
  */
-UCLASS(ClassGroup = (Custom), meta = (BlueprintSpawnableComponent))
+UCLASS(ClassGroup = (Custom), meta = (BlueprintSpawnableComponent), hideCategories = (Physics, Events))
 class BATTLETANK_API UTankBodyComponent : public UStaticMeshComponent
 {
 	GENERATED_BODY()

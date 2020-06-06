@@ -42,6 +42,7 @@ public:
 	const UTankTrackComponent *GetTankTrackLeftComponent() const;
 	const UTankTrackComponent *GetTankTrackRightComponent() const;
 
+	float GetDefaultMass() const;
 	float GetMass() const;
 	float GetProjectileLaunchSpeed() const;
 	float GetReloadTimeInSeconds() const;
