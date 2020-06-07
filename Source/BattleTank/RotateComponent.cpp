@@ -1,21 +1,26 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-#include "TankTurretComponent.h"
+#include "RotateComponent.h"
 //#include "UObject/ConstructorHelpers.h"
 
-UTankTurretComponent::UTankTurretComponent()
+URotateComponent::URotateComponent()
 {
     //static ConstructorHelpers::FObjectFinder<UStaticMesh> TurretAsset(TEXT("/Game/Source/Models/Tank/SM_Tank_Turret"));
     //this->SetStaticMesh(TurretAsset.Object);
     this->SetRelativeLocation(FVector::ZeroVector);
 }
 
-void UTankTurretComponent::SetupPhysics()
+void URotateComponent::SetupPhysics()
 {
     SetSimulatePhysics(false);
 }
 
-void UTankTurretComponent::Rotate(float TargetAngle, float MaxDegressPerSecond)
+float URotateComponent::GetMaxDegressPerSecond() const
+{
+    return MaxDegressPerSecond;
+}
+
+void URotateComponent::Rotate(float TargetAngle)
 {
     /*     TargetAngle = (FMath::Abs(TargetAngle) < 180.0f) ? TargetAngle : -TargetAngle;
     float MaxLimitedAngle = (MaxDegressPerSecond * FMath::Sign(TargetAngle) * GetWorld()->DeltaTimeSeconds);

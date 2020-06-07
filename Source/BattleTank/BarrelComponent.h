@@ -4,23 +4,34 @@
 
 #include "CoreMinimal.h"
 #include "Components/StaticMeshComponent.h"
-#include "TankBarrelComponent.generated.h"
+#include "BarrelComponent.generated.h"
 
 /**
  * 
  */
 UCLASS(ClassGroup = (Custom), meta = (BlueprintSpawnableComponent), hideCategories = (Physics, Collision, Events))
-class BATTLETANK_API UTankBarrelComponent : public UStaticMeshComponent
+class BATTLETANK_API UBarrelComponent : public UStaticMeshComponent
 {
 	GENERATED_BODY()
 
 public:
-	UTankBarrelComponent();
+	UBarrelComponent();
+	float GetMaxDegressPerSecond() const;
+	float GetMinElevationDegress() const;
+	float GetMaxElevationDegress() const;
 	FName GetProjectileSocketName() const;
 	FVector GetProjectileLaunchLocation() const;
 	FRotator GetProjectileLaunchRotation() const;
 	void SetupPhysics();
 	void Elevate(float TargetAngle);
+
+protected:
+	UPROPERTY(EditAnyWhere, Category = "Setup")
+	float MaxDegressPerSecond{15.0f};
+	UPROPERTY(EditAnyWhere, Category = "Setup")
+	float MinElevationDegress{0.0f};
+	UPROPERTY(EditAnyWhere, Category = "Setup")
+	float MaxElevationDegress{50.0f};
 
 private:
 	FName ProjectileSocketName{FName("Projectile")};

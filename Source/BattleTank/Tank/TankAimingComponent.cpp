@@ -2,8 +2,8 @@
 
 #include "TankAimingComponent.h"
 #include "Tank.h"
-#include "TankTurretComponent.h"
-#include "TankBarrelComponent.h"
+#include "../RotateComponent.h"
+#include "../BarrelComponent.h"
 #include "TankPlayerController.h"
 #include "TankProjectile.h"
 #include "../Widget/PlayerWidget.h"
@@ -126,7 +126,7 @@ void UTankAimingComponent::UpdateAmmoCount()
 void UTankAimingComponent::MoveTurret()
 {
 	FRotator DeltaRotator = (AimDirection.Rotation() - ControlledTank->GetTurretComponent()->GetForwardVector().Rotation());
-	ControlledTank->GetTurretComponent()->Rotate(DeltaRotator.Yaw, ControlledTank->GetTurretMaxDegressPerSecond());
+	ControlledTank->GetTurretComponent()->Rotate(DeltaRotator.Yaw);
 }
 
 void UTankAimingComponent::MoveBarrel()

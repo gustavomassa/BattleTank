@@ -1,31 +1,22 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-#include "TankBarrelComponent.h"
-#include "UObject/ConstructorHelpers.h"
-#include "../Tank/Tank.h"
+#include "BarrelComponent.h"
+//#include "UObject/ConstructorHelpers.h"
 
-UTankBarrelComponent::UTankBarrelComponent()
+UBarrelComponent::UBarrelComponent()
 {
     // Class finder must be done in the constructor to make sure cooking project works fine
-    static ConstructorHelpers::FObjectFinder<UStaticMesh> BarrelAsset(TEXT("/Game/Source/Models/Tank/SM_Tank_Barrel"));
+    //static ConstructorHelpers::FObjectFinder<UStaticMesh> BarrelAsset(TEXT("/Game/Source/Models/Tank/SM_Tank_Barrel"));
     //this->SetStaticMesh(BarrelAsset.Object);
-    //this->SetWorldLocation(FVector::ZeroVector);
-
-    //UStaticMesh *Barrel = BarrelAsset.Object;
-    //RootComponent = Barrel;
-    //this->AttachTo()
-    //RootComponent = BarrelAsset.Object;
-
-    this->SetStaticMesh(BarrelAsset.Object);
     this->SetRelativeLocation(FVector::ZeroVector);
 }
 
-FName UTankBarrelComponent::GetProjectileSocketName() const
+FName UBarrelComponent::GetProjectileSocketName() const
 {
     return ProjectileSocketName;
 }
 
-FVector UTankBarrelComponent::GetProjectileLaunchLocation() const
+FVector UBarrelComponent::GetProjectileLaunchLocation() const
 {
     FVector StartLocation = this->GetSocketLocation(ProjectileSocketName);
     if (StartLocation == this->GetComponentLocation())
@@ -36,7 +27,7 @@ FVector UTankBarrelComponent::GetProjectileLaunchLocation() const
     return StartLocation;
 }
 
-FRotator UTankBarrelComponent::GetProjectileLaunchRotation() const
+FRotator UBarrelComponent::GetProjectileLaunchRotation() const
 {
     /*     FRotator StartRotation = this->GetSocketRotation(ProjectileSocketName);
     if (StartRotation == this->GetComponentRotation())
@@ -48,12 +39,27 @@ FRotator UTankBarrelComponent::GetProjectileLaunchRotation() const
     return this->GetSocketRotation(ProjectileSocketName);
 }
 
-void UTankBarrelComponent::SetupPhysics()
+void UBarrelComponent::SetupPhysics()
 {
     SetSimulatePhysics(false);
 }
 
-void UTankBarrelComponent::Elevate(float TargetAngle)
+float UBarrelComponent::GetMaxDegressPerSecond() const
+{
+    return MaxDegressPerSecond;
+}
+
+float UBarrelComponent::GetMinElevationDegress() const
+{
+    return MinElevationDegress;
+}
+
+float UBarrelComponent::GetMaxElevationDegress() const
+{
+    return MaxElevationDegress;
+}
+
+void UBarrelComponent::Elevate(float TargetAngle)
 {
     /*     // Limit the speed and invert the angle when passing 180 degrees
     TargetAngle = (FMath::Abs(TargetAngle) < 180.0f) ? TargetAngle : -TargetAngle;
@@ -62,11 +68,10 @@ void UTankBarrelComponent::Elevate(float TargetAngle)
     float RawNewElevation = (GetRelativeRotation().Pitch + ElevationChange); */
 
     TargetAngle = (FMath::Abs(TargetAngle) < 180.0f) ? TargetAngle : -TargetAngle;
-    auto ControlledTank = Cast<ATank>(GetOwner());
-    float MaxLimitedAngle = (ControlledTank->GetBarrelMaxDegressPerSecond() * FMath::Sign(TargetAngle) * GetWorld()->DeltaTimeSeconds);
+    float MaxLimitedAngle = (MaxDegressPerSecond * FMath::Sign(TargetAngle) * GetWorld()->DeltaTimeSeconds);
     float CurrentElevation = GetRelativeRotation().Pitch;
     float RawNewElevation = (FMath::Abs(TargetAngle) > FMath::Abs(MaxLimitedAngle)) ? CurrentElevation + MaxLimitedAngle : CurrentElevation + TargetAngle;
-    float TargetElevation = FMath::Clamp<float>(RawNewElevation, ControlledTank->GetBarrelMinElevationDegress(), ControlledTank->GetBarrelMaxElevationDegress());
+    float TargetElevation = FMath::Clamp<float>(RawNewElevation, MinElevationDegress, MaxElevationDegress);
 
     //UE_LOG(LogTemp, Warning, TEXT("CurrentElevation: %f"), CurrentElevation);
     //UE_LOG(LogTemp, Warning, TEXT("TargetElevation: %f"), TargetElevation);

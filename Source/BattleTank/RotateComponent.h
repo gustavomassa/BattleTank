@@ -4,18 +4,23 @@
 
 #include "CoreMinimal.h"
 #include "Components/StaticMeshComponent.h"
-#include "TankTurretComponent.generated.h"
+#include "RotateComponent.generated.h"
 
 /**
  * 
  */
 UCLASS(ClassGroup = (Custom), meta = (BlueprintSpawnableComponent), hideCategories = (Physics, Collision, Events))
-class BATTLETANK_API UTankTurretComponent : public UStaticMeshComponent
+class BATTLETANK_API URotateComponent : public UStaticMeshComponent
 {
 	GENERATED_BODY()
 
 public:
-	UTankTurretComponent();
+	URotateComponent();
 	void SetupPhysics();
-	void Rotate(float TargetAngle, float MaxDegressPerSecond);
+	void Rotate(float TargetAngle);
+	float GetMaxDegressPerSecond() const;
+
+protected:
+	UPROPERTY(EditAnyWhere, Category = "Setup")
+	float MaxDegressPerSecond{50.0f};
 };

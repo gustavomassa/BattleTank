@@ -3,8 +3,8 @@
 #include "Tank.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "TankBodyComponent.h"
-#include "TankTurretComponent.h"
-#include "TankBarrelComponent.h"
+#include "../RotateComponent.h"
+#include "../BarrelComponent.h"
 #include "TankTrackComponent.h"
 #include "TankMovementComponent.h"
 #include "TankAimingComponent.h"
@@ -68,7 +68,7 @@ void ATank::FindBodyComponent()
 
 void ATank::FindTurretComponent()
 {
-	TankTurretComponent = FindComponentByClass<UTankTurretComponent>();
+	TankTurretComponent = FindComponentByClass<URotateComponent>();
 	if (!TankTurretComponent)
 	{
 		UE_LOG(LogTemp, Error, TEXT("%s: Failed to find Tank Turret Component"), *GetOwner()->GetName());
@@ -78,7 +78,7 @@ void ATank::FindTurretComponent()
 
 void ATank::FindBarrelComponent()
 {
-	TankBarrelComponent = FindComponentByClass<UTankBarrelComponent>();
+	TankBarrelComponent = FindComponentByClass<UBarrelComponent>();
 	if (!TankBarrelComponent)
 	{
 		UE_LOG(LogTemp, Error, TEXT("%s: Failed to find Tank Barrel Component"), *GetOwner()->GetName());
@@ -127,12 +127,12 @@ void ATank::SetTankBodyReference(UTankBodyComponent *BodyToSet)
 	TankBodyComponent = BodyToSet;
 }
 
-void ATank::SetTankTurretReference(UTankTurretComponent *TurretToSet)
+void ATank::SetTankTurretReference(URotateComponent *TurretToSet)
 {
 	TankTurretComponent = TurretToSet;
 }
 
-void ATank::SetTankBarrelReference(UTankBarrelComponent *BarrelToSet)
+void ATank::SetTankBarrelReference(UBarrelComponent *BarrelToSet)
 {
 	TankBarrelComponent = BarrelToSet;
 }
@@ -167,12 +167,12 @@ const UTankBodyComponent *ATank::GetBodyComponent() const
 	return TankBodyComponent;
 }
 
-UTankTurretComponent *ATank::GetTurretComponent() const
+URotateComponent *ATank::GetTurretComponent() const
 {
 	return TankTurretComponent;
 }
 
-UTankBarrelComponent *ATank::GetBarrelComponent() const
+UBarrelComponent *ATank::GetBarrelComponent() const
 {
 	return TankBarrelComponent;
 }
@@ -215,26 +215,6 @@ float ATank::GetGravityAcceleration() const
 float ATank::GetForceAdjustment() const
 {
 	return ForceAdjustment;
-}
-
-float ATank::GetTurretMaxDegressPerSecond() const
-{
-	return TurretMaxDegressPerSecond;
-}
-
-float ATank::GetBarrelMaxDegressPerSecond() const
-{
-	return BarrelMaxDegressPerSecond;
-}
-
-float ATank::GetBarrelMinElevationDegress() const
-{
-	return BarrelMinElevationDegress;
-}
-
-float ATank::GetBarrelMaxElevationDegress() const
-{
-	return BarrelMaxElevationDegress;
 }
 
 float ATank::GetProjectileLaunchSpeed() const

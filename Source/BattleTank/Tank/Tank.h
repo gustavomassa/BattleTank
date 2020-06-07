@@ -9,8 +9,8 @@
 //Foward Declarations
 class USpringArmComponent;
 class UTankBodyComponent;
-class UTankTurretComponent;
-class UTankBarrelComponent;
+class URotateComponent;
+class UBarrelComponent;
 class UTankTrackComponent;
 class UTankMovementComponent;
 class UTankAimingComponent;
@@ -31,8 +31,8 @@ public:
 	const UTankMovementComponent *GetTankMovementComponent() const;
 	UTankAimingComponent *GetTankAimingComponent() const;
 	const UTankBodyComponent *GetBodyComponent() const;
-	UTankTurretComponent *GetTurretComponent() const;
-	UTankBarrelComponent *GetBarrelComponent() const;
+	URotateComponent *GetTurretComponent() const;
+	UBarrelComponent *GetBarrelComponent() const;
 	UTankTrackComponent *GetTankTrackLeftComponent() const;
 	UTankTrackComponent *GetTankTrackRightComponent() const;
 
@@ -44,9 +44,6 @@ public:
 	float GetGravityAcceleration() const;
 	float GetForceAdjustment() const;
 	float GetTurretMaxDegressPerSecond() const;
-	float GetBarrelMaxDegressPerSecond() const;
-	float GetBarrelMinElevationDegress() const;
-	float GetBarrelMaxElevationDegress() const;
 
 protected:
 	// Called when the game starts or when spawned
@@ -58,8 +55,8 @@ private:
 	USpringArmComponent *TankCameraComponent{nullptr};
 
 	UTankBodyComponent *TankBodyComponent{nullptr};
-	UTankTurretComponent *TankTurretComponent{nullptr};
-	UTankBarrelComponent *TankBarrelComponent{nullptr};
+	URotateComponent *TankTurretComponent{nullptr};
+	UBarrelComponent *TankBarrelComponent{nullptr};
 	UTankTrackComponent *TankTrackLeftComponent{nullptr};
 	UTankTrackComponent *TankTrackRightComponent{nullptr};
 
@@ -79,18 +76,6 @@ private:
 	UPROPERTY(EditAnywhere, Category = "Movement")
 	float Mass{40000.0f};
 
-	// Turret
-	UPROPERTY(EditAnyWhere, Category = "Turret")
-	float TurretMaxDegressPerSecond{50.0f};
-
-	// Barrel
-	UPROPERTY(EditAnyWhere, Category = "Barrel")
-	float BarrelMaxDegressPerSecond{15.0f};
-	UPROPERTY(EditAnyWhere, Category = "Barrel")
-	float BarrelMinElevationDegress{0.0f};
-	UPROPERTY(EditAnyWhere, Category = "Barrel")
-	float BarrelMaxElevationDegress{50.0f};
-
 	void FindCameraComponent();
 	void FindBodyComponent();
 	void FindTurretComponent();
@@ -99,8 +84,8 @@ private:
 
 	void SetTankCameraReference(USpringArmComponent *CameraToSet);
 	void SetTankBodyReference(UTankBodyComponent *BodyToSet);
-	void SetTankTurretReference(UTankTurretComponent *TurretToSet);
-	void SetTankBarrelReference(UTankBarrelComponent *BarrelToSet);
+	void SetTankTurretReference(URotateComponent *TurretToSet);
+	void SetTankBarrelReference(UBarrelComponent *BarrelToSet);
 	void SetTankTrackLeftReference(UTankTrackComponent *TrackLeftToSet);
 	void SetTankTrackRightReference(UTankTrackComponent *TrackRightToSet);
 };
