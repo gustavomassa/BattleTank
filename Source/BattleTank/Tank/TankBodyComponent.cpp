@@ -7,7 +7,7 @@
 UTankBodyComponent::UTankBodyComponent()
 {
     // Object finder must be done in the constructor to make sure cooking project works fine
-    static ConstructorHelpers::FObjectFinder<UStaticMesh> BodyAsset(TEXT("/Game/Source/Models/SM_Tank_Body"));
+    static ConstructorHelpers::FObjectFinder<UStaticMesh> BodyAsset(TEXT("/Game/Source/Models/Tank/SM_Tank_Body"));
     this->SetStaticMesh(BodyAsset.Object);
     this->SetRelativeLocation(FVector::ZeroVector);
 }

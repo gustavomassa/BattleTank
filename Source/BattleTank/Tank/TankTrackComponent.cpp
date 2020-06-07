@@ -9,7 +9,7 @@ UTankTrackComponent::UTankTrackComponent()
     PrimaryComponentTick.bCanEverTick = false;
 
     // Object finder must be done in the constructor to make sure cooking project works fine
-    static ConstructorHelpers::FObjectFinder<UStaticMesh> TrackAsset(TEXT("/Game/Source/Models/SM_Tank_Track"));
+    static ConstructorHelpers::FObjectFinder<UStaticMesh> TrackAsset(TEXT("/Game/Source/Models/Tank/SM_Tank_Track"));
     this->SetStaticMesh(TrackAsset.Object);
     this->SetRelativeLocation(FVector::ZeroVector);
 }

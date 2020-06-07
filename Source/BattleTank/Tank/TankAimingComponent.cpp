@@ -126,7 +126,7 @@ void UTankAimingComponent::UpdateAmmoCount()
 void UTankAimingComponent::MoveTurret()
 {
 	FRotator DeltaRotator = (AimDirection.Rotation() - ControlledTank->GetTurretComponent()->GetForwardVector().Rotation());
-	ControlledTank->GetTurretComponent()->Rotate(DeltaRotator.Yaw);
+	ControlledTank->GetTurretComponent()->Rotate(DeltaRotator.Yaw, ControlledTank->GetTurretMaxDegressPerSecond());
 }
 
 void UTankAimingComponent::MoveBarrel()

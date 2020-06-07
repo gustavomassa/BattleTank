@@ -17,5 +17,5 @@ class BATTLETANK_API UTankTurretComponent : public UStaticMeshComponent
 public:
 	UTankTurretComponent();
 	void SetupPhysics();
-	void Rotate(float TargetAngle);
+	void Rotate(float TargetAngle, float MaxDegressPerSecond);
 };

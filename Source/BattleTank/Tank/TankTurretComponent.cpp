@@ -1,13 +1,12 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "TankTurretComponent.h"
-#include "UObject/ConstructorHelpers.h"
-#include "../Tank/Tank.h"
+//#include "UObject/ConstructorHelpers.h"
 
 UTankTurretComponent::UTankTurretComponent()
 {
-    static ConstructorHelpers::FObjectFinder<UStaticMesh> TurretAsset(TEXT("/Game/Source/Models/SM_Tank_Turret"));
-    this->SetStaticMesh(TurretAsset.Object);
+    //static ConstructorHelpers::FObjectFinder<UStaticMesh> TurretAsset(TEXT("/Game/Source/Models/Tank/SM_Tank_Turret"));
+    //this->SetStaticMesh(TurretAsset.Object);
     this->SetRelativeLocation(FVector::ZeroVector);
 }
 
@@ -16,7 +15,7 @@ void UTankTurretComponent::SetupPhysics()
     SetSimulatePhysics(false);
 }
 
-void UTankTurretComponent::Rotate(float TargetAngle)
+void UTankTurretComponent::Rotate(float TargetAngle, float MaxDegressPerSecond)
 {
     /*     TargetAngle = (FMath::Abs(TargetAngle) < 180.0f) ? TargetAngle : -TargetAngle;
     float MaxLimitedAngle = (MaxDegressPerSecond * FMath::Sign(TargetAngle) * GetWorld()->DeltaTimeSeconds);
@@ -25,7 +24,7 @@ void UTankTurretComponent::Rotate(float TargetAngle)
     // Limit the speed and invert the angle when passing 180 degrees
     TargetAngle = (FMath::Abs(TargetAngle) < 180.0f) ? TargetAngle : -TargetAngle;
     TargetAngle = FMath::Clamp<float>(TargetAngle, -1.0f, +1.0f);
-    float RotationChange = (TargetAngle * Cast<ATank>(GetOwner())->GetTurretMaxDegressPerSecond() * GetWorld()->DeltaTimeSeconds);
+    float RotationChange = (TargetAngle * MaxDegressPerSecond * GetWorld()->DeltaTimeSeconds);
     float CurrentRotation = GetRelativeRotation().Yaw;
     float TargetRotation = (CurrentRotation + RotationChange);
 
