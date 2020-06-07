@@ -8,7 +8,6 @@
 #include "TankTrackComponent.h"
 #include "TankMovementComponent.h"
 #include "TankAimingComponent.h"
-#include "TankProjectile.h"
 
 // Sets default values
 ATank::ATank()
@@ -131,25 +130,21 @@ void ATank::SetTankBodyReference(UTankBodyComponent *BodyToSet)
 void ATank::SetTankTurretReference(UTankTurretComponent *TurretToSet)
 {
 	TankTurretComponent = TurretToSet;
-	TankAimingComponent->SetTankTurretReference(TurretToSet);
 }
 
 void ATank::SetTankBarrelReference(UTankBarrelComponent *BarrelToSet)
 {
 	TankBarrelComponent = BarrelToSet;
-	TankAimingComponent->SetTankBarrelReference(BarrelToSet);
 }
 
 void ATank::SetTankTrackLeftReference(UTankTrackComponent *TrackLeftToSet)
 {
 	TankTrackLeftComponent = TrackLeftToSet;
-	TankMovementComponent->SetTankTrackLeftReference(TrackLeftToSet);
 }
 
 void ATank::SetTankTrackRightReference(UTankTrackComponent *TrackRightToSet)
 {
 	TankTrackRightComponent = TrackRightToSet;
-	TankMovementComponent->SetTankTrackRightReference(TrackRightToSet);
 }
 
 USpringArmComponent *ATank::GetCameraComponent() const
@@ -162,27 +157,32 @@ const UTankMovementComponent *ATank::GetTankMovementComponent() const
 	return TankMovementComponent;
 }
 
+UTankAimingComponent *ATank::GetTankAimingComponent() const
+{
+	return TankAimingComponent;
+}
+
 const UTankBodyComponent *ATank::GetBodyComponent() const
 {
 	return TankBodyComponent;
 }
 
-const UTankTurretComponent *ATank::GetTurretComponent() const
+UTankTurretComponent *ATank::GetTurretComponent() const
 {
 	return TankTurretComponent;
 }
 
-const UTankBarrelComponent *ATank::GetBarrelComponent() const
+UTankBarrelComponent *ATank::GetBarrelComponent() const
 {
 	return TankBarrelComponent;
 }
 
-const UTankTrackComponent *ATank::GetTankTrackLeftComponent() const
+UTankTrackComponent *ATank::GetTankTrackLeftComponent() const
 {
 	return TankTrackLeftComponent;
 }
 
-const UTankTrackComponent *ATank::GetTankTrackRightComponent() const
+UTankTrackComponent *ATank::GetTankTrackRightComponent() const
 {
 	return TankTrackRightComponent;
 }
@@ -195,6 +195,11 @@ float ATank::GetDefaultMass() const
 float ATank::GetMass() const
 {
 	return Cast<UPrimitiveComponent>(GetRootComponent())->GetMass();
+}
+
+TSubclassOf<ATankProjectile> ATank::GetTankProjectile() const
+{
+	return TankProjectile;
 }
 
 float ATank::GetReloadTimeInSeconds() const
@@ -235,28 +240,4 @@ float ATank::GetBarrelMaxElevationDegress() const
 float ATank::GetProjectileLaunchSpeed() const
 {
 	return ProjectileLaunchSpeed;
-}
-
-bool ATank::AimAt(FVector &HitLocation, FVector &Out_AimDirection)
-{
-	return TankAimingComponent->AimAt(HitLocation, Out_AimDirection);
-}
-
-void ATank::Aim(FVector &TargetLocation)
-{
-	TankAimingComponent->Aim(TargetLocation);
-}
-
-void ATank::Fire()
-{
-	UE_LOG(LogTemp, Warning, TEXT("Fire!"));
-
-	auto Projectile = GetWorld()->SpawnActor<ATankProjectile>(
-		TankProjectile,
-		TankBarrelComponent->GetProjectileLaunchLocation(),
-		TankBarrelComponent->GetProjectileLaunchRotation());
-	if (Projectile)
-	{
-		Projectile->Launch(ProjectileLaunchSpeed);
-	}
 }

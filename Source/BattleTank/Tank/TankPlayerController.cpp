@@ -7,8 +7,13 @@
 #include "TankBarrelComponent.h"
 #include "TankTrackComponent.h"
 #include "TankMovementComponent.h"
+#include "TankAimingComponent.h"
 #include "../Widget/MenuWidget.h"
 #include "../Widget/PlayerWidget.h"
+
+ATankPlayerController::ATankPlayerController()
+{
+}
 
 void ATankPlayerController::BeginPlay()
 {
@@ -30,8 +35,6 @@ void ATankPlayerController::BeginPlay()
     // Register Input Binds
     RegisterInputBind();
 
-    LastFireTime = FPlatformTime::Seconds();
-
     UE_LOG(LogTemp, Warning, TEXT("PlayerController tank: %s!"), *ControlledTank->GetName());
 }
 
@@ -39,27 +42,7 @@ void ATankPlayerController::Tick(float DeltaSeconds)
 {
     Super::Tick(DeltaSeconds);
 
-    // Check reloading timer
-    if ((FPlatformTime::Seconds() - LastFireTime) > ControlledTank->GetReloadTimeInSeconds())
-    {
-        bReloading = false;
-        UpdateFiringState(EFiringState::Aiming);
-    }
-    else
-    {
-        bReloading = true;
-        UpdateFiringState(EFiringState::Reloading);
-    }
-
-    if (AimTowardsCrosshair())
-    {
-        if (FiringState != EFiringState::Reloading && IsCrosshairLocked(0.02f))
-        {
-            UpdateFiringState(EFiringState::Locked);
-        }
-    }
-
-    PlayerWidget->UpdateFiringStateCrosshairColor(FiringState);
+    AimTowardsCrosshair();
 }
 
 void ATankPlayerController::SetMainMenuWidgetReference(UMenuWidget *MenuWidgetToSet)
@@ -77,14 +60,9 @@ const UMenuWidget *ATankPlayerController::GetMenuWidget() const
     return MenuWidget;
 }
 
-const UPlayerWidget *ATankPlayerController::GetUPlayerWidget() const
+UPlayerWidget *ATankPlayerController::GetPlayerWidget() const
 {
     return PlayerWidget;
-}
-
-const EFiringState &ATankPlayerController::GetFiringState() const
-{
-    return FiringState;
 }
 
 ATank *ATankPlayerController::GetControlledTank() const
@@ -109,7 +87,7 @@ void ATankPlayerController::RegisterInputBind() const
     ControlledTank->InputComponent->BindAxis(MoveBackwardBind, ControlledTank->GetTankMovementComponent(), &UTankMovementComponent::IntendMoveBackward);
 
     // Actions
-    ControlledTank->InputComponent->BindAction(FireBind, IE_Pressed, this, &ATankPlayerController::OnFire);
+    ControlledTank->InputComponent->BindAction(FireBind, IE_Pressed, ControlledTank->GetTankAimingComponent(), &UTankAimingComponent::Fire);
 }
 
 // Yaw //TODO: Create a Camera Component and put the logic there
@@ -138,80 +116,6 @@ void ATankPlayerController::OnAxisElevation(float AxisValue)
     FRotator TargetRotator = ControlledTank->GetCameraComponent()->GetRelativeRotation();
     TargetRotator.Pitch = FMath::Clamp<float>((TargetRotator.Pitch + AxisChange), MinElevationAngle, MaxElevationAngle);
     ControlledTank->GetCameraComponent()->SetRelativeRotation(TargetRotator);
-}
-
-void ATankPlayerController::OnFire()
-{
-    if (!ControlledTank || !ControlledTank->GetBarrelComponent())
-    {
-        UE_LOG(LogTemp, Error, TEXT("%s: Failed to find Controlled Tank Barrel Component!"), *GetOwner()->GetName());
-        return;
-    }
-
-    // Check if we are reloaded
-    if (FiringState != EFiringState::Reloading)
-    {
-        ControlledTank->Fire();
-        FiringState = EFiringState::Reloading;
-
-        // Reset the timer
-        LastFireTime = FPlatformTime::Seconds();
-    }
-}
-
-// Move the Tank Barrel aiming where the player crosshair intersects the world
-bool ATankPlayerController::AimTowardsCrosshair()
-{
-    if (!ControlledTank)
-    {
-        return false;
-    }
-
-    CrosshairHitLocation = FVector::ZeroVector;
-    if (GetSightRayHitLocation(CrosshairHitLocation))
-    {
-        return ControlledTank->AimAt(CrosshairHitLocation, AimDirection);
-    }
-
-    return false;
-}
-
-bool ATankPlayerController::IsCrosshairLocked(float Tolerance)
-{
-    FVector BarrelDirection = ControlledTank->GetBarrelComponent()->GetForwardVector();
-    bool bValidateLockX = FMath::Abs(BarrelDirection.X - AimDirection.X) <= Tolerance;
-    bool bValidateLockY = FMath::Abs(BarrelDirection.Y - AimDirection.Y) <= Tolerance;
-    bool bValidateLockZ = (FMath::Abs(BarrelDirection.Z) > Tolerance) ? FMath::Abs(BarrelDirection.Z - AimDirection.Z) <= Tolerance : true;
-    return (bValidateLockX && bValidateLockY && bValidateLockZ);
-}
-
-void ATankPlayerController::FollowCrosshair()
-{
-    if (!ControlledTank)
-    {
-        return;
-    }
-
-    FVector2D ScreenLocation = GetCrosshairScreenLocation();
-    FVector LookDirection{FVector::ZeroVector};
-    if (GetLookDirection(ScreenLocation, LookDirection))
-    {
-        ControlledTank->Aim(LookDirection);
-    }
-}
-
-void ATankPlayerController::UpdateFiringState(const EFiringState &FiringStateToSet)
-{
-    // Wait the reload
-    if (FiringState == EFiringState::Reloading && bReloading)
-    {
-        return;
-    }
-
-    if (FiringStateToSet != FiringState)
-    {
-        FiringState = FiringStateToSet;
-    }
 }
 
 FVector2D ATankPlayerController::GetCrosshairScreenLocation() const
@@ -267,4 +171,21 @@ bool ATankPlayerController::GetLookDirectionHitResult(const FVector &LookDirecti
         EndLocation,
         ECollisionChannel::ECC_Visibility,
         TraceParams));
+}
+
+// Move the Tank Barrel aiming where the player crosshair intersects the world
+bool ATankPlayerController::AimTowardsCrosshair()
+{
+    if (!ControlledTank)
+    {
+        return false;
+    }
+
+    CrosshairHitLocation = FVector::ZeroVector;
+    if (GetSightRayHitLocation(CrosshairHitLocation) && !CrosshairHitLocation.IsZero())
+    {
+        return ControlledTank->GetTankAimingComponent()->AimAt(CrosshairHitLocation);
+    }
+
+    return false;
 }

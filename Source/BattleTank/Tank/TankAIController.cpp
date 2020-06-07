@@ -2,6 +2,7 @@
 
 #include "TankAIController.h"
 #include "Tank.h"
+#include "TankAimingComponent.h"
 #include "Engine/World.h"
 
 void ATankAIController::BeginPlay()
@@ -36,12 +37,13 @@ void ATankAIController::Tick(float DeltaSeconds)
         // Aim towards the player
         PlayerTankLocation = PlayerTank->GetActorLocation();
         // We don't need to update the crosshair color for AI
-        FVector AimDirection = FVector::ZeroVector;
-        ControlledTank->AimAt(PlayerTankLocation, AimDirection);
+        auto AimingComponent = ControlledTank->GetTankAimingComponent();
+        AimingComponent->AimAt(PlayerTankLocation);
 
-        // TODO: Don't fire every frame
-        //ControlledTank->Fire();
-        // Fire if ready
+        if (AimingComponent->GetFiringState() == EFiringState::Locked)
+        {
+            AimingComponent->Fire();
+        }
     }
 }
 

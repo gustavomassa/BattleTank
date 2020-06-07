@@ -11,14 +11,6 @@ class USpringArmComponent;
 class UMenuWidget;
 class UPlayerWidget;
 
-UENUM()
-enum class EFiringState : uint8
-{
-	Reloading,
-	Aiming,
-	Locked
-};
-
 /**
  * 
  */
@@ -28,12 +20,13 @@ class BATTLETANK_API ATankPlayerController : public APlayerController, public IT
 	GENERATED_BODY()
 
 public:
+	ATankPlayerController();
+
 	void SetMainMenuWidgetReference(UMenuWidget *MenuWidgetToSet);
 	void SetPlayerWidgetReference(UPlayerWidget *PlayerWidgetToSet);
 
 	const UMenuWidget *GetMenuWidget() const;
-	const UPlayerWidget *GetUPlayerWidget() const;
-	const EFiringState &GetFiringState() const;
+	UPlayerWidget *GetPlayerWidget() const;
 
 protected:
 	virtual void BeginPlay() override;
@@ -45,13 +38,6 @@ private:
 	UPlayerWidget *PlayerWidget{nullptr};
 
 	ATank *ControlledTank{nullptr};
-	FVector CrosshairHitLocation{FVector::ZeroVector};
-
-	//TODO: Implement observable pattern
-	EFiringState FiringState{EFiringState::Aiming};
-	bool bReloading{false};
-	double LastFireTime{0};
-	FVector AimDirection{FVector::ZeroVector};
 
 	// Crosshair X is 50% alignment
 	float CrosshairLocationX{0.5f};
@@ -59,6 +45,7 @@ private:
 	float CrosshairLocationY{0.33333f};
 	UPROPERTY(EditAnywhere, Category = "Crosshair")
 	float CrosshairReachDistance{1000000.0f};
+	FVector CrosshairHitLocation{FVector::ZeroVector};
 
 	UPROPERTY(EditAnywhere, Category = "Input Axis")
 	FName AzimuthBind{"AimAzimuth"};
@@ -89,8 +76,6 @@ private:
 	void OnAxisAzimuth(float AxisValue);
 	UFUNCTION(BlueprintCallable, Category = "Input Axis")
 	void OnAxisElevation(float AxisValue);
-	UFUNCTION(BlueprintCallable, Category = "Input Action")
-	void OnFire();
 
 	void RegisterInputBind() const;
 	FVector2D GetCrosshairScreenLocation() const;
@@ -98,7 +83,4 @@ private:
 	bool GetSightRayHitLocation(FVector &Out_HitLocation) const;
 	bool GetLookDirectionHitResult(const FVector &LookDirection, FHitResult &Out_HitResult) const;
 	bool AimTowardsCrosshair();
-	bool IsCrosshairLocked(float Tolerance);
-	void FollowCrosshair();
-	void UpdateFiringState(const EFiringState &FiringStateToSet);
 };

@@ -4,6 +4,9 @@
 #include "Tank.h"
 #include "TankTurretComponent.h"
 #include "TankBarrelComponent.h"
+#include "TankPlayerController.h"
+#include "TankProjectile.h"
+#include "../Widget/PlayerWidget.h"
 #include "Kismet/GameplayStatics.h"
 
 // Sets default values for this component's properties
@@ -11,7 +14,7 @@ UTankAimingComponent::UTankAimingComponent()
 {
 	// Set this component to be initialized when the game starts, and to be ticked every frame.  You can turn these features
 	// off to improve performance if you don't need them.
-	PrimaryComponentTick.bCanEverTick = false;
+	PrimaryComponentTick.bCanEverTick = true;
 
 	// ...
 }
@@ -21,7 +24,11 @@ void UTankAimingComponent::BeginPlay()
 {
 	Super::BeginPlay();
 
-	// ...
+	ControlledTank = Cast<ATank>(GetOwner());
+	TankPlayerController = Cast<ATankPlayerController>(ControlledTank->GetController());
+
+	// Init reload timer
+	LastFireTime = FPlatformTime::Seconds();
 }
 
 // Called every frame
@@ -29,52 +36,76 @@ void UTankAimingComponent::TickComponent(float DeltaTime, ELevelTick TickType, F
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
-	// ...
-}
+	LastFiringState = FiringState;
 
-void UTankAimingComponent::SetTankTurretReference(UTankTurretComponent *TankTurretComponentToSet)
-{
-	TankTurretComponent = TankTurretComponentToSet;
-}
-
-void UTankAimingComponent::SetTankBarrelReference(UTankBarrelComponent *TankBarrelComponentToSet)
-{
-	TankBarrelComponent = TankBarrelComponentToSet;
-}
-
-void UTankAimingComponent::MoveTurret(FVector &TargetLocation)
-{
-	if (!TankTurretComponent)
+	if ((FPlatformTime::Seconds() - LastFireTime) < ControlledTank->GetReloadTimeInSeconds())
 	{
-		UE_LOG(LogTemp, Error, TEXT("%s: Failed to get Tank Turret Reference!"), *GetOwner()->GetName());
-		return;
+		FiringState = EFiringState::Reloading;
+	}
+	else if (IsCrosshairLocked(0.02f))
+	{
+		FiringState = EFiringState::Locked;
+	}
+	else
+	{
+		FiringState = EFiringState::Aiming;
 	}
 
-	FRotator DeltaRotator = (TargetLocation.Rotation() - TankTurretComponent->GetForwardVector().Rotation());
-	TankTurretComponent->Rotate(DeltaRotator.Yaw);
+	// AI does not need to update Widgets
+	if (TankPlayerController && FiringState != LastFiringState)
+	{
+		TankPlayerController->GetPlayerWidget()->UpdateCrosshairColor(GetFiringStateCrosshairColor());
+	}
 }
 
-void UTankAimingComponent::MoveBarrel(FVector &TargetLocation)
+bool UTankAimingComponent::IsCrosshairLocked(float Tolerance)
 {
-	if (!TankBarrelComponent)
-	{
-		UE_LOG(LogTemp, Error, TEXT("%s: Failed to get Tank Barrel Reference!"), *GetOwner()->GetName());
-		return;
-	}
-	FRotator DeltaRotator = (TargetLocation.Rotation() - TankBarrelComponent->GetForwardVector().Rotation());
-	TankBarrelComponent->Elevate(DeltaRotator.Pitch);
+	FVector BarrelDirection = ControlledTank->GetBarrelComponent()->GetForwardVector();
+	bool bValidateLockX = FMath::Abs(BarrelDirection.X - AimDirection.X) <= Tolerance;
+	bool bValidateLockY = FMath::Abs(BarrelDirection.Y - AimDirection.Y) <= Tolerance;
+	bool bValidateLockZ = (FMath::Abs(BarrelDirection.Z) > Tolerance) ? FMath::Abs(BarrelDirection.Z - AimDirection.Z) <= Tolerance : true;
+	return (bValidateLockX && bValidateLockY && bValidateLockZ);
 }
 
-bool UTankAimingComponent::AimAt(FVector &TargetLocation, FVector &Out_AimDirection)
+const EFiringState &UTankAimingComponent::GetFiringState() const
 {
-	if (!TankBarrelComponent)
-	{
-		UE_LOG(LogTemp, Error, TEXT("%s: Failed to get Tank Barrel Reference!"), *GetOwner()->GetName());
-		return false;
-	}
+	return FiringState;
+}
 
-	auto ControlledTank = Cast<ATank>(GetOwner());
-	FVector StartLocation = TankBarrelComponent->GetProjectileLaunchLocation();
+const FLinearColor UTankAimingComponent::GetFiringStateCrosshairColor() const
+{
+	FLinearColor InColorAndOpacity;
+
+	switch (FiringState)
+	{
+	case EFiringState::Reloading:
+		InColorAndOpacity = FLinearColor(255.0f, 0.0f, 0.0f);
+		break;
+	case EFiringState::Aiming:
+		InColorAndOpacity = FLinearColor(255.0f, 255.0f, 0.0f);
+		break;
+	case EFiringState::Locked:
+		InColorAndOpacity = FLinearColor(0.0f, 255.0f, 0.0f);
+		break;
+	}
+	return InColorAndOpacity;
+}
+
+void UTankAimingComponent::MoveTurret()
+{
+	FRotator DeltaRotator = (AimDirection.Rotation() - ControlledTank->GetTurretComponent()->GetForwardVector().Rotation());
+	ControlledTank->GetTurretComponent()->Rotate(DeltaRotator.Yaw);
+}
+
+void UTankAimingComponent::MoveBarrel()
+{
+	FRotator DeltaRotator = (AimDirection.Rotation() - ControlledTank->GetBarrelComponent()->GetForwardVector().Rotation());
+	ControlledTank->GetBarrelComponent()->Elevate(DeltaRotator.Pitch);
+}
+
+bool UTankAimingComponent::AimAt(FVector &TargetLocation)
+{
+	FVector StartLocation = ControlledTank->GetBarrelComponent()->GetProjectileLaunchLocation();
 	FVector LaunchVelocity{FVector::ZeroVector};
 	TArray<AActor *> ActorsToIgnore{ControlledTank};
 
@@ -95,11 +126,12 @@ bool UTankAimingComponent::AimAt(FVector &TargetLocation, FVector &Out_AimDirect
 
 	if (bProjectileVelocitySuccess)
 	{
-		Out_AimDirection = LaunchVelocity.GetSafeNormal();
-		if (!Out_AimDirection.IsZero())
+		AimDirection = FVector::ZeroVector;
+		AimDirection = LaunchVelocity.GetSafeNormal();
+		if (!AimDirection.IsZero())
 		{
-			MoveTurret(Out_AimDirection);
-			MoveBarrel(Out_AimDirection);
+			MoveTurret();
+			MoveBarrel();
 
 			return true;
 		}
@@ -108,8 +140,23 @@ bool UTankAimingComponent::AimAt(FVector &TargetLocation, FVector &Out_AimDirect
 	return false;
 }
 
-void UTankAimingComponent::Aim(FVector TargetLocation)
+void UTankAimingComponent::Fire()
 {
-	MoveTurret(TargetLocation);
-	MoveBarrel(TargetLocation);
+	if (FiringState == EFiringState::Locked || FiringState == EFiringState::Aiming)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Fire!"));
+
+		auto Barrel = ControlledTank->GetBarrelComponent();
+		auto Projectile = GetWorld()->SpawnActor<ATankProjectile>(
+			ControlledTank->GetTankProjectile(),
+			Barrel->GetProjectileLaunchLocation(),
+			Barrel->GetProjectileLaunchRotation());
+		if (Projectile)
+		{
+			Projectile->Launch(ControlledTank->GetProjectileLaunchSpeed());
+
+			// Reset the timer
+			LastFireTime = FPlatformTime::Seconds();
+		}
+	}
 }

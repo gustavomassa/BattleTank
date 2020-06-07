@@ -27,23 +27,18 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent *PlayerInputComponent) override;
 
-	void SetTankCameraReference(USpringArmComponent *CameraToSet);
-	void SetTankBodyReference(UTankBodyComponent *BodyToSet);
-	void SetTankTurretReference(UTankTurretComponent *TurretToSet);
-	void SetTankBarrelReference(UTankBarrelComponent *BarrelToSet);
-	void SetTankTrackLeftReference(UTankTrackComponent *TrackLeftToSet);
-	void SetTankTrackRightReference(UTankTrackComponent *TrackRightToSet);
-
 	USpringArmComponent *GetCameraComponent() const;
 	const UTankMovementComponent *GetTankMovementComponent() const;
+	UTankAimingComponent *GetTankAimingComponent() const;
 	const UTankBodyComponent *GetBodyComponent() const;
-	const UTankTurretComponent *GetTurretComponent() const;
-	const UTankBarrelComponent *GetBarrelComponent() const;
-	const UTankTrackComponent *GetTankTrackLeftComponent() const;
-	const UTankTrackComponent *GetTankTrackRightComponent() const;
+	UTankTurretComponent *GetTurretComponent() const;
+	UTankBarrelComponent *GetBarrelComponent() const;
+	UTankTrackComponent *GetTankTrackLeftComponent() const;
+	UTankTrackComponent *GetTankTrackRightComponent() const;
 
 	float GetDefaultMass() const;
 	float GetMass() const;
+	TSubclassOf<ATankProjectile> GetTankProjectile() const;
 	float GetProjectileLaunchSpeed() const;
 	float GetReloadTimeInSeconds() const;
 	float GetGravityAcceleration() const;
@@ -53,18 +48,13 @@ public:
 	float GetBarrelMinElevationDegress() const;
 	float GetBarrelMaxElevationDegress() const;
 
-	bool AimAt(FVector &HitLocation, FVector &Out_AimDirection);
-	void Aim(FVector &TargetLocation);
-	void Fire();
-
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
+private:
 	UTankMovementComponent *TankMovementComponent{nullptr};
 	UTankAimingComponent *TankAimingComponent{nullptr};
-
-private:
 	USpringArmComponent *TankCameraComponent{nullptr};
 
 	UTankBodyComponent *TankBodyComponent{nullptr};
@@ -106,4 +96,11 @@ private:
 	void FindTurretComponent();
 	void FindBarrelComponent();
 	void FindTankTrackComponents();
+
+	void SetTankCameraReference(USpringArmComponent *CameraToSet);
+	void SetTankBodyReference(UTankBodyComponent *BodyToSet);
+	void SetTankTurretReference(UTankTurretComponent *TurretToSet);
+	void SetTankBarrelReference(UTankBarrelComponent *BarrelToSet);
+	void SetTankTrackLeftReference(UTankTrackComponent *TrackLeftToSet);
+	void SetTankTrackRightReference(UTankTrackComponent *TrackRightToSet);
 };

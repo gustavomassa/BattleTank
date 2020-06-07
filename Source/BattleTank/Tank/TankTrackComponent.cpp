@@ -79,6 +79,8 @@ void UTankTrackComponent::CorrectSlippageForce()
     // Calculate the slippage speed
     FVector RightVector = GetRightVector();
     FVector CurrentComponentVelocity = GetComponentVelocity();
+
+    // (Coss, RightVector is 90 Degress to the right of the tank heading) CurrentComponentVelocity * cos(90 + FacingDegress) = SlippageSpeed
     float SlippageSpeed = FVector::DotProduct(RightVector, CurrentComponentVelocity);
 
     // Work-out the required acceleration on this frame to correct
