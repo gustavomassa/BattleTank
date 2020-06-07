@@ -29,6 +29,14 @@ void UTankAimingComponent::BeginPlay()
 
 	// Init reload timer
 	LastFireTime = FPlatformTime::Seconds();
+	// Init AmmoCount
+	AmmoCount = 10;
+
+	// Init Player UI
+	if (TankPlayerController)
+	{
+		TankPlayerController->GetPlayerWidget()->UpdateAmmoText(FText::FromString(FString::FromInt(AmmoCount)));
+	}
 }
 
 // Called every frame
@@ -38,7 +46,11 @@ void UTankAimingComponent::TickComponent(float DeltaTime, ELevelTick TickType, F
 
 	LastFiringState = FiringState;
 
-	if ((FPlatformTime::Seconds() - LastFireTime) < ControlledTank->GetReloadTimeInSeconds())
+	if (AmmoCount <= 0)
+	{
+		FiringState = EFiringState::OutOfAmmo;
+	}
+	else if ((FPlatformTime::Seconds() - LastFireTime) < ControlledTank->GetReloadTimeInSeconds())
 	{
 		FiringState = EFiringState::Reloading;
 	}
@@ -72,12 +84,20 @@ const EFiringState &UTankAimingComponent::GetFiringState() const
 	return FiringState;
 }
 
+const uint8 &UTankAimingComponent::GetAmmoCount() const
+{
+	return AmmoCount;
+}
+
 const FLinearColor UTankAimingComponent::GetFiringStateCrosshairColor() const
 {
 	FLinearColor InColorAndOpacity;
 
 	switch (FiringState)
 	{
+	case EFiringState::OutOfAmmo:
+		InColorAndOpacity = FLinearColor(255.0f, 255.0f, 255.0f);
+		break;
 	case EFiringState::Reloading:
 		InColorAndOpacity = FLinearColor(255.0f, 0.0f, 0.0f);
 		break;
@@ -89,6 +109,18 @@ const FLinearColor UTankAimingComponent::GetFiringStateCrosshairColor() const
 		break;
 	}
 	return InColorAndOpacity;
+}
+
+void UTankAimingComponent::UpdateAmmoCount()
+{
+	if (AmmoCount > 0)
+	{
+		--AmmoCount;
+		if (TankPlayerController)
+		{
+			TankPlayerController->GetPlayerWidget()->UpdateAmmoText(FText::FromString(FString::FromInt(AmmoCount)));
+		}
+	}
 }
 
 void UTankAimingComponent::MoveTurret()
@@ -154,6 +186,8 @@ void UTankAimingComponent::Fire()
 		if (Projectile)
 		{
 			Projectile->Launch(ControlledTank->GetProjectileLaunchSpeed());
+
+			UpdateAmmoCount();
 
 			// Reset the timer
 			LastFireTime = FPlatformTime::Seconds();

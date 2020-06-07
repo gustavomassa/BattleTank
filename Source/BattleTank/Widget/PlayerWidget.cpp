@@ -3,6 +3,7 @@
 #include "PlayerWidget.h"
 #include "../Tank/TankPlayerController.h"
 #include "Components/Image.h"
+#include "Components/TextBlock.h"
 
 void UPlayerWidget::Setup()
 {
@@ -30,4 +31,9 @@ void UPlayerWidget::Setup()
 void UPlayerWidget::UpdateCrosshairColor(const FLinearColor &LinearColor)
 {
     Crosshair->SetColorAndOpacity(LinearColor);
+}
+
+void UPlayerWidget::UpdateAmmoText(const FText &Text)
+{
+    AmmoText->SetText(Text);
 }

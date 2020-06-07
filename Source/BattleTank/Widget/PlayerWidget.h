@@ -20,8 +20,11 @@ class BATTLETANK_API UPlayerWidget : public UUserWidget
 public:
 	void Setup();
 	void UpdateCrosshairColor(const FLinearColor &LinearColor);
+	void UpdateAmmoText(const FText &Text);
 
 private:
 	UPROPERTY(meta = (BindWidget))
 	class UImage *Crosshair;
+	UPROPERTY(meta = (BindWidget))
+	class UTextBlock *AmmoText;
 };

@@ -18,14 +18,15 @@ class BATTLETANK_API ATankAIController : public AAIController, public ITankContr
 	GENERATED_BODY()
 
 protected:
+	UPROPERTY(EditAnyWhere, Category = "Setup")
+	float AcceptanceRadius{5000.0f};
+
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaSeconds) override;
 	ATank *GetControlledTank() const override;
-	//MoveToActor
 
 private:
 	ATank *ControlledTank{nullptr};
 	ATank *PlayerTank{nullptr};
 	FVector PlayerTankLocation{FVector::ZeroVector};
-	float AcceptanceRadius{3000.0f};
 };

@@ -15,7 +15,8 @@ enum class EFiringState : uint8
 {
 	Reloading,
 	Aiming,
-	Locked
+	Locked,
+	OutOfAmmo
 };
 
 UCLASS(ClassGroup = (Custom), meta = (BlueprintSpawnableComponent))
@@ -27,6 +28,7 @@ public:
 	// Sets default values for this component's properties
 	UTankAimingComponent();
 	const EFiringState &GetFiringState() const;
+	const uint8 &GetAmmoCount() const;
 	bool AimAt(FVector &TargetLocation);
 	void Fire();
 
@@ -43,10 +45,12 @@ private:
 	EFiringState FiringState{EFiringState::Reloading};
 	EFiringState LastFiringState{EFiringState::Reloading};
 	double LastFireTime{0};
+	uint8 AmmoCount{0};
 
 	bool IsCrosshairLocked(float Tolerance);
 	bool AimTowardsCrosshair();
 	void MoveTurret();
 	void MoveBarrel();
 	const FLinearColor GetFiringStateCrosshairColor() const;
+	void UpdateAmmoCount();
 };

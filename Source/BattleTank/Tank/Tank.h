@@ -75,7 +75,7 @@ private:
 	UPROPERTY(EditAnywhere, Category = "Movement")
 	float GravityAcceleration{9.81f};
 	UPROPERTY(EditAnywhere, Category = "Movement")
-	float ForceAdjustment{2.0f};
+	float ForceAdjustment{1.9f};
 	UPROPERTY(EditAnywhere, Category = "Movement")
 	float Mass{40000.0f};
 
