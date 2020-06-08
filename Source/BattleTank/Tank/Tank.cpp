@@ -46,6 +46,7 @@ void ATank::SetupPlayerInputComponent(UInputComponent *PlayerInputComponent)
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 }
 
+// TODO: Create a TankCameraComponent
 void ATank::FindCameraComponent()
 {
 	TankCameraComponent = FindComponentByClass<USpringArmComponent>();
@@ -53,7 +54,6 @@ void ATank::FindCameraComponent()
 	{
 		UE_LOG(LogTemp, Error, TEXT("%s: Failed to find Tank Camera Component"), *GetOwner()->GetName());
 	}
-	SetTankCameraReference(TankCameraComponent);
 }
 
 void ATank::FindBodyComponent()
@@ -63,7 +63,6 @@ void ATank::FindBodyComponent()
 	{
 		UE_LOG(LogTemp, Error, TEXT("%s: Failed to find Tank Body Component"), *GetOwner()->GetName());
 	}
-	SetTankBodyReference(TankBodyComponent);
 }
 
 void ATank::FindTurretComponent()
@@ -73,7 +72,6 @@ void ATank::FindTurretComponent()
 	{
 		UE_LOG(LogTemp, Error, TEXT("%s: Failed to find Tank Turret Component"), *GetOwner()->GetName());
 	}
-	SetTankTurretReference(TankTurretComponent);
 }
 
 void ATank::FindBarrelComponent()
@@ -83,7 +81,6 @@ void ATank::FindBarrelComponent()
 	{
 		UE_LOG(LogTemp, Error, TEXT("%s: Failed to find Tank Barrel Component"), *GetOwner()->GetName());
 	}
-	SetTankBarrelReference(TankBarrelComponent);
 }
 
 void ATank::FindTankTrackComponents()
@@ -102,11 +99,11 @@ void ATank::FindTankTrackComponents()
 		{
 			if (TankTrackComponent->GetName() == "TrackLeft")
 			{
-				SetTankTrackLeftReference(TankTrackComponent);
+				TankTrackLeftComponent = TankTrackComponent;
 			}
 			else if (TankTrackComponent->GetName() == "TrackRight")
 			{
-				SetTankTrackRightReference(TankTrackComponent);
+				TankTrackRightComponent = TankTrackComponent;
 			}
 			else
 			{
@@ -114,37 +111,6 @@ void ATank::FindTankTrackComponents()
 			}
 		}
 	}
-}
-
-// TODO: Create a TankCameraComponent
-void ATank::SetTankCameraReference(USpringArmComponent *CameraToSet)
-{
-	TankCameraComponent = CameraToSet;
-}
-
-void ATank::SetTankBodyReference(UTankBodyComponent *BodyToSet)
-{
-	TankBodyComponent = BodyToSet;
-}
-
-void ATank::SetTankTurretReference(URotateComponent *TurretToSet)
-{
-	TankTurretComponent = TurretToSet;
-}
-
-void ATank::SetTankBarrelReference(UBarrelComponent *BarrelToSet)
-{
-	TankBarrelComponent = BarrelToSet;
-}
-
-void ATank::SetTankTrackLeftReference(UTankTrackComponent *TrackLeftToSet)
-{
-	TankTrackLeftComponent = TrackLeftToSet;
-}
-
-void ATank::SetTankTrackRightReference(UTankTrackComponent *TrackRightToSet)
-{
-	TankTrackRightComponent = TrackRightToSet;
 }
 
 USpringArmComponent *ATank::GetCameraComponent() const

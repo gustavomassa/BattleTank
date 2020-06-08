@@ -43,7 +43,6 @@ public:
 	float GetReloadTimeInSeconds() const;
 	float GetGravityAcceleration() const;
 	float GetForceAdjustment() const;
-	float GetTurretMaxDegressPerSecond() const;
 
 protected:
 	// Called when the game starts or when spawned
@@ -60,7 +59,7 @@ private:
 	UTankTrackComponent *TankTrackLeftComponent{nullptr};
 	UTankTrackComponent *TankTrackRightComponent{nullptr};
 
-	// Projectile
+	// Firing
 	UPROPERTY(EditAnywhere, Category = "Firing")
 	TSubclassOf<ATankProjectile> TankProjectile;
 	UPROPERTY(EditDefaultsOnly, Category = "Firing")
@@ -81,11 +80,4 @@ private:
 	void FindTurretComponent();
 	void FindBarrelComponent();
 	void FindTankTrackComponents();
-
-	void SetTankCameraReference(USpringArmComponent *CameraToSet);
-	void SetTankBodyReference(UTankBodyComponent *BodyToSet);
-	void SetTankTurretReference(URotateComponent *TurretToSet);
-	void SetTankBarrelReference(UBarrelComponent *BarrelToSet);
-	void SetTankTrackLeftReference(UTankTrackComponent *TrackLeftToSet);
-	void SetTankTrackRightReference(UTankTrackComponent *TrackRightToSet);
 };
