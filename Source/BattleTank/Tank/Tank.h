@@ -11,9 +11,9 @@ class USpringArmComponent;
 class UTankBodyComponent;
 class URotateComponent;
 class UBarrelComponent;
+class UAimingComponent;
 class UTankTrackComponent;
 class UTankMovementComponent;
-class UTankAimingComponent;
 class ATankProjectile;
 
 UCLASS()
@@ -29,7 +29,7 @@ public:
 
 	USpringArmComponent *GetCameraComponent() const;
 	const UTankMovementComponent *GetTankMovementComponent() const;
-	UTankAimingComponent *GetTankAimingComponent() const;
+	UAimingComponent *GetTankAimingComponent() const;
 	const UTankBodyComponent *GetBodyComponent() const;
 	URotateComponent *GetTurretComponent() const;
 	UBarrelComponent *GetBarrelComponent() const;
@@ -44,20 +44,8 @@ public:
 	float GetGravityAcceleration() const;
 	float GetForceAdjustment() const;
 
-protected:
-	// Called when the game starts or when spawned
-	virtual void BeginPlay() override;
-
 private:
 	UTankMovementComponent *TankMovementComponent{nullptr};
-	UTankAimingComponent *TankAimingComponent{nullptr};
-	USpringArmComponent *TankCameraComponent{nullptr};
-
-	UTankBodyComponent *TankBodyComponent{nullptr};
-	URotateComponent *TankTurretComponent{nullptr};
-	UBarrelComponent *TankBarrelComponent{nullptr};
-	UTankTrackComponent *TankTrackLeftComponent{nullptr};
-	UTankTrackComponent *TankTrackRightComponent{nullptr};
 
 	// Firing
 	UPROPERTY(EditAnywhere, Category = "Firing")
@@ -74,10 +62,4 @@ private:
 	float ForceAdjustment{1.9f};
 	UPROPERTY(EditAnywhere, Category = "Movement")
 	float Mass{40000.0f};
-
-	void FindCameraComponent();
-	void FindBodyComponent();
-	void FindTurretComponent();
-	void FindBarrelComponent();
-	void FindTankTrackComponents();
 };

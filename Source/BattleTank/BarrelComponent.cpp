@@ -9,6 +9,7 @@ UBarrelComponent::UBarrelComponent()
     //static ConstructorHelpers::FObjectFinder<UStaticMesh> BarrelAsset(TEXT("/Game/Source/Models/Tank/SM_Tank_Barrel"));
     //this->SetStaticMesh(BarrelAsset.Object);
     this->SetRelativeLocation(FVector::ZeroVector);
+    this->SetSimulatePhysics(false);
 }
 
 FName UBarrelComponent::GetProjectileSocketName() const
@@ -21,7 +22,7 @@ FVector UBarrelComponent::GetProjectileLaunchLocation() const
     FVector StartLocation = this->GetSocketLocation(ProjectileSocketName);
     if (StartLocation == this->GetComponentLocation())
     {
-        UE_LOG(LogTemp, Error, TEXT("%s: Failed to get Tank Barrel Projectile Location!"), *GetOwner()->GetName());
+        UE_LOG(LogTemp, Error, TEXT("%s: Failed to get Tank Barrel Projectile Location!"), *GetName());
         return FVector::ZeroVector;
     }
     return StartLocation;
@@ -37,11 +38,6 @@ FRotator UBarrelComponent::GetProjectileLaunchRotation() const
     }
     return StartRotation; */
     return this->GetSocketRotation(ProjectileSocketName);
-}
-
-void UBarrelComponent::SetupPhysics()
-{
-    SetSimulatePhysics(false);
 }
 
 float UBarrelComponent::GetMaxDegressPerSecond() const

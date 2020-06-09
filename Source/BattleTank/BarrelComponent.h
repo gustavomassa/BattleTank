@@ -9,7 +9,7 @@
 /**
  * 
  */
-UCLASS(ClassGroup = (Custom), meta = (BlueprintSpawnableComponent), hideCategories = (Physics, Collision, Events))
+UCLASS(ClassGroup = (Custom), meta = (BlueprintSpawnableComponent), hideCategories = (Physics))
 class BATTLETANK_API UBarrelComponent : public UStaticMeshComponent
 {
 	GENERATED_BODY()
@@ -22,7 +22,6 @@ public:
 	FName GetProjectileSocketName() const;
 	FVector GetProjectileLaunchLocation() const;
 	FRotator GetProjectileLaunchRotation() const;
-	void SetupPhysics();
 	void Elevate(float TargetAngle);
 
 protected:

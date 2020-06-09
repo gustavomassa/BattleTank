@@ -5,9 +5,9 @@
 #include "TankBodyComponent.h"
 #include "../RotateComponent.h"
 #include "../BarrelComponent.h"
+#include "../AimingComponent.h"
 #include "TankTrackComponent.h"
 #include "TankMovementComponent.h"
-#include "TankAimingComponent.h"
 
 // Sets default values
 ATank::ATank()
@@ -17,27 +17,7 @@ ATank::ATank()
 
 	// Register Components
 	TankMovementComponent = CreateDefaultSubobject<UTankMovementComponent>(FName("Movement Component"));
-	TankAimingComponent = CreateDefaultSubobject<UTankAimingComponent>(FName("Aiming Component"));
-}
-
-// Called when the game starts or when spawned
-void ATank::BeginPlay()
-{
-	Super::BeginPlay();
-
-	// Find Components
-	FindCameraComponent();
-	FindBodyComponent();
-	FindTurretComponent();
-	FindBarrelComponent();
-	FindTankTrackComponents();
-
-	// Setup Components Physics
-	TankBodyComponent->SetupPhysics();
-	TankTurretComponent->SetupPhysics();
-	TankBarrelComponent->SetupPhysics();
-	TankTrackLeftComponent->SetupPhysics();
-	TankTrackRightComponent->SetupPhysics();
+	//TankAimingComponent = CreateDefaultSubobject<UTankAimingComponent>(FName("Aiming Component"));
 }
 
 // Called to bind functionality to input
@@ -46,75 +26,14 @@ void ATank::SetupPlayerInputComponent(UInputComponent *PlayerInputComponent)
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 }
 
-// TODO: Create a TankCameraComponent
-void ATank::FindCameraComponent()
+USpringArmComponent *ATank::GetCameraComponent() const
 {
-	TankCameraComponent = FindComponentByClass<USpringArmComponent>();
+	auto TankCameraComponent = FindComponentByClass<USpringArmComponent>();
 	if (!TankCameraComponent)
 	{
 		UE_LOG(LogTemp, Error, TEXT("%s: Failed to find Tank Camera Component"), *GetOwner()->GetName());
+		return nullptr;
 	}
-}
-
-void ATank::FindBodyComponent()
-{
-	TankBodyComponent = FindComponentByClass<UTankBodyComponent>();
-	if (!TankBodyComponent)
-	{
-		UE_LOG(LogTemp, Error, TEXT("%s: Failed to find Tank Body Component"), *GetOwner()->GetName());
-	}
-}
-
-void ATank::FindTurretComponent()
-{
-	TankTurretComponent = FindComponentByClass<URotateComponent>();
-	if (!TankTurretComponent)
-	{
-		UE_LOG(LogTemp, Error, TEXT("%s: Failed to find Tank Turret Component"), *GetOwner()->GetName());
-	}
-}
-
-void ATank::FindBarrelComponent()
-{
-	TankBarrelComponent = FindComponentByClass<UBarrelComponent>();
-	if (!TankBarrelComponent)
-	{
-		UE_LOG(LogTemp, Error, TEXT("%s: Failed to find Tank Barrel Component"), *GetOwner()->GetName());
-	}
-}
-
-void ATank::FindTankTrackComponents()
-{
-	TArray<UTankTrackComponent *> TankTrackComponents;
-	GetComponents<UTankTrackComponent>(TankTrackComponents, false);
-
-	if (TankTrackComponents.Num() == 0)
-	{
-		UE_LOG(LogTemp, Error, TEXT("%s: Failed to find Tank Track Components"), *GetOwner()->GetName());
-		return;
-	}
-	for (auto TankTrackComponent : TankTrackComponents)
-	{
-		if (TankTrackComponent)
-		{
-			if (TankTrackComponent->GetName() == "TrackLeft")
-			{
-				TankTrackLeftComponent = TankTrackComponent;
-			}
-			else if (TankTrackComponent->GetName() == "TrackRight")
-			{
-				TankTrackRightComponent = TankTrackComponent;
-			}
-			else
-			{
-				UE_LOG(LogTemp, Error, TEXT("%s: Failed to find Tank Track Components by Name"), *GetOwner()->GetName());
-			}
-		}
-	}
-}
-
-USpringArmComponent *ATank::GetCameraComponent() const
-{
 	return TankCameraComponent;
 }
 
@@ -123,33 +42,113 @@ const UTankMovementComponent *ATank::GetTankMovementComponent() const
 	return TankMovementComponent;
 }
 
-UTankAimingComponent *ATank::GetTankAimingComponent() const
+UAimingComponent *ATank::GetTankAimingComponent() const
 {
+	auto TankAimingComponent = FindComponentByClass<UAimingComponent>();
+	if (!TankAimingComponent)
+	{
+		UE_LOG(LogTemp, Error, TEXT("%s: Failed to find Tank Aiming Component"), *GetOwner()->GetName());
+		return nullptr;
+	}
 	return TankAimingComponent;
 }
 
 const UTankBodyComponent *ATank::GetBodyComponent() const
 {
+	auto TankBodyComponent = FindComponentByClass<UTankBodyComponent>();
+	if (!TankBodyComponent)
+	{
+		UE_LOG(LogTemp, Error, TEXT("%s: Failed to find Tank Body Component"), *GetOwner()->GetName());
+		return nullptr;
+	}
 	return TankBodyComponent;
 }
 
 URotateComponent *ATank::GetTurretComponent() const
 {
+	auto TankTurretComponent = FindComponentByClass<URotateComponent>();
+	if (!TankTurretComponent)
+	{
+		UE_LOG(LogTemp, Error, TEXT("%s: Failed to find Tank Turret Component"), *GetOwner()->GetName());
+		return nullptr;
+	}
 	return TankTurretComponent;
 }
 
 UBarrelComponent *ATank::GetBarrelComponent() const
 {
+	auto TankBarrelComponent = FindComponentByClass<UBarrelComponent>();
+	if (!TankBarrelComponent)
+	{
+		UE_LOG(LogTemp, Error, TEXT("%s: Failed to find Tank Barrel Component"), *GetOwner()->GetName());
+		return nullptr;
+	}
 	return TankBarrelComponent;
 }
 
 UTankTrackComponent *ATank::GetTankTrackLeftComponent() const
 {
+	TArray<UTankTrackComponent *> TankTrackComponents;
+	GetComponents<UTankTrackComponent>(TankTrackComponents, false);
+
+	if (TankTrackComponents.Num() == 0)
+	{
+		UE_LOG(LogTemp, Error, TEXT("%s: Failed to find Tank Track Components"), *GetOwner()->GetName());
+		return nullptr;
+	}
+
+	UTankTrackComponent *TankTrackLeftComponent = nullptr;
+
+	for (auto TankTrackComponent : TankTrackComponents)
+	{
+		if (TankTrackComponent)
+		{
+			if (TankTrackComponent->GetName() == "TrackLeft")
+			{
+				TankTrackLeftComponent = TankTrackComponent;
+				break;
+			}
+		}
+	}
+	if (!TankTrackLeftComponent)
+	{
+		UE_LOG(LogTemp, Error, TEXT("%s: Failed to find Tank Track Left Component"), *GetOwner()->GetName());
+		return nullptr;
+	}
+
 	return TankTrackLeftComponent;
 }
 
 UTankTrackComponent *ATank::GetTankTrackRightComponent() const
 {
+	TArray<UTankTrackComponent *> TankTrackComponents;
+	GetComponents<UTankTrackComponent>(TankTrackComponents, false);
+
+	if (TankTrackComponents.Num() == 0)
+	{
+		UE_LOG(LogTemp, Error, TEXT("%s: Failed to find Tank Track Components"), *GetOwner()->GetName());
+		return nullptr;
+	}
+
+	UTankTrackComponent *TankTrackRightComponent = nullptr;
+
+	for (auto TankTrackComponent : TankTrackComponents)
+	{
+		if (TankTrackComponent)
+		{
+			if (TankTrackComponent->GetName() == "TrackRight")
+			{
+				TankTrackRightComponent = TankTrackComponent;
+				break;
+			}
+		}
+	}
+	if (!TankTrackRightComponent)
+	{
+		UE_LOG(LogTemp, Error, TEXT("%s: Failed to find Tank Track Right Component"), *GetOwner()->GetName());
+		return nullptr;
+	}
+
 	return TankTrackRightComponent;
 }
 

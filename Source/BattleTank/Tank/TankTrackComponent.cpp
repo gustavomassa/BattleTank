@@ -12,6 +12,8 @@ UTankTrackComponent::UTankTrackComponent()
     static ConstructorHelpers::FObjectFinder<UStaticMesh> TrackAsset(TEXT("/Game/Source/Models/Tank/SM_Tank_Track"));
     this->SetStaticMesh(TrackAsset.Object);
     this->SetRelativeLocation(FVector::ZeroVector);
+    this->SetSimulatePhysics(false);
+    this->SetNotifyRigidBodyCollision(true);
 }
 
 void UTankTrackComponent::BeginPlay()
@@ -36,12 +38,6 @@ void UTankTrackComponent::BeginPlay()
 {
     Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 } */
-
-void UTankTrackComponent::SetupPhysics()
-{
-    SetSimulatePhysics(false);
-    SetNotifyRigidBodyCollision(true);
-}
 
 void UTankTrackComponent::SetThrottle(float Throttle)
 {

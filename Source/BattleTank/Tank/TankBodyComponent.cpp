@@ -10,14 +10,16 @@ UTankBodyComponent::UTankBodyComponent()
     static ConstructorHelpers::FObjectFinder<UStaticMesh> BodyAsset(TEXT("/Game/Source/Models/Tank/SM_Tank_Body"));
     this->SetStaticMesh(BodyAsset.Object);
     this->SetRelativeLocation(FVector::ZeroVector);
+
+    this->SetSimulatePhysics(true);
+    this->SetEnableGravity(true);
+    this->SetLinearDamping(0.1f);
+    this->SetAngularDamping(0.2f);
 }
 
-void UTankBodyComponent::SetupPhysics()
+void UTankBodyComponent::BeginPlay()
 {
-    auto Tank = Cast<ATank>(GetOwner());
-    SetSimulatePhysics(true);
-    SetEnableGravity(true);
-    SetMassOverrideInKg(NAME_None, Tank->GetDefaultMass(), true);
-    SetLinearDamping(0.1f);
-    SetAngularDamping(0.2f);
+    Super::BeginPlay();
+
+    this->SetMassOverrideInKg(NAME_None, Cast<ATank>(GetOwner())->GetDefaultMass(), true);
 }

@@ -16,5 +16,7 @@ class BATTLETANK_API UTankBodyComponent : public UStaticMeshComponent
 
 public:
 	UTankBodyComponent();
-	void SetupPhysics();
+
+protected:
+	virtual void BeginPlay() override;
 };

@@ -12,7 +12,7 @@ ATankProjectile::ATankProjectile()
 
 	// Register Components
 	TankProjectileMovementComponent = CreateDefaultSubobject<UTankProjectileMovementComponent>(FName("Projectile Movement Component"));
-	TankProjectileMovementComponent->bAutoActivate;
+	TankProjectileMovementComponent->bAutoActivate = false;
 }
 
 // Called when the game starts or when spawned

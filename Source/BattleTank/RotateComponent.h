@@ -9,14 +9,13 @@
 /**
  * 
  */
-UCLASS(ClassGroup = (Custom), meta = (BlueprintSpawnableComponent), hideCategories = (Physics, Collision, Events))
+UCLASS(ClassGroup = (Custom), meta = (BlueprintSpawnableComponent), hideCategories = (Physics))
 class BATTLETANK_API URotateComponent : public UStaticMeshComponent
 {
 	GENERATED_BODY()
 
 public:
 	URotateComponent();
-	void SetupPhysics();
 	void Rotate(float TargetAngle);
 	float GetMaxDegressPerSecond() const;
 

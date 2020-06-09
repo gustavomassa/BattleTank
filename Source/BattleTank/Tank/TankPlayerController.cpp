@@ -1,13 +1,14 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "TankPlayerController.h"
+#include "Camera/PlayerCameraManager.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Tank.h"
 #include "../RotateComponent.h"
 #include "../BarrelComponent.h"
+#include "../AimingComponent.h"
 #include "TankTrackComponent.h"
 #include "TankMovementComponent.h"
-#include "TankAimingComponent.h"
 #include "../Widget/MenuWidget.h"
 #include "../Widget/PlayerWidget.h"
 
@@ -87,7 +88,7 @@ void ATankPlayerController::RegisterInputBind() const
     ControlledTank->InputComponent->BindAxis(MoveBackwardBind, ControlledTank->GetTankMovementComponent(), &UTankMovementComponent::IntendMoveBackward);
 
     // Actions
-    ControlledTank->InputComponent->BindAction(FireBind, IE_Pressed, ControlledTank->GetTankAimingComponent(), &UTankAimingComponent::Fire);
+    ControlledTank->InputComponent->BindAction(FireBind, IE_Pressed, ControlledTank->GetTankAimingComponent(), &UAimingComponent::Fire);
 }
 
 // Yaw //TODO: Create a Camera Component and put the logic there
@@ -176,7 +177,7 @@ bool ATankPlayerController::GetLookDirectionHitResult(const FVector &LookDirecti
 // Move the Tank Barrel aiming where the player crosshair intersects the world
 bool ATankPlayerController::AimTowardsCrosshair()
 {
-    if (!ControlledTank)
+    if (!ControlledTank || !ControlledTank->GetTankAimingComponent())
     {
         return false;
     }

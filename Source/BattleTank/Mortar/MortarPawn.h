@@ -7,9 +7,9 @@
 #include "MortarPawn.generated.h"
 
 // Forward Declarations
-class UTankAimingComponent;
 class URotateComponent;
 class UBarrelComponent;
+class UAimingComponent;
 
 UCLASS()
 class BATTLETANK_API AMortarPawn : public APawn
@@ -20,19 +20,7 @@ public:
 	AMortarPawn();
 	virtual void SetupPlayerInputComponent(class UInputComponent *PlayerInputComponent) override;
 
-	UTankAimingComponent *GetTankAimingComponent() const;
+	UAimingComponent *GetTankAimingComponent() const;
 	URotateComponent *GetTurretComponent() const;
 	UBarrelComponent *GetBarrelComponent() const;
-
-protected:
-	// Called when the game starts or when spawned
-	virtual void BeginPlay() override;
-
-private:
-	UTankAimingComponent *TankAimingComponent{nullptr};
-	URotateComponent *TurretComponent{nullptr};
-	UBarrelComponent *BarrelComponent{nullptr};
-
-	void FindTurretComponent();
-	void FindBarrelComponent();
 };

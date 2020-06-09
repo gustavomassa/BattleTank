@@ -19,7 +19,6 @@ class BATTLETANK_API UTankTrackComponent : public UStaticMeshComponent
 
 public:
 	UTankTrackComponent();
-	void SetupPhysics();
 	void SetThrottle(float Throttle);
 
 protected:

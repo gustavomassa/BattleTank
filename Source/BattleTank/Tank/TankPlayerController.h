@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "../Interface/PlayerControllerInterface.h"
 #include "../Interface/TankControllerInterface.h"
 #include "TankPlayerController.generated.h"
 
@@ -15,7 +16,7 @@ class UPlayerWidget;
  * 
  */
 UCLASS()
-class BATTLETANK_API ATankPlayerController : public APlayerController, public ITankControllerInterface
+class BATTLETANK_API ATankPlayerController : public APlayerController, public IPlayerControllerInterface, public ITankControllerInterface
 {
 	GENERATED_BODY()
 

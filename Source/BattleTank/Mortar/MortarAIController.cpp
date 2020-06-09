@@ -3,7 +3,7 @@
 #include "MortarAIController.h"
 #include "MortarPawn.h"
 #include "../Tank/Tank.h"
-#include "../Tank/TankAimingComponent.h"
+#include "../AimingComponent.h"
 #include "Engine/World.h"
 
 void AMortarAIController::BeginPlay()
@@ -33,11 +33,13 @@ void AMortarAIController::Tick(float DeltaSeconds)
     {
         PlayerTankLocation = PlayerTank->GetActorLocation();
         auto AimingComponent = ControlledMortar->GetTankAimingComponent();
-        AimingComponent->AimAt(PlayerTankLocation);
-
-        if (AimingComponent->GetFiringState() == EFiringState::Locked)
+        if (AimingComponent)
         {
-            AimingComponent->Fire();
+            AimingComponent->AimAt(PlayerTankLocation);
+            if (AimingComponent->GetFiringState() == EFiringState::Locked)
+            {
+                AimingComponent->Fire();
+            }
         }
     }
 }

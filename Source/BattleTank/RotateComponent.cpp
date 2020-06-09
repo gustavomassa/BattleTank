@@ -8,11 +8,7 @@ URotateComponent::URotateComponent()
     //static ConstructorHelpers::FObjectFinder<UStaticMesh> TurretAsset(TEXT("/Game/Source/Models/Tank/SM_Tank_Turret"));
     //this->SetStaticMesh(TurretAsset.Object);
     this->SetRelativeLocation(FVector::ZeroVector);
-}
-
-void URotateComponent::SetupPhysics()
-{
-    SetSimulatePhysics(false);
+    this->SetSimulatePhysics(false);
 }
 
 float URotateComponent::GetMaxDegressPerSecond() const
