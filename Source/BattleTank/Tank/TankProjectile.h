@@ -4,13 +4,14 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "../Interface/ProjectileInterface.h"
 #include "TankProjectile.generated.h"
 
 // Forward Declarations
 class UTankProjectileMovementComponent;
 
 UCLASS()
-class BATTLETANK_API ATankProjectile : public AActor
+class BATTLETANK_API ATankProjectile : public AActor, public IProjectileInterface
 {
 	GENERATED_BODY()
 

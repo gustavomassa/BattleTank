@@ -10,7 +10,6 @@
 class IPlayerControllerInterface;
 class URotateComponent;
 class UBarrelComponent;
-class ATankProjectile;
 
 UENUM()
 enum class EFiringState : uint8
@@ -36,8 +35,8 @@ protected:
 	//UPROPERTY(EditAnywhere, Category = "Setup")
 	UBarrelComponent *BarrelComponent{nullptr};
 
-	UPROPERTY(EditDefaultsOnly, Category = "Setup")
-	TSubclassOf<ATankProjectile> Projectile;
+	UPROPERTY(EditDefaultsOnly, Category = "Setup", meta = (MustImplement = "ProjectileInterface"))
+	TSubclassOf<AActor> Projectile;
 	UPROPERTY(EditDefaultsOnly, Category = "Setup")
 	float ProjectileLaunchSpeed{8000.0f};
 	UPROPERTY(EditDefaultsOnly, Category = "Setup")

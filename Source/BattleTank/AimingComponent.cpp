@@ -5,6 +5,7 @@
 #include "BarrelComponent.h"
 #include "Tank/TankProjectile.h"
 #include "Interface/PlayerControllerInterface.h"
+#include "Interface/ProjectileInterface.h"
 #include "Widget/PlayerWidget.h"
 #include "Kismet/GameplayStatics.h"
 
@@ -247,7 +248,7 @@ void UAimingComponent::Fire()
 			UE_LOG(LogTemp, Error, TEXT("%s: Failed to find Barrel Component"), *GetName());
 		}
 
-		auto SpawnedProjectile = GetWorld()->SpawnActor<ATankProjectile>(
+		auto SpawnedProjectile = GetWorld()->SpawnActor<IProjectileInterface>(
 			Projectile,
 			BarrelComponent->GetProjectileLaunchLocation(),
 			BarrelComponent->GetProjectileLaunchRotation());
