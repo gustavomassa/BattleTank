@@ -45,6 +45,7 @@ public:
 	float GetForceAdjustment() const;
 
 private:
+	UPROPERTY(VisibleAnywhere, Category = "Components")
 	UTankMovementComponent *TankMovementComponent{nullptr};
 
 	// Firing
