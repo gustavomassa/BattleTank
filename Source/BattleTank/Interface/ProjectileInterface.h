@@ -19,4 +19,5 @@ class IProjectileInterface
 
 public:
     virtual void Launch(float Speed) = 0;
+    virtual void OnHit(UPrimitiveComponent *HitComponent, AActor *OtherActor, UPrimitiveComponent *OtherComp, FVector NormalImpulse, const FHitResult &Hit) = 0;
 };

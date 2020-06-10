@@ -9,6 +9,7 @@
 
 // Forward Declarations
 class UTankProjectileMovementComponent;
+class UParticleSystemComponent;
 class URadialForceComponent;
 
 UCLASS()
