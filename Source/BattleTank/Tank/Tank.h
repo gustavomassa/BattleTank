@@ -7,13 +7,14 @@
 #include "Tank.generated.h"
 
 //Foward Declarations
-class USpringArmComponent;
-class UTankBodyComponent;
-class URotateComponent;
-class UBarrelComponent;
-class UAimingComponent;
-class UTankTrackComponent;
-class UTankMovementComponent;
+//class USpringArmComponent;
+class UCameraComponent;
+//class UTankBodyComponent;
+//class URotateComponent;
+//class UBarrelComponent;
+//class UAimingComponent;
+//class UTankTrackComponent;
+//class UTankMovementComponent;
 class ATankProjectile;
 
 UCLASS()
@@ -27,40 +28,40 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent *PlayerInputComponent) override;
 
-	USpringArmComponent *GetCameraComponent() const;
-	const UTankMovementComponent *GetTankMovementComponent() const;
-	UAimingComponent *GetTankAimingComponent() const;
-	const UTankBodyComponent *GetBodyComponent() const;
-	URotateComponent *GetTurretComponent() const;
-	UBarrelComponent *GetBarrelComponent() const;
-	UTankTrackComponent *GetTankTrackLeftComponent() const;
-	UTankTrackComponent *GetTankTrackRightComponent() const;
-
-	float GetDefaultMass() const;
-	float GetMass() const;
-	TSubclassOf<ATankProjectile> GetTankProjectile() const;
-	float GetProjectileLaunchSpeed() const;
-	float GetReloadTimeInSeconds() const;
-	float GetGravityAcceleration() const;
-	float GetForceAdjustment() const;
+	FORCEINLINE class USpringArmComponent *GetCameraComponent() const { return SpringArm; }
+	FORCEINLINE class UTankBodyComponent *GetBodyComponent() const { return Body; }
+	FORCEINLINE class URotateComponent *GetTurretComponent() const { return Turret; }
+	FORCEINLINE class UBarrelComponent *GetBarrelComponent() const { return Barrel; }
+	FORCEINLINE class UTankTrackComponent *GetTankTrackLeftComponent() const { return LeftTrack; }
+	FORCEINLINE class UTankTrackComponent *GetTankTrackRightComponent() const { return RightTrack; }
+	FORCEINLINE class UTankMovementComponent *GetTankMovementComponent() const { return Movement; }
+	FORCEINLINE class UAimingComponent *GetTankAimingComponent() const { return Aiming; }
 
 private:
 	UPROPERTY(VisibleAnywhere, Category = "Components")
-	UTankMovementComponent *TankMovementComponent{nullptr};
+	USpringArmComponent *SpringArm{nullptr};
 
-	// Firing
-	UPROPERTY(EditAnywhere, Category = "Firing")
-	TSubclassOf<ATankProjectile> TankProjectile;
-	UPROPERTY(EditDefaultsOnly, Category = "Firing")
-	float ProjectileLaunchSpeed{10000.0f};
-	UPROPERTY(EditAnywhere, Category = "Firing")
-	float ReloadTimeInSeconds{3.0f};
+	UPROPERTY(VisibleAnywhere, Category = "Components")
+	UCameraComponent *Camera{nullptr};
 
-	// Movement
-	UPROPERTY(EditAnywhere, Category = "Movement")
-	float GravityAcceleration{9.81f};
-	UPROPERTY(EditAnywhere, Category = "Movement")
-	float ForceAdjustment{1.9f};
-	UPROPERTY(EditAnywhere, Category = "Movement")
-	float Mass{40000.0f};
+	UPROPERTY(VisibleAnywhere, Category = "Components")
+	UTankBodyComponent *Body{nullptr};
+
+	UPROPERTY(VisibleAnywhere, Category = "Components")
+	UTankTrackComponent *LeftTrack{nullptr};
+
+	UPROPERTY(VisibleAnywhere, Category = "Components")
+	UTankTrackComponent *RightTrack{nullptr};
+
+	UPROPERTY(VisibleAnywhere, Category = "Components")
+	URotateComponent *Turret{nullptr};
+
+	UPROPERTY(VisibleAnywhere, Category = "Components")
+	UBarrelComponent *Barrel{nullptr};
+
+	UPROPERTY(VisibleAnywhere, Category = "Components")
+	UTankMovementComponent *Movement{nullptr};
+
+	UPROPERTY(VisibleAnywhere, Category = "Components")
+	UAimingComponent *Aiming{nullptr};
 };

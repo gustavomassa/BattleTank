@@ -18,6 +18,12 @@ class BATTLETANK_API UTankMovementComponent : public UNavMovementComponent
 
 public:
 	UTankMovementComponent();
+
+	FORCEINLINE float GetGravityAcceleration() const { return GravityAcceleration; }
+	FORCEINLINE float GetForceAdjustment() const { return ForceAdjustment; }
+	FORCEINLINE float GetDefaultMass() const { return Mass; }
+	FORCEINLINE float GetMass() const { return Cast<UPrimitiveComponent>(GetOwner()->GetRootComponent())->GetMass(); }
+
 	void IntendMoveForward(float Throw);
 	void IntendMoveLeft(float Throw);
 	void IntendMoveRight(float Throw);
@@ -29,4 +35,11 @@ protected:
 
 private:
 	ATank *ControlledTank{nullptr};
+
+	UPROPERTY(EditAnywhere, Category = "Movement")
+	float GravityAcceleration{9.81f};
+	UPROPERTY(EditAnywhere, Category = "Movement")
+	float ForceAdjustment{1.9f};
+	UPROPERTY(EditAnywhere, Category = "Movement")
+	float Mass{40000.0f};
 };
