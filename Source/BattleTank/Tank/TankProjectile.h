@@ -9,6 +9,7 @@
 
 // Forward Declarations
 class UTankProjectileMovementComponent;
+class URadialForceComponent;
 
 UCLASS()
 class BATTLETANK_API ATankProjectile : public AActor, public IProjectileInterface
@@ -35,6 +36,9 @@ private:
 	UParticleSystemComponent *LaunchBlast{nullptr};
 	UPROPERTY(VisibleAnywhere, Category = "Components")
 	UParticleSystemComponent *ImpactBlast{nullptr};
+
+	UPROPERTY(VisibleAnywhere, Category = "Components")
+	URadialForceComponent *ExplosionForce{nullptr};
 
 	UFUNCTION()
 	void OnHit(UPrimitiveComponent *HitComponent, AActor *OtherActor, UPrimitiveComponent *OtherComp, FVector NormalImpulse, const FHitResult &Hit);
