@@ -10,10 +10,10 @@
 ATankProjectile::ATankProjectile()
 {
 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
-	PrimaryActorTick.bCanEverTick = true;
+	PrimaryActorTick.bCanEverTick = false;
 
 	// Register Components
-	TankProjectileMovementComponent = CreateDefaultSubobject<UTankProjectileMovementComponent>(FName("Projectile Movement Component"));
+	TankProjectileMovementComponent = CreateDefaultSubobject<UTankProjectileMovementComponent>(FName("Movement Component"));
 	TankProjectileMovementComponent->bAutoActivate = false;
 
 	CollisionMesh = CreateDefaultSubobject<UStaticMeshComponent>(FName("Collision Mesh"));
@@ -22,20 +22,19 @@ ATankProjectile::ATankProjectile()
 	SetRootComponent(CollisionMesh);
 
 	LaunchBlast = CreateDefaultSubobject<UParticleSystemComponent>(FName("Launch Blast"));
-	//LaunchBlast->AttachTo(RootComponent);
 	LaunchBlast->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepRelativeTransform);
+
+	ImpactBlast = CreateDefaultSubobject<UParticleSystemComponent>(FName("Impact Blast"));
+	ImpactBlast->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepRelativeTransform);
+	ImpactBlast->bAutoActivate = false;
 }
 
 // Called when the game starts or when spawned
 void ATankProjectile::BeginPlay()
 {
 	Super::BeginPlay();
-}
 
-// Called every frame
-void ATankProjectile::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
+	CollisionMesh->OnComponentHit.AddDynamic(this, &ATankProjectile::OnHit);
 }
 
 void ATankProjectile::Launch(float Speed)
@@ -43,4 +42,12 @@ void ATankProjectile::Launch(float Speed)
 	UE_LOG(LogTemp, Warning, TEXT("Projectile fired at %f"), Speed);
 	TankProjectileMovementComponent->SetVelocityInLocalSpace(FVector::ForwardVector * Speed);
 	TankProjectileMovementComponent->Activate();
+}
+
+void ATankProjectile::OnHit(UPrimitiveComponent *HitComponent, AActor *OtherActor, UPrimitiveComponent *OtherComp, FVector NormalImpulse, const FHitResult &Hit)
+{
+	UE_LOG(LogTemp, Warning, TEXT("PROJECTILE HIT"));
+
+	LaunchBlast->Deactivate();
+	ImpactBlast->Activate();
 }
