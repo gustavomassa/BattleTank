@@ -9,6 +9,9 @@
 #include "TankMovementComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Camera/CameraComponent.h"
+#include "Components/WidgetComponent.h"
+#include "UObject/ConstructorHelpers.h"
+#include "Blueprint/UserWidget.h"
 
 // Sets default values
 ATank::ATank()
@@ -64,6 +67,11 @@ ATank::ATank()
 
 	Movement = CreateDefaultSubobject<UTankMovementComponent>(FName("Movement Component"));
 	Aiming = CreateDefaultSubobject<UAimingComponent>(FName("Aiming Component"));
+
+	HealthBar = CreateDefaultSubobject<UWidgetComponent>(FName("HealthBar Widget"));
+	static ConstructorHelpers::FClassFinder<UUserWidget> MenuWidgetClassFinder(TEXT("/Game/Source/UI/UI_HealthBar"));
+	HealthBar->SetWidgetClass(MenuWidgetClassFinder.Class);
+	HealthBar->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepRelativeTransform);
 }
 
 // Called to bind functionality to input

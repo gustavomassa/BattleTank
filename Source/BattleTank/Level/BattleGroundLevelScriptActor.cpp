@@ -8,7 +8,7 @@
 ABattleGroundLevelScriptActor::ABattleGroundLevelScriptActor()
 {
     // Class finder must be done in the constructor to make sure cooking project works fine
-    static ConstructorHelpers::FClassFinder<UUserWidget> PlayerWidgetClassFinder(TEXT("/Game/Source/Blueprints/BP_Player_UI"));
+    static ConstructorHelpers::FClassFinder<UUserWidget> PlayerWidgetClassFinder(TEXT("/Game/Source/UI/UI_Player"));
     PlayerWidgetClass = PlayerWidgetClassFinder.Class;
 }
 

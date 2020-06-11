@@ -8,7 +8,7 @@
 AMenuLevelScriptActor::AMenuLevelScriptActor()
 {
     // Class finder must be done in the constructor to make sure cooking project works fine
-    static ConstructorHelpers::FClassFinder<UUserWidget> MenuWidgetClassFinder(TEXT("/Game/Source/Blueprints/BP_Menu_UI"));
+    static ConstructorHelpers::FClassFinder<UUserWidget> MenuWidgetClassFinder(TEXT("/Game/Source/UI/UI_MainMenu"));
     MenuWidgetClass = MenuWidgetClassFinder.Class;
 }
 

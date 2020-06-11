@@ -7,15 +7,9 @@
 #include "Tank.generated.h"
 
 //Foward Declarations
-//class USpringArmComponent;
 class UCameraComponent;
-//class UTankBodyComponent;
-//class URotateComponent;
-//class UBarrelComponent;
-//class UAimingComponent;
-//class UTankTrackComponent;
-//class UTankMovementComponent;
 class ATankProjectile;
+class UWidgetComponent;
 
 UCLASS()
 class BATTLETANK_API ATank : public APawn
@@ -69,6 +63,9 @@ private:
 	uint16 StartingHealth{100};
 	UPROPERTY(VisibleAnywhere, Category = "Health")
 	uint16 CurrentHealth{StartingHealth};
+
+	UPROPERTY(VisibleAnywhere, Category = "Components")
+	UWidgetComponent *HealthBar{nullptr};
 
 	virtual float TakeDamage(float Damage, struct FDamageEvent const &DamageEvent, AController *EventInstigator, AActor *DamageCauser) override;
 };
