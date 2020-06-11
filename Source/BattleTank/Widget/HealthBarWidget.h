@@ -6,18 +6,13 @@
 #include "Blueprint/UserWidget.h"
 #include "HealthBarWidget.generated.h"
 
-//Forward Declarations
-
-/**
- * 
- */
 UCLASS()
 class BATTLETANK_API UHealthBarWidget : public UUserWidget
 {
     GENERATED_BODY()
 
 public:
-    void Setup();
+    FORCEINLINE class UProgressBar *GetHealthBar() { return HealthBar; }
 
 private:
     UPROPERTY(meta = (BindWidget))

@@ -12,6 +12,8 @@
 #include "Components/WidgetComponent.h"
 #include "UObject/ConstructorHelpers.h"
 #include "Blueprint/UserWidget.h"
+#include "../Widget/HealthBarWidget.h"
+#include "Components/ProgressBar.h"
 
 // Sets default values
 ATank::ATank()
@@ -78,6 +80,26 @@ ATank::ATank()
 void ATank::SetupPlayerInputComponent(UInputComponent *PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
+}
+
+void ATank::BeginPlay()
+{
+	Super::BeginPlay();
+
+	HealthBar->InitWidget();
+	auto HealBarUserWidget = Cast<UHealthBarWidget>(HealthBar->GetUserWidgetObject());
+	if (!HealBarUserWidget)
+	{
+		UE_LOG(LogTemp, Error, TEXT("%s: Failed to Cast to UHealthBarWidget"), *GetOwner()->GetName());
+		return;
+	}
+	HealBarUserWidget->GetHealthBar()->PercentDelegate.BindUFunction(this, FName("GetHealthPercent"));
+}
+
+float ATank::GetHealthPercent() const
+{
+	//UE_LOG(LogTemp, Warning, TEXT("ATank GetHealthPercent"));
+	return (float)CurrentHealth / (float)StartingHealth;
 }
 
 float ATank::TakeDamage(float Damage, struct FDamageEvent const &DamageEvent, AController *EventInstigator, AActor *DamageCauser)

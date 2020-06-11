@@ -31,6 +31,9 @@ public:
 	FORCEINLINE class UTankMovementComponent *GetTankMovementComponent() const { return Movement; }
 	FORCEINLINE class UAimingComponent *GetTankAimingComponent() const { return Aiming; }
 
+protected:
+	virtual void BeginPlay() override;
+
 private:
 	UPROPERTY(VisibleAnywhere, Category = "Components")
 	USpringArmComponent *SpringArm{nullptr};
@@ -63,6 +66,8 @@ private:
 	uint16 StartingHealth{100};
 	UPROPERTY(VisibleAnywhere, Category = "Health")
 	uint16 CurrentHealth{StartingHealth};
+	UFUNCTION(BlueprintPure, Category = "Health")
+	float GetHealthPercent() const;
 
 	UPROPERTY(VisibleAnywhere, Category = "Components")
 	UWidgetComponent *HealthBar{nullptr};
