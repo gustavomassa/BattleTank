@@ -26,10 +26,11 @@ ATankProjectile::ATankProjectile()
 	LaunchBlast->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepRelativeTransform);
 
 	ImpactBlast = CreateDefaultSubobject<UParticleSystemComponent>(FName("Impact Blast"));
-	ImpactBlast->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepRelativeTransform);
 	ImpactBlast->bAutoActivate = false;
+	ImpactBlast->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepRelativeTransform);
 
 	ExplosionForce = CreateDefaultSubobject<URadialForceComponent>(FName("Explosion Force"));
+	ExplosionForce->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepRelativeTransform);
 }
 
 // Called when the game starts or when spawned
@@ -37,6 +38,7 @@ void ATankProjectile::BeginPlay()
 {
 	Super::BeginPlay();
 
+	//ExplosionForce->ImpulseStrength = (TankBody->GetMass() * TankBody->GetGravityAcceleration());
 	CollisionMesh->OnComponentHit.AddDynamic(this, &ATankProjectile::OnHit);
 }
 
@@ -55,4 +57,6 @@ void ATankProjectile::OnHit(UPrimitiveComponent *HitComponent, AActor *OtherActo
 	ImpactBlast->Activate();
 
 	ExplosionForce->FireImpulse();
+
+	//Destroy();
 }

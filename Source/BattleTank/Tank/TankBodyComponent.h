@@ -16,7 +16,15 @@ class BATTLETANK_API UTankBodyComponent : public UStaticMeshComponent
 
 public:
 	UTankBodyComponent();
+	FORCEINLINE float GetGravityAcceleration() const { return GravityAcceleration; }
+	FORCEINLINE float GetDefaultMass() const { return Mass; }
 
 protected:
 	virtual void BeginPlay() override;
+
+private:
+	UPROPERTY(EditAnywhere, Category = "Setup")
+	float GravityAcceleration{9.81f};
+	UPROPERTY(EditAnywhere, Category = "Setup")
+	float Mass{40000.0f};
 };

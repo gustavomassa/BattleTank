@@ -3,7 +3,6 @@
 #include "TankBodyComponent.h"
 #include "UObject/ConstructorHelpers.h"
 #include "Tank.h"
-#include "TankMovementComponent.h"
 
 UTankBodyComponent::UTankBodyComponent()
 {
@@ -22,11 +21,5 @@ void UTankBodyComponent::BeginPlay()
 {
     Super::BeginPlay();
 
-    auto MovementComponent = Cast<ATank>(GetOwner())->GetTankMovementComponent();
-    if (!MovementComponent)
-    {
-        UE_LOG(LogTemp, Error, TEXT("%s: Failed to get Tank Movement Component"), *GetOwner()->GetName());
-        return;
-    }
-    this->SetMassOverrideInKg(NAME_None, MovementComponent->GetDefaultMass(), true);
+    this->SetMassOverrideInKg(NAME_None, Mass, true);
 }

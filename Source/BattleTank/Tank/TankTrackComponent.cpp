@@ -3,6 +3,7 @@
 #include "TankTrackComponent.h"
 #include "UObject/ConstructorHelpers.h"
 #include "Tank.h"
+#include "TankBodyComponent.h"
 #include "TankMovementComponent.h"
 
 UTankTrackComponent::UTankTrackComponent()
@@ -56,17 +57,17 @@ void UTankTrackComponent::DriveTrack()
         return;
     }
 
-    auto MovementComponent = ControlledTank->GetTankMovementComponent();
-    if (!MovementComponent)
+    auto TankBody = ControlledTank->GetBodyComponent();
+    if (!TankBody)
     {
-        UE_LOG(LogTemp, Error, TEXT("%s: Failed to get Tank Movement Component"), *GetOwner()->GetName());
+        UE_LOG(LogTemp, Error, TEXT("%s: Failed to get Tank Body Component"), *GetOwner()->GetName());
         return;
     }
 
-    float TankMass = MovementComponent->GetMass();
+    float TankMass = TankBody->GetMass();
     float MassRelation = (TankMass >= 1000.0f) ? (TankMass / 1000.0f) : 1.0f;
-    float CurrentForceAdjustment = (MovementComponent->GetForceAdjustment() / FMath::Abs(CurrentThrottle));
-    float TrackMaxDrivingForce = (TankMass * MovementComponent->GetGravityAcceleration() * MassRelation * CurrentForceAdjustment);
+    float CurrentForceAdjustment = (ControlledTank->GetTankMovementComponent()->GetForceAdjustment() / FMath::Abs(CurrentThrottle));
+    float TrackMaxDrivingForce = (TankMass * TankBody->GetGravityAcceleration() * MassRelation * CurrentForceAdjustment);
 
     //UE_LOG(LogTemp, Warning, TEXT("CurrentThrottle: %f, CurrentForceAdjustment: %f"), CurrentThrottle, CurrentForceAdjustment);
 
