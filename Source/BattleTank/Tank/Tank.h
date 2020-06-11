@@ -64,4 +64,11 @@ private:
 
 	UPROPERTY(VisibleAnywhere, Category = "Components")
 	UAimingComponent *Aiming{nullptr};
+
+	UPROPERTY(EditDefaultsOnly, Category = "Setup")
+	uint16 StartingHealth{100};
+	UPROPERTY(VisibleAnywhere, Category = "Health")
+	uint16 CurrentHealth{StartingHealth};
+
+	virtual float TakeDamage(float Damage, struct FDamageEvent const &DamageEvent, AController *EventInstigator, AActor *DamageCauser) override;
 };

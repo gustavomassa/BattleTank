@@ -6,6 +6,8 @@
 #include "Components/StaticMeshComponent.h"
 #include "Particles/ParticleSystemComponent.h"
 #include "PhysicsEngine/RadialForceComponent.h"
+#include "Kismet/GameplayStatics.h"
+#include "GameFramework/DamageType.h"
 
 // Sets default values
 ATankProjectile::ATankProjectile()
@@ -44,6 +46,8 @@ void ATankProjectile::BeginPlay()
 
 void ATankProjectile::EndPlay(const EEndPlayReason::Type EndPlayReason)
 {
+	Super::EndPlay(EndPlayReason);
+
 	GetWorld()->GetTimerManager().ClearAllTimersForObject(this);
 }
 
@@ -71,6 +75,15 @@ void ATankProjectile::OnHit(UPrimitiveComponent *HitComponent, AActor *OtherActo
 	ExplosionForce->FireImpulse();
 	LaunchBlast->Deactivate();
 	ImpactBlast->Activate();
+
+	UGameplayStatics::ApplyRadialDamage(
+		this,
+		ProjectileDamage,
+		GetActorLocation(),
+		ExplosionForce->Radius,
+		UDamageType::StaticClass(),
+		TArray<AActor *>() // Damage all actors on the radius
+	);
 
 	GetWorld()->GetTimerManager().SetTimer(DestroyTimer, this, &ATankProjectile::OnDestroyTimerExpire, DestroyDelay, false);
 }

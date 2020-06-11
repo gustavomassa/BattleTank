@@ -71,3 +71,20 @@ void ATank::SetupPlayerInputComponent(UInputComponent *PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 }
+
+float ATank::TakeDamage(float Damage, struct FDamageEvent const &DamageEvent, AController *EventInstigator, AActor *DamageCauser)
+{
+	Super::TakeDamage(Damage, DamageEvent, EventInstigator, DamageCauser);
+
+	uint32 DamagePoints = FPlatformMath::RoundToInt(Damage);
+	uint32 DamageToApply = FMath::Clamp<uint32>(DamagePoints, 0, CurrentHealth);
+	CurrentHealth -= DamageToApply;
+	if (CurrentHealth <= 0)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("%s: DIED"), *GetOwner()->GetName());
+	}
+
+	UE_LOG(LogTemp, Warning, TEXT("Damage: %f, DamageToApply: %i"), Damage, DamageToApply);
+
+	return DamageToApply;
+}
