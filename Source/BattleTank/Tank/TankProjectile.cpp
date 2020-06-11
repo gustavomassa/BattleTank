@@ -42,6 +42,11 @@ void ATankProjectile::BeginPlay()
 	CollisionMesh->OnComponentHit.AddDynamic(this, &ATankProjectile::OnHit);
 }
 
+void ATankProjectile::EndPlay(const EEndPlayReason::Type EndPlayReason)
+{
+	GetWorld()->GetTimerManager().ClearAllTimersForObject(this);
+}
+
 void ATankProjectile::Launch(float Speed)
 {
 	UE_LOG(LogTemp, Warning, TEXT("Projectile fired at %f"), Speed);
@@ -53,10 +58,24 @@ void ATankProjectile::OnHit(UPrimitiveComponent *HitComponent, AActor *OtherActo
 {
 	UE_LOG(LogTemp, Warning, TEXT("PROJECTILE HIT"));
 
+	/* 	LaunchBlast->Deactivate();
+	ImpactBlast->Activate();
+	ExplosionForce->FireImpulse();
+
+	SetRootComponent(ImpactBlast);
+	CollisionMesh->DestroyComponent(); */
+
+	SetRootComponent(ImpactBlast);
+	CollisionMesh->DestroyComponent();
+
+	ExplosionForce->FireImpulse();
 	LaunchBlast->Deactivate();
 	ImpactBlast->Activate();
 
-	ExplosionForce->FireImpulse();
+	GetWorld()->GetTimerManager().SetTimer(DestroyTimer, this, &ATankProjectile::OnDestroyTimerExpire, DestroyDelay, false);
+}
 
-	//Destroy();
+void ATankProjectile::OnDestroyTimerExpire()
+{
+	Destroy();
 }

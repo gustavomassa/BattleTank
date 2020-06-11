@@ -23,8 +23,8 @@ public:
 	void Launch(float Speed);
 
 protected:
-	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
+	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 
 private:
 	UPROPERTY(VisibleAnywhere, Category = "Components")
@@ -41,6 +41,12 @@ private:
 	UPROPERTY(VisibleAnywhere, Category = "Components")
 	URadialForceComponent *ExplosionForce{nullptr};
 
+	UPROPERTY(EditDefaultsOnly, Category = "Setup")
+	float DestroyDelay{5.0f};
+	FTimerHandle DestroyTimer;
+
 	UFUNCTION()
 	void OnHit(UPrimitiveComponent *HitComponent, AActor *OtherActor, UPrimitiveComponent *OtherComp, FVector NormalImpulse, const FHitResult &Hit);
+	UFUNCTION()
+	void OnDestroyTimerExpire();
 };

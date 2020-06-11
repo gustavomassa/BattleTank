@@ -15,6 +15,9 @@ UTankBodyComponent::UTankBodyComponent()
     this->SetEnableGravity(true);
     this->SetLinearDamping(0.1f);
     this->SetAngularDamping(0.2f);
+
+    this->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+    this->SetCollisionObjectType(ECollisionChannel::ECC_Pawn);
 }
 
 void UTankBodyComponent::BeginPlay()
