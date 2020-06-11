@@ -43,10 +43,15 @@ protected:
 	float ReloadTimeInSeconds{3.0f};
 	UPROPERTY(EditDefaultsOnly, Category = "Setup")
 	bool bHasTurret{false};
+
 	UPROPERTY(EditDefaultsOnly, Category = "Setup")
-	bool bCountAmmo{false};
-	UPROPERTY(EditDefaultsOnly, Category = "Setup", meta = (EditCondition = "bCountAmmo"))
-	uint8 AmmoCount{0};
+	bool bUseAmmo{false};
+	UPROPERTY(EditDefaultsOnly, Category = "Setup", meta = (EditCondition = "bUseAmmo"))
+	uint8 InitialAmmo{10};
+	UPROPERTY(EditDefaultsOnly, Category = "Setup", meta = (EditCondition = "bUseAmmo"))
+	uint8 MaxAmmo{20};
+	UPROPERTY(VisibleAnywhere, Category = "Setup", meta = (EditCondition = "bUseAmmo"))
+	uint8 AmmoCount{InitialAmmo};
 
 	virtual void BeginPlay() override;
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction *ThisTickFunction) override;
@@ -61,7 +66,8 @@ protected:
 	bool IsCrosshairLocked(float Tolerance);
 	void MoveTurret();
 	void MoveBarrel();
-	void UpdateAmmoCount();
+	void AddAmmo(uint8 Amount);
+	void RemoveAmmo(uint8 Amount);
 	void UpdateAmmoUI();
 
 private:

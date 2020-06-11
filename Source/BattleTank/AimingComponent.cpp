@@ -61,7 +61,7 @@ void UAimingComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActo
 
 	LastFiringState = FiringState;
 
-	if (bCountAmmo && AmmoCount <= 0)
+	if (bUseAmmo && AmmoCount <= 0)
 	{
 		FiringState = EFiringState::OutOfAmmo;
 	}
@@ -257,7 +257,8 @@ void UAimingComponent::Fire()
 		{
 			SpawnedProjectile->Launch(ProjectileLaunchSpeed);
 
-			UpdateAmmoCount();
+			//UpdateAmmoCount();
+			RemoveAmmo(1);
 			UpdateAmmoUI();
 
 			// Reset the timer
@@ -266,11 +267,19 @@ void UAimingComponent::Fire()
 	}
 }
 
-void UAimingComponent::UpdateAmmoCount()
+void UAimingComponent::AddAmmo(uint8 Amount)
 {
-	if (bCountAmmo && AmmoCount > 0)
+	if (bUseAmmo && AmmoCount < MaxAmmo)
 	{
-		--AmmoCount;
+		AmmoCount = FMath::Clamp<uint8>(AmmoCount + Amount, 0, MaxAmmo);
+	}
+}
+
+void UAimingComponent::RemoveAmmo(uint8 Amount)
+{
+	if (bUseAmmo && AmmoCount > 0)
+	{
+		AmmoCount = FMath::Clamp<uint8>(AmmoCount - Amount, 0, MaxAmmo);
 	}
 }
 
