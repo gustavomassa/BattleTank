@@ -32,7 +32,8 @@ public:
 protected:
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaSeconds) override;
-	ATank *GetControlledTank() const override;
+	virtual void SetPawn(APawn *InPawn) override;
+	virtual void SetupInputComponent() override;
 
 private:
 	UMenuWidget *MenuWidget{nullptr};
@@ -60,7 +61,7 @@ private:
 	float MaxElevationAngle{5.0f};
 	UPROPERTY(EditAnywhere, Category = "Input Axis")
 	float ElevationSensitivity{100.0f};
-	UPROPERTY(EditAnywhere, Category = "Input Axis")
+	/* 	UPROPERTY(EditAnywhere, Category = "Input Axis")
 	FName ThrottleLeftBind{"LeftTrackThrottle"};
 	UPROPERTY(EditAnywhere, Category = "Input Axis")
 	FName ThrottleRightBind{"RightTrackThrottle"};
@@ -70,7 +71,7 @@ private:
 	FName MoveBackwardBind{"MoveBackward"};
 
 	UPROPERTY(EditAnywhere, Category = "Input Action")
-	FName FireBind{"Fire"};
+	FName FireBind{"Fire"}; */
 
 	//TODO: Create a camera component and delegate
 	UFUNCTION(BlueprintCallable, Category = "Input Axis")
@@ -78,10 +79,12 @@ private:
 	UFUNCTION(BlueprintCallable, Category = "Input Axis")
 	void OnAxisElevation(float AxisValue);
 
-	void RegisterInputBind() const;
 	FVector2D GetCrosshairScreenLocation() const;
 	bool GetLookDirection(const FVector2D &ScreenLocation, FVector &Out_LookDirection) const;
 	bool GetSightRayHitLocation(FVector &Out_HitLocation) const;
 	bool GetLookDirectionHitResult(const FVector &LookDirection, FHitResult &Out_HitResult) const;
 	bool AimTowardsCrosshair();
+
+	UFUNCTION()
+	void OnTankDeath();
 };

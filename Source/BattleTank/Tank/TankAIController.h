@@ -23,10 +23,13 @@ protected:
 
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaSeconds) override;
-	ATank *GetControlledTank() const override;
+	virtual void SetPawn(APawn *InPawn) override;
 
 private:
 	ATank *ControlledTank{nullptr};
 	ATank *PlayerTank{nullptr};
 	FVector PlayerTankLocation{FVector::ZeroVector};
+
+	UFUNCTION()
+	void OnTankDeath();
 };

@@ -14,6 +14,10 @@ void UTankMovementComponent::BeginPlay()
     Super::BeginPlay();
 
     ControlledTank = Cast<ATank>(GetOwner());
+    if (!ensure(ControlledTank))
+    {
+        UE_LOG(LogTemp, Error, TEXT("%s: Failed to get Controlled Tank!"), *GetOwner()->GetName());
+    }
 }
 
 void UTankMovementComponent::IntendMoveForward(float Throw)

@@ -7,8 +7,6 @@
 #include "../RotateComponent.h"
 #include "../BarrelComponent.h"
 #include "../AimingComponent.h"
-#include "TankTrackComponent.h"
-#include "TankMovementComponent.h"
 #include "../Widget/MenuWidget.h"
 #include "../Widget/PlayerWidget.h"
 
@@ -21,22 +19,6 @@ void ATankPlayerController::BeginPlay()
     Super::BeginPlay();
 
     UE_LOG(LogTemp, Warning, TEXT("PlayerController Begin Play"));
-
-    ControlledTank = GetControlledTank();
-    if (!ensure(ControlledTank))
-    {
-        UE_LOG(LogTemp, Error, TEXT("%s: Failed to get Controlled Tank!"), *GetOwner()->GetName());
-    }
-
-    if (!ensure(ControlledTank) || !ensure(ControlledTank->InputComponent))
-    {
-        UE_LOG(LogTemp, Error, TEXT("%s: Failed to find Controlled Tank Input Component!"), *GetOwner()->GetName());
-    }
-
-    // Register Input Binds
-    RegisterInputBind();
-
-    UE_LOG(LogTemp, Warning, TEXT("PlayerController tank: %s!"), *ControlledTank->GetName());
 }
 
 void ATankPlayerController::Tick(float DeltaSeconds)
@@ -44,6 +26,39 @@ void ATankPlayerController::Tick(float DeltaSeconds)
     Super::Tick(DeltaSeconds);
 
     AimTowardsCrosshair();
+}
+
+void ATankPlayerController::SetPawn(APawn *InPawn)
+{
+    Super::SetPawn(InPawn);
+
+    if (InPawn)
+    {
+        ControlledTank = Cast<ATank>(InPawn);
+        if (!ensure(ControlledTank))
+        {
+            UE_LOG(LogTemp, Error, TEXT("%s: Failed to get Controlled Tank!"), *GetOwner()->GetName());
+        }
+
+        UE_LOG(LogTemp, Warning, TEXT("PlayerController tank: %s"), *ControlledTank->GetName());
+
+        // Subscribe to Events
+        ControlledTank->OnDeath.AddUniqueDynamic(this, &ATankPlayerController::OnTankDeath);
+    }
+}
+
+void ATankPlayerController::SetupInputComponent()
+{
+    Super::SetupInputComponent();
+
+    if (!ensure(InputComponent))
+    {
+        UE_LOG(LogTemp, Error, TEXT("%s: Failed to get Input Component!"), *GetOwner()->GetName());
+    }
+
+    // Axis
+    InputComponent->BindAxis(AzimuthBind, this, &ATankPlayerController::OnAxisAzimuth);
+    InputComponent->BindAxis(ElevationBind, this, &ATankPlayerController::OnAxisElevation);
 }
 
 void ATankPlayerController::SetMainMenuWidgetReference(UMenuWidget *MenuWidgetToSet)
@@ -64,31 +79,6 @@ const UMenuWidget *ATankPlayerController::GetMenuWidget() const
 UPlayerWidget *ATankPlayerController::GetPlayerWidget() const
 {
     return PlayerWidget;
-}
-
-ATank *ATankPlayerController::GetControlledTank() const
-{
-    // Tank is a especialization of the Pawn (Subtype - Runtime Polymorphism)
-    return Cast<ATank>(GetPawn());
-}
-
-void ATankPlayerController::RegisterInputBind() const
-{
-    if (!ControlledTank)
-    {
-        UE_LOG(LogTemp, Error, TEXT("%s: Failed to get Controlled Tank!"), *GetOwner()->GetName());
-    }
-
-    // Axis
-    ControlledTank->InputComponent->BindAxis(AzimuthBind, this, &ATankPlayerController::OnAxisAzimuth);
-    ControlledTank->InputComponent->BindAxis(ElevationBind, this, &ATankPlayerController::OnAxisElevation);
-    ControlledTank->InputComponent->BindAxis(ThrottleLeftBind, ControlledTank->GetTankMovementComponent(), &UTankMovementComponent::IntendMoveLeft);
-    ControlledTank->InputComponent->BindAxis(ThrottleRightBind, ControlledTank->GetTankMovementComponent(), &UTankMovementComponent::IntendMoveRight);
-    ControlledTank->InputComponent->BindAxis(MoveForwardBind, ControlledTank->GetTankMovementComponent(), &UTankMovementComponent::IntendMoveForward);
-    ControlledTank->InputComponent->BindAxis(MoveBackwardBind, ControlledTank->GetTankMovementComponent(), &UTankMovementComponent::IntendMoveBackward);
-
-    // Actions
-    ControlledTank->InputComponent->BindAction(FireBind, IE_Pressed, ControlledTank->GetTankAimingComponent(), &UAimingComponent::Fire);
 }
 
 // Yaw //TODO: Create a Camera Component and put the logic there
@@ -189,4 +179,8 @@ bool ATankPlayerController::AimTowardsCrosshair()
     }
 
     return false;
+}
+
+void ATankPlayerController::OnTankDeath()
+{
 }

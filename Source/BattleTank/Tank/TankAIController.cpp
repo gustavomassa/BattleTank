@@ -9,13 +9,6 @@ void ATankAIController::BeginPlay()
 {
     Super::BeginPlay();
 
-    ControlledTank = GetControlledTank();
-    if (!ensure(ControlledTank))
-    {
-        UE_LOG(LogTemp, Error, TEXT("AIController: Failed to get Controlled Tank"));
-    }
-    UE_LOG(LogTemp, Warning, TEXT("AIController: Controlled Tank %s"), *ControlledTank->GetName());
-
     PlayerTank = Cast<ATank>(GetWorld()->GetFirstPlayerController()->GetPawn());
     if (!ensure(PlayerTank))
     {
@@ -49,8 +42,25 @@ void ATankAIController::Tick(float DeltaSeconds)
     }
 }
 
-ATank *ATankAIController::GetControlledTank() const
+void ATankAIController::SetPawn(APawn *InPawn)
 {
-    // Tank is a especialization of the Pawn (Subtype - Runtime Polymorphism)
-    return Cast<ATank>(GetPawn());
+    Super::SetPawn(InPawn);
+
+    if (InPawn)
+    {
+        ControlledTank = Cast<ATank>(InPawn);
+        if (!ensure(ControlledTank))
+        {
+            UE_LOG(LogTemp, Error, TEXT("AIController: Failed to get Controlled Tank"));
+        }
+        UE_LOG(LogTemp, Warning, TEXT("AIController: Controlled Tank %s"), *ControlledTank->GetName());
+
+        // Subscribe to Events
+        ControlledTank->OnDeath.AddUniqueDynamic(this, &ATankAIController::OnTankDeath);
+    }
+}
+
+void ATankAIController::OnTankDeath()
+{
+    UE_LOG(LogTemp, Warning, TEXT("ATankAIController OnTankDeath"));
 }

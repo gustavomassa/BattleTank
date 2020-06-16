@@ -76,10 +76,18 @@ ATank::ATank()
 	HealthBar->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepRelativeTransform);
 }
 
-// Called to bind functionality to input
 void ATank::SetupPlayerInputComponent(UInputComponent *PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
+
+	// Axis
+	PlayerInputComponent->BindAxis(ThrottleLeftBind, GetTankMovementComponent(), &UTankMovementComponent::IntendMoveLeft);
+	PlayerInputComponent->BindAxis(ThrottleRightBind, GetTankMovementComponent(), &UTankMovementComponent::IntendMoveRight);
+	PlayerInputComponent->BindAxis(MoveForwardBind, GetTankMovementComponent(), &UTankMovementComponent::IntendMoveForward);
+	PlayerInputComponent->BindAxis(MoveBackwardBind, GetTankMovementComponent(), &UTankMovementComponent::IntendMoveBackward);
+
+	// Actions
+	PlayerInputComponent->BindAction(FireBind, IE_Pressed, GetTankAimingComponent(), &UAimingComponent::Fire);
 }
 
 void ATank::BeginPlay()
@@ -112,6 +120,8 @@ float ATank::TakeDamage(float Damage, struct FDamageEvent const &DamageEvent, AC
 	if (CurrentHealth <= 0)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("%s: DIED"), *GetOwner()->GetName());
+
+		OnDeath.Broadcast();
 	}
 
 	UE_LOG(LogTemp, Warning, TEXT("Damage: %f, DamageToApply: %i"), Damage, DamageToApply);

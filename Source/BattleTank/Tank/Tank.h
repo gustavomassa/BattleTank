@@ -11,6 +11,8 @@ class UCameraComponent;
 class ATankProjectile;
 class UWidgetComponent;
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FTankDelegate);
+
 UCLASS()
 class BATTLETANK_API ATank : public APawn
 {
@@ -30,6 +32,8 @@ public:
 	FORCEINLINE class UTankTrackComponent *GetTankTrackRightComponent() const { return RightTrack; }
 	FORCEINLINE class UTankMovementComponent *GetTankMovementComponent() const { return Movement; }
 	FORCEINLINE class UAimingComponent *GetTankAimingComponent() const { return Aiming; }
+
+	FTankDelegate OnDeath;
 
 protected:
 	virtual void BeginPlay() override;
@@ -61,6 +65,18 @@ private:
 
 	UPROPERTY(VisibleAnywhere, Category = "Components")
 	UAimingComponent *Aiming{nullptr};
+
+	UPROPERTY(EditAnywhere, Category = "Input Axis")
+	FName ThrottleLeftBind{"LeftTrackThrottle"};
+	UPROPERTY(EditAnywhere, Category = "Input Axis")
+	FName ThrottleRightBind{"RightTrackThrottle"};
+	UPROPERTY(EditAnywhere, Category = "Input Axis")
+	FName MoveForwardBind{"MoveForward"};
+	UPROPERTY(EditAnywhere, Category = "Input Axis")
+	FName MoveBackwardBind{"MoveBackward"};
+
+	UPROPERTY(EditAnywhere, Category = "Input Action")
+	FName FireBind{"Fire"};
 
 	UPROPERTY(EditDefaultsOnly, Category = "Setup")
 	uint16 StartingHealth{100};

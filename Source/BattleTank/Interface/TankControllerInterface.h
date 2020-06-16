@@ -19,5 +19,5 @@ class ITankControllerInterface
 protected:
 	virtual void BeginPlay() = 0;
 	virtual void Tick(float DeltaSeconds) = 0;
-	virtual ATank *GetControlledTank() const = 0;
+	virtual void OnTankDeath() = 0;
 };
