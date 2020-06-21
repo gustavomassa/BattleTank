@@ -94,6 +94,8 @@ void ATank::BeginPlay()
 {
 	Super::BeginPlay();
 
+	CurrentHealth = StartingHealth;
+
 	HealthBar->InitWidget();
 	auto HealBarUserWidget = Cast<UHealthBarWidget>(HealthBar->GetUserWidgetObject());
 	if (!HealBarUserWidget)
@@ -119,8 +121,12 @@ float ATank::TakeDamage(float Damage, struct FDamageEvent const &DamageEvent, AC
 	CurrentHealth -= DamageToApply;
 	if (CurrentHealth <= 0)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("%s: DIED"), *GetOwner()->GetName());
+		if (GetOwner())
+		{
+			UE_LOG(LogTemp, Warning, TEXT("%s: DIED"), *GetOwner()->GetName());
+		}
 
+		//TODO: Implement death variable
 		OnDeath.Broadcast();
 	}
 

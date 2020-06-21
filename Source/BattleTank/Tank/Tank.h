@@ -81,7 +81,7 @@ private:
 	UPROPERTY(EditDefaultsOnly, Category = "Setup")
 	uint16 StartingHealth{100};
 	UPROPERTY(VisibleAnywhere, Category = "Health")
-	uint16 CurrentHealth{StartingHealth};
+	uint16 CurrentHealth{0};
 	UFUNCTION(BlueprintPure, Category = "Health")
 	float GetHealthPercent() const;
 

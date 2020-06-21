@@ -160,7 +160,7 @@ bool ATankPlayerController::GetLookDirectionHitResult(const FVector &LookDirecti
         Out_HitResult,
         StartLocation,
         EndLocation,
-        ECollisionChannel::ECC_Visibility,
+        ECollisionChannel::ECC_Camera,
         TraceParams));
 }
 
@@ -183,4 +183,5 @@ bool ATankPlayerController::AimTowardsCrosshair()
 
 void ATankPlayerController::OnTankDeath()
 {
+    StartSpectatingOnly();
 }

@@ -81,7 +81,11 @@ void UAimingComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActo
 	// AI does not need to update Widgets
 	if (bIsPlayerPawn && FiringState != LastFiringState)
 	{
-		GetPlayerController()->GetPlayerWidget()->UpdateCrosshairColor(GetFiringStateCrosshairColor());
+		auto PlayerController = GetPlayerController();
+		if (PlayerController)
+		{
+			PlayerController->GetPlayerWidget()->UpdateCrosshairColor(GetFiringStateCrosshairColor());
+		}
 	}
 }
 
@@ -95,11 +99,14 @@ IPlayerControllerInterface *UAimingComponent::GetPlayerController() const
 	if (bIsPlayerPawn)
 	{
 		IPlayerControllerInterface *PlayerController = Cast<IPlayerControllerInterface>(GetControlledPawn()->GetController());
-		if (!PlayerController)
+		/* 		if (!PlayerController)
 		{
 			UE_LOG(LogTemp, Error, TEXT("%s: Failed to Get Player Controller: Pawn Controller does not implement the IPlayerControllerInterface"), *GetName());
+		} */
+		if (PlayerController)
+		{
+			return PlayerController;
 		}
-		return PlayerController;
 	}
 	return nullptr;
 }
@@ -287,6 +294,10 @@ void UAimingComponent::UpdateAmmoUI()
 {
 	if (bIsPlayerPawn)
 	{
-		GetPlayerController()->GetPlayerWidget()->UpdateAmmoText(FText::FromString(FString::FromInt(AmmoCount)));
+		auto PlayerController = GetPlayerController();
+		if (PlayerController)
+		{
+			PlayerController->GetPlayerWidget()->UpdateAmmoText(FText::FromString(FString::FromInt(AmmoCount)));
+		}
 	}
 }
