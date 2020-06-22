@@ -43,7 +43,10 @@ private:
 	USpringArmComponent *SpringArm{nullptr};
 
 	UPROPERTY(VisibleAnywhere, Category = "Components")
-	UCameraComponent *Camera{nullptr};
+	UCameraComponent *ThirdPersonCamera{nullptr};
+
+	UPROPERTY(VisibleAnywhere, Category = "Components")
+	UCameraComponent *FirstPersonCamera{nullptr};
 
 	UPROPERTY(VisibleAnywhere, Category = "Components")
 	UTankBodyComponent *Body{nullptr};
@@ -76,6 +79,8 @@ private:
 	FName MoveBackwardBind{"MoveBackward"};
 
 	UPROPERTY(EditAnywhere, Category = "Input Action")
+	FName SwitchCameraBind{"SwitchCamera"};
+	UPROPERTY(EditAnywhere, Category = "Input Action")
 	FName FireBind{"Fire"};
 
 	UPROPERTY(EditDefaultsOnly, Category = "Setup")
@@ -88,5 +93,6 @@ private:
 	UPROPERTY(VisibleAnywhere, Category = "Components")
 	UWidgetComponent *HealthBar{nullptr};
 
+	void SwitchCamera();
 	virtual float TakeDamage(float Damage, struct FDamageEvent const &DamageEvent, AController *EventInstigator, AActor *DamageCauser) override;
 };

@@ -50,8 +50,14 @@ ATank::ATank()
 		}
 	} */
 
-	Camera = CreateDefaultSubobject<UCameraComponent>(FName("Camera Component"));
-	Camera->AttachToComponent(SpringArm, FAttachmentTransformRules::KeepRelativeTransform, FName("SpringEndpoint"));
+	ThirdPersonCamera = CreateDefaultSubobject<UCameraComponent>(FName("Third Person Camera"));
+	ThirdPersonCamera->bAutoActivate = true;
+	ThirdPersonCamera->AttachToComponent(SpringArm, FAttachmentTransformRules::KeepRelativeTransform, FName("SpringEndpoint"));
+
+	FirstPersonCamera = CreateDefaultSubobject<UCameraComponent>(FName("First Person Camera"));
+	FirstPersonCamera->SetRelativeLocation(FVector(800.0f, 0.0f, 100.0f));
+	FirstPersonCamera->bAutoActivate = false;
+	FirstPersonCamera->AttachToComponent(SpringArm, FAttachmentTransformRules::KeepRelativeTransform, FName("SpringEndpoint"));
 
 	LeftTrack = CreateDefaultSubobject<UTankTrackComponent>(FName("Left Track Mesh"));
 	LeftTrack->SetNotifyRigidBodyCollision(true);
@@ -87,6 +93,7 @@ void ATank::SetupPlayerInputComponent(UInputComponent *PlayerInputComponent)
 	PlayerInputComponent->BindAxis(MoveBackwardBind, GetTankMovementComponent(), &UTankMovementComponent::IntendMoveBackward);
 
 	// Actions
+	PlayerInputComponent->BindAction(SwitchCameraBind, IE_Pressed, this, &ATank::SwitchCamera);
 	PlayerInputComponent->BindAction(FireBind, IE_Pressed, GetTankAimingComponent(), &UAimingComponent::Fire);
 }
 
@@ -110,6 +117,12 @@ float ATank::GetHealthPercent() const
 {
 	//UE_LOG(LogTemp, Warning, TEXT("ATank GetHealthPercent"));
 	return (float)CurrentHealth / (float)StartingHealth;
+}
+
+void ATank::SwitchCamera()
+{
+	ThirdPersonCamera->ToggleActive();
+	FirstPersonCamera->ToggleActive();
 }
 
 float ATank::TakeDamage(float Damage, struct FDamageEvent const &DamageEvent, AController *EventInstigator, AActor *DamageCauser)
