@@ -7,6 +7,10 @@
 		{
 			"name": "UE4",
 			"path": "E:\\Epic\\UE_4.24"
+		},
+		{
+			"name": "Extensions",
+			"path": "c:\\Users\\Gustavo Massaneiro\\.vscode\\extensions\\suvam0451.sleeping-forest-ue4-0.6.14\\src\\data\\extensions"
 		}
 	],
 	"settings": {
@@ -107,6 +111,75 @@
 			"xstring": "cpp",
 			"xtr1common": "cpp",
 			"xtree": "cpp"
+		},
+		"files.exclude": {
+			"**/.git": true,
+			"**/.svn": true,
+			"**/.hg": true,
+			"**/CVS": true,
+			"**/.DS_Store": true,
+			"**.exe": true,
+			"**.dll": true,
+			"**.egstore": true,
+			"**.generated.h": true,
+			"**.uasset": true,
+			"**.gitignore": true,
+			"**.gitattributes": true,
+			"**/Intermediate": true,
+			"**/Saved": true,
+			"**/Binaries": true,
+			"**/Build": true,
+			"**/DerivedDataCache": true,
+			"**/Documentation": true,
+			"**/Programs": true,
+			"**/FeaturePacks": true,
+			"**/Samples": true,
+			"**/Templates": true,
+			"**/Extras": true,
+			"**/Engine/Source/Editor": true,
+			"**/Content": true,
+			"**/Resources": true
+		},
+		"files.watcherExclude": {
+			"**/.git/objects/**": true,
+			"**/.git/subtree-cache/**": true,
+			"**/node_modules/*/**": true,
+			"**/.hg/store/**": true,
+			"**/.git/*/**": true,
+			"**/bower_components/*/**": true,
+			"**/.tmp/*/**": true,
+			"**/dist/*/**": true,
+			"**/Dist/*/**": true,
+			"**/build/*/**": true,
+			"**/Build/*/**": true,
+			"**/binaries/*/**": true,
+			"**/Binaries/*/**": true,
+			"**/intermediate/*/**": true,
+			"**/Intermediate/*/**": true,
+			"**/saved/*/**": true,
+			"**/Saved/*/**": true,
+			"**/Content/*/**": true,
+			"**/content/*/**": true,
+			"**/Engine/*/**": true,
+			"**/engine/*/**": true,
+			"**/FeaturePacks/*/**": true,
+			"**/featurePacks/*/**": true,
+			"**/Samples/*/**": true,
+			"**/samples/*/**": true,
+			"**/Templates/*/**": true,
+			"**/templates/*/**": true,
+			"**/log/*/**": true,
+			"**/Log/*/**": true,
+			"**/coverage/*/**": true,
+			"**/.nyc_output/*/**": true,
+			"**/jsreportapp/*/**": true,
+			"**/Engine/**": true
+		},
+		"search.exclude": {
+			"**/node_modules": true,
+			"**/bower_components": true,
+			"**/*.code-search": true,
+			"**/Engine/Source/Editor": true
 		}
 	},
 	"extensions": {
