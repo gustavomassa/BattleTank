@@ -5,6 +5,8 @@
 #include "Tank.h"
 #include "TankBodyComponent.h"
 #include "TankMovementComponent.h"
+#include "TankSuspension.h"
+#include "../SpawnPoint.h"
 
 UTankTrackComponent::UTankTrackComponent()
 {
@@ -15,7 +17,9 @@ UTankTrackComponent::UTankTrackComponent()
     this->SetStaticMesh(TrackAsset.Object);
     this->SetRelativeLocation(FVector::ZeroVector);
     this->SetSimulatePhysics(false);
-    this->SetNotifyRigidBodyCollision(true);
+    //this->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+    //this->SetCollisionObjectType(ECollisionChannel::ECC_OverlapAll_Deprecated);
+    this->SetNotifyRigidBodyCollision(false);
 }
 
 void UTankTrackComponent::BeginPlay()
@@ -27,13 +31,11 @@ void UTankTrackComponent::BeginPlay()
     {
         UE_LOG(LogTemp, Error, TEXT("%s: Failed to get Controlled Tank!"), *GetName());
     }
-    TankRoot = Cast<UPrimitiveComponent>(GetOwner()->GetRootComponent());
+    /*     TankRoot = Cast<UPrimitiveComponent>(GetOwner()->GetRootComponent());
     if (!ensure(TankRoot))
     {
         UE_LOG(LogTemp, Error, TEXT("%s: Failed to get Tank Root!"), *GetName());
-    }
-
-    OnComponentHit.AddDynamic(this, &UTankTrackComponent::OnHit);
+    } */
 }
 
 /* void UTankTrackComponent::TickComponent(float DeltaTime, enum ELevelTick TickType, FActorComponentTickFunction *ThisTickFunction)
@@ -41,18 +43,46 @@ void UTankTrackComponent::BeginPlay()
     Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 } */
 
+TArray<ATankSuspension *> UTankTrackComponent::GetWheels() const
+{
+    TArray<ATankSuspension *> Result;
+    TArray<USceneComponent *> Children;
+    GetChildrenComponents(true, Children);
+    for (auto Child : Children)
+    {
+        auto SpawnPointChild = Cast<USpawnPoint>(Child);
+        if (SpawnPointChild)
+        {
+            auto SpawnedActor = SpawnPointChild->GetSpawnedActor();
+            if (SpawnedActor)
+            {
+                auto TankSuspensionChild = Cast<ATankSuspension>(SpawnedActor);
+                if (TankSuspensionChild)
+                {
+                    Result.Add(TankSuspensionChild);
+                }
+            }
+        }
+    }
+
+    return Result;
+}
+
 void UTankTrackComponent::SetThrottle(float Throttle)
 {
     if (Throttle == 0.0f)
     {
         return;
     }
-    CurrentThrottle = FMath::Clamp<float>(CurrentThrottle + Throttle, -1.0f, 1.0f);
+    //CurrentThrottle = FMath::Clamp<float>(CurrentThrottle + Throttle, -1.0f, 1.0f);
+
+    Throttle = FMath::Clamp<float>(Throttle, -1.0f, 1.0f);
+    DriveTrack(Throttle);
 }
 
-void UTankTrackComponent::DriveTrack()
+void UTankTrackComponent::DriveTrack(float Throttle)
 {
-    if (CurrentThrottle == 0.0f)
+    if (Throttle == 0.0f)
     {
         return;
     }
@@ -66,16 +96,25 @@ void UTankTrackComponent::DriveTrack()
 
     float TankMass = TankBody->GetMass();
     float MassRelation = (TankMass >= 1000.0f) ? (TankMass / 1000.0f) : 1.0f;
-    float CurrentForceAdjustment = (ControlledTank->GetTankMovementComponent()->GetForceAdjustment() / FMath::Abs(CurrentThrottle));
+    float CurrentForceAdjustment = (ControlledTank->GetTankMovementComponent()->GetForceAdjustment() / FMath::Abs(Throttle));
     float TrackMaxDrivingForce = (TankMass * TankBody->GetGravityAcceleration() * MassRelation * CurrentForceAdjustment);
 
     //UE_LOG(LogTemp, Warning, TEXT("CurrentThrottle: %f, CurrentForceAdjustment: %f"), CurrentThrottle, CurrentForceAdjustment);
 
-    FVector ForceApplied = (GetForwardVector() * CurrentThrottle * TrackMaxDrivingForce);
-    TankRoot->AddForceAtLocation(ForceApplied, GetComponentLocation());
+    //FVector ForceApplied = (GetForwardVector() * CurrentThrottle * TrackMaxDrivingForce);
+    //TankRoot->AddForceAtLocation(ForceApplied, GetComponentLocation());
+
+    float ForceApplied = (Throttle * TrackMaxDrivingForce);
+    auto Wheels = GetWheels();
+    float ForcePerWheel = ForceApplied / Wheels.Num();
+
+    for (auto Wheel : Wheels)
+    {
+        Wheel->AddDrivingForce(ForcePerWheel);
+    }
 }
 
-void UTankTrackComponent::CorrectSlippageForce()
+/* void UTankTrackComponent::CorrectSlippageForce()
 {
     // Force = Mass * Acceleration
     // Acceleration = Speed / Time
@@ -96,13 +135,4 @@ void UTankTrackComponent::CorrectSlippageForce()
 
     FVector CorrectionForce = (TankRoot->GetMass() * CorrectionAcceleration) / 2; // Two tracks
     TankRoot->AddForce(CorrectionForce);
-}
-
-void UTankTrackComponent::OnHit(UPrimitiveComponent *HitComponent, AActor *OtherActor, UPrimitiveComponent *OtherComp, FVector NormalImpulse, const FHitResult &Hit)
-{
-    DriveTrack();
-    CorrectSlippageForce();
-
-    // Reset throttle
-    CurrentThrottle = 0.0f;
-}
+} */

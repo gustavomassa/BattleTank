@@ -8,6 +8,7 @@
 
 // Forward declarations
 class ATank;
+class ATankSuspension;
 
 /**
  * 
@@ -28,10 +29,8 @@ protected:
 private:
 	ATank *ControlledTank{nullptr};
 	UPrimitiveComponent *TankRoot{nullptr};
-	float CurrentThrottle{0.0f};
+	TArray<ATankSuspension *> GetWheels() const;
 
-	void DriveTrack();
-	void CorrectSlippageForce();
-	UFUNCTION()
-	void OnHit(UPrimitiveComponent *HitComponent, AActor *OtherActor, UPrimitiveComponent *OtherComp, FVector NormalImpulse, const FHitResult &Hit);
+	void DriveTrack(float Throttle);
+	//void CorrectSlippageForce();
 };

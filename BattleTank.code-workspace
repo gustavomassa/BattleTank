@@ -110,7 +110,8 @@
 			"xstddef": "cpp",
 			"xstring": "cpp",
 			"xtr1common": "cpp",
-			"xtree": "cpp"
+			"xtree": "cpp",
+			"xxatomic": "cpp"
 		},
 		"files.exclude": {
 			"**/.git": true,

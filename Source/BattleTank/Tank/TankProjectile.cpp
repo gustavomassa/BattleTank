@@ -21,6 +21,8 @@ ATankProjectile::ATankProjectile()
 
 	CollisionMesh = CreateDefaultSubobject<UStaticMeshComponent>(FName("Collision Mesh"));
 	CollisionMesh->SetNotifyRigidBodyCollision(true);
+	//CollisionMesh->IgnoreComponentWhenMoving(CollisionMesh, true);
+	//CollisionMesh->IgnoreActorWhenMoving(this, true);
 	CollisionMesh->SetVisibility(false);
 	SetRootComponent(CollisionMesh);
 
@@ -62,15 +64,18 @@ void ATankProjectile::OnHit(UPrimitiveComponent *HitComponent, AActor *OtherActo
 {
 	UE_LOG(LogTemp, Warning, TEXT("PROJECTILE HIT"));
 
-	/* 	LaunchBlast->Deactivate();
-	ImpactBlast->Activate();
-	ExplosionForce->FireImpulse();
-
-	SetRootComponent(ImpactBlast);
-	CollisionMesh->DestroyComponent(); */
-
 	SetRootComponent(ImpactBlast);
 	CollisionMesh->DestroyComponent();
+
+	// Ignore collisions with other tank projectiles
+	if (OtherActor)
+	{
+		if (Cast<ATankProjectile>(OtherActor))
+		{
+			UE_LOG(LogTemp, Warning, TEXT("PROJECTILE HIT ANOTHER PROJECTILE %s"), *OtherActor->GetName());
+			return;
+		}
+	}
 
 	ExplosionForce->FireImpulse();
 	LaunchBlast->Deactivate();

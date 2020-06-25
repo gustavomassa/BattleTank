@@ -34,5 +34,5 @@ private:
 	ATank *ControlledTank{nullptr};
 
 	UPROPERTY(EditAnywhere, Category = "Setup")
-	float ForceAdjustment{1.9f};
+	float ForceAdjustment{1.5f};
 };
