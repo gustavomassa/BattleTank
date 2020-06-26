@@ -2,6 +2,7 @@
 
 #include "TankProjectile.h"
 #include "TankProjectileMovementComponent.h"
+#include "Tank.h"
 #include "Engine/World.h"
 #include "Components/StaticMeshComponent.h"
 #include "Particles/ParticleSystemComponent.h"
@@ -92,14 +93,16 @@ void ATankProjectile::OnHit(UPrimitiveComponent *HitComponent, AActor *OtherActo
 	ImpactBlast->SetWorldLocation(Hit.Location);
 	ImpactBlast->Activate();
 
+	auto DamageCauser = Cast<ATank>(GetOwner());
+
 	UGameplayStatics::ApplyRadialDamage(
 		this,
 		ProjectileDamage,
 		Hit.Location,
 		ExplosionForce->Radius,
 		UDamageType::StaticClass(),
-		TArray<AActor *>() // Damage all actors on the radius
-	);
+		TArray<AActor *>{DamageCauser},
+		DamageCauser);
 
 	GetWorld()->GetTimerManager().SetTimer(DestroyTimer, this, &ATankProjectile::OnDestroyTimerExpire, DestroyDelay, false);
 }

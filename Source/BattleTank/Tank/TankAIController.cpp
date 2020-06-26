@@ -21,7 +21,7 @@ void ATankAIController::Tick(float DeltaSeconds)
 {
     Super::Tick(DeltaSeconds);
 
-    if (PlayerTank)
+    if (PlayerTank && ControlledTank && !ControlledTank->IsDead())
     {
         // Move towards the player
         auto moved = MoveToActor(PlayerTank, AcceptanceRadius);

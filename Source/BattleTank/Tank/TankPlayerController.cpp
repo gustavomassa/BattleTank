@@ -167,7 +167,7 @@ bool ATankPlayerController::GetLookDirectionHitResult(const FVector &LookDirecti
 // Move the Tank Barrel aiming where the player crosshair intersects the world
 bool ATankPlayerController::AimTowardsCrosshair()
 {
-    if (!ControlledTank || !ControlledTank->GetTankAimingComponent())
+    if (!ControlledTank || !ControlledTank->GetTankAimingComponent() || ControlledTank->IsDead())
     {
         return false;
     }

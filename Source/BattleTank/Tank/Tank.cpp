@@ -102,6 +102,8 @@ void ATank::BeginPlay()
 {
 	Super::BeginPlay();
 
+	bIsPlayerPawn = false;
+	bIsDead = false;
 	CurrentHealth = StartingHealth;
 
 	// Check if Pawn Controller is a Player Controller
@@ -160,7 +162,7 @@ float ATank::TakeDamage(float Damage, struct FDamageEvent const &DamageEvent, AC
 			UE_LOG(LogTemp, Warning, TEXT("%s: DIED"), *GetOwner()->GetName());
 		}
 
-		//TODO: Implement death variable
+		bIsDead = true;
 		OnDeath.Broadcast();
 	}
 

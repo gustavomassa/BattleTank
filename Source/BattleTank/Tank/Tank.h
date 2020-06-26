@@ -33,7 +33,8 @@ public:
 	FORCEINLINE class UTankTrackComponent *GetTankTrackRightComponent() const { return RightTrack; }
 	FORCEINLINE class UTankMovementComponent *GetTankMovementComponent() const { return Movement; }
 	FORCEINLINE class UAimingComponent *GetTankAimingComponent() const { return Aiming; }
-	//FORCEINLINE class UWidgetComponent *GetHealthBarWidget() const { return HealthBar; }
+	FORCEINLINE bool IsPlayerPawn() const { return bIsPlayerPawn; }
+	FORCEINLINE bool IsDead() const { return bIsDead; }
 
 	FTankDelegate OnDeath;
 
@@ -43,6 +44,7 @@ protected:
 private:
 	IPlayerControllerInterface *PlayerController{nullptr};
 	bool bIsPlayerPawn{false};
+	bool bIsDead{false};
 
 	UPROPERTY(VisibleAnywhere, Category = "Components")
 	USpringArmComponent *SpringArm{nullptr};
