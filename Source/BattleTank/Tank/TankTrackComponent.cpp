@@ -74,7 +74,6 @@ void UTankTrackComponent::SetThrottle(float Throttle)
     {
         return;
     }
-    //CurrentThrottle = FMath::Clamp<float>(CurrentThrottle + Throttle, -1.0f, 1.0f);
 
     Throttle = FMath::Clamp<float>(Throttle, -1.0f, 1.0f);
     DriveTrack(Throttle);

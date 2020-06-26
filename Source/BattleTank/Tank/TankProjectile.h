@@ -30,6 +30,8 @@ private:
 	UPROPERTY(VisibleAnywhere, Category = "Components")
 	UTankProjectileMovementComponent *TankProjectileMovementComponent{nullptr};
 
+	USceneComponent *Root{nullptr};
+
 	UPROPERTY(VisibleAnywhere, Category = "Components")
 	UStaticMeshComponent *CollisionMesh{nullptr};
 

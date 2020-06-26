@@ -16,25 +16,32 @@ ATankProjectile::ATankProjectile()
 	PrimaryActorTick.bCanEverTick = false;
 
 	// Register Components
-	TankProjectileMovementComponent = CreateDefaultSubobject<UTankProjectileMovementComponent>(FName("Movement Component"));
-	TankProjectileMovementComponent->bAutoActivate = false;
+	Root = CreateDefaultSubobject<USceneComponent>(FName("Scene Root"));
+	SetRootComponent(Root);
 
 	CollisionMesh = CreateDefaultSubobject<UStaticMeshComponent>(FName("Collision Mesh"));
+	CollisionMesh->SetSimulatePhysics(false);
 	CollisionMesh->SetNotifyRigidBodyCollision(true);
-	//CollisionMesh->IgnoreComponentWhenMoving(CollisionMesh, true);
-	//CollisionMesh->IgnoreActorWhenMoving(this, true);
-	CollisionMesh->SetVisibility(false);
-	SetRootComponent(CollisionMesh);
+	CollisionMesh->SetVisibility(true);
+	CollisionMesh->SetHiddenInGame(false);
+	CollisionMesh->AttachToComponent(Root, FAttachmentTransformRules::KeepRelativeTransform);
+
+	TankProjectileMovementComponent = CreateDefaultSubobject<UTankProjectileMovementComponent>(FName("Movement Component"));
+	TankProjectileMovementComponent->SetUpdatedComponent(CollisionMesh);
+	TankProjectileMovementComponent->bAutoActivate = false;
+	TankProjectileMovementComponent->bRotationFollowsVelocity = true;
 
 	LaunchBlast = CreateDefaultSubobject<UParticleSystemComponent>(FName("Launch Blast"));
-	LaunchBlast->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepRelativeTransform);
+	LaunchBlast->bAutoActivate = true;
+	LaunchBlast->AttachToComponent(Root, FAttachmentTransformRules::KeepRelativeTransform);
 
 	ImpactBlast = CreateDefaultSubobject<UParticleSystemComponent>(FName("Impact Blast"));
 	ImpactBlast->bAutoActivate = false;
-	ImpactBlast->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepRelativeTransform);
+	ImpactBlast->AttachToComponent(Root, FAttachmentTransformRules::KeepRelativeTransform);
 
 	ExplosionForce = CreateDefaultSubobject<URadialForceComponent>(FName("Explosion Force"));
-	ExplosionForce->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepRelativeTransform);
+	ExplosionForce->bAutoActivate = true;
+	ExplosionForce->AttachToComponent(Root, FAttachmentTransformRules::KeepRelativeTransform);
 }
 
 // Called when the game starts or when spawned
@@ -64,27 +71,31 @@ void ATankProjectile::OnHit(UPrimitiveComponent *HitComponent, AActor *OtherActo
 {
 	UE_LOG(LogTemp, Warning, TEXT("PROJECTILE HIT"));
 
-	SetRootComponent(ImpactBlast);
+	//SetRootComponent(ImpactBlast);
 	CollisionMesh->DestroyComponent();
 
 	// Ignore collisions with other tank projectiles
-	if (OtherActor)
+	/* 	if (OtherActor)
 	{
 		if (Cast<ATankProjectile>(OtherActor))
 		{
 			UE_LOG(LogTemp, Warning, TEXT("PROJECTILE HIT ANOTHER PROJECTILE %s"), *OtherActor->GetName());
 			return;
 		}
-	}
+	} */
 
+	ExplosionForce->SetWorldLocation(Hit.Location);
 	ExplosionForce->FireImpulse();
+
 	LaunchBlast->Deactivate();
+
+	ImpactBlast->SetWorldLocation(Hit.Location);
 	ImpactBlast->Activate();
 
 	UGameplayStatics::ApplyRadialDamage(
 		this,
 		ProjectileDamage,
-		GetActorLocation(),
+		Hit.Location,
 		ExplosionForce->Radius,
 		UDamageType::StaticClass(),
 		TArray<AActor *>() // Damage all actors on the radius

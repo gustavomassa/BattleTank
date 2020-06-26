@@ -123,7 +123,7 @@ void ATankSuspension::AddDrivingForce(float Force)
 
 void ATankSuspension::OnHit(UPrimitiveComponent *HitComponent, AActor *OtherActor, UPrimitiveComponent *OtherComp, FVector NormalImpulse, const FHitResult &Hit)
 {
-	UE_LOG(LogTemp, Warning, TEXT("%s: OnHit"), *GetName());
+	//UE_LOG(LogTemp, Warning, TEXT("%s: OnHit"), *GetName());
 
 	ApplyForce();
 }

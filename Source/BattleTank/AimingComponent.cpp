@@ -255,10 +255,15 @@ void UAimingComponent::Fire()
 			UE_LOG(LogTemp, Error, TEXT("%s: Failed to find Barrel Component"), *GetName());
 		}
 
+		FActorSpawnParameters SpawnParameters = FActorSpawnParameters();
+		SpawnParameters.Owner = GetControlledPawn();
+		SpawnParameters.Instigator = GetControlledPawn();
+
 		auto SpawnedProjectile = GetWorld()->SpawnActor<IProjectileInterface>(
 			Projectile,
 			BarrelComponent->GetProjectileLaunchLocation(),
-			BarrelComponent->GetProjectileLaunchRotation());
+			BarrelComponent->GetProjectileLaunchRotation(),
+			SpawnParameters);
 
 		if (SpawnedProjectile)
 		{
