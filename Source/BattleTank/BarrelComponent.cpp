@@ -75,6 +75,6 @@ void UBarrelComponent::Elevate(float TargetAngle)
     if (TargetElevation > 0.0f && TargetElevation != CurrentElevation)
     {
         FRotator TargetRotator{TargetElevation, 0.0f, 0.0f};
-        SetRelativeRotation(TargetRotator);
+        SetRelativeRotation(TargetRotator, true);
     }
 }

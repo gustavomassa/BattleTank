@@ -35,6 +35,6 @@ void URotateComponent::Rotate(float TargetAngle)
     if (FMath::Abs(TargetRotation) > 0.0f && FMath::Abs(TargetRotation) != FMath::Abs(CurrentRotation))
     {
         FRotator TargetRotator{0.0f, TargetRotation, 0.0f};
-        SetRelativeRotation(TargetRotator);
+        SetRelativeRotation(TargetRotator, true);
     }
 }
