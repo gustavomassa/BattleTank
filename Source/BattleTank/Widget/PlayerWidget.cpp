@@ -4,6 +4,7 @@
 #include "../Tank/TankPlayerController.h"
 #include "Components/Image.h"
 #include "Components/TextBlock.h"
+#include "Components/ProgressBar.h"
 
 void UPlayerWidget::Setup()
 {
@@ -36,4 +37,15 @@ void UPlayerWidget::UpdateCrosshairColor(const FLinearColor &LinearColor)
 void UPlayerWidget::UpdateAmmoText(const FText &Text)
 {
     AmmoText->SetText(Text);
+}
+
+void UPlayerWidget::UpdateHealthBarPercent(float Percent)
+{
+    HealthBar->SetPercent(Percent);
+}
+
+void UPlayerWidget::BindHealthBarPercentage(UObject *InObject, const FName &InFunctionName)
+{
+    HealthBar->PercentDelegate.BindUFunction(InObject, InFunctionName);
+    HealthBar->SynchronizeProperties();
 }

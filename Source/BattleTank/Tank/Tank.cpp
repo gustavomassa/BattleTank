@@ -12,8 +12,9 @@
 #include "Components/WidgetComponent.h"
 #include "UObject/ConstructorHelpers.h"
 #include "Blueprint/UserWidget.h"
+#include "../Widget/PlayerWidget.h"
 #include "../Widget/HealthBarWidget.h"
-#include "Components/ProgressBar.h"
+#include "../Interface/PlayerControllerInterface.h"
 
 // Sets default values
 ATank::ATank()
@@ -103,14 +104,31 @@ void ATank::BeginPlay()
 
 	CurrentHealth = StartingHealth;
 
-	HealthBar->InitWidget();
-	auto HealBarUserWidget = Cast<UHealthBarWidget>(HealthBar->GetUserWidgetObject());
-	if (!HealBarUserWidget)
+	// Check if Pawn Controller is a Player Controller
+	PlayerController = Cast<IPlayerControllerInterface>(GetController());
+	if (PlayerController)
 	{
-		UE_LOG(LogTemp, Error, TEXT("%s: Failed to Cast to UHealthBarWidget"), *GetOwner()->GetName());
-		return;
+		bIsPlayerPawn = true;
+
+		HealthBar->DestroyComponent();
+		auto PlayerWidget = PlayerController->GetPlayerWidget();
+		if (PlayerWidget)
+		{
+			PlayerWidget->BindHealthBarPercentage(this, FName("GetHealthPercent"));
+		}
 	}
-	HealBarUserWidget->GetHealthBar()->PercentDelegate.BindUFunction(this, FName("GetHealthPercent"));
+
+	if (!bIsPlayerPawn)
+	{
+		HealthBar->InitWidget();
+		auto HealBarUserWidget = Cast<UHealthBarWidget>(HealthBar->GetUserWidgetObject());
+		if (!HealBarUserWidget)
+		{
+			UE_LOG(LogTemp, Error, TEXT("%s: Failed to Cast to UHealthBarWidget"), *GetOwner()->GetName());
+			return;
+		}
+		HealBarUserWidget->BindHealthBarPercentage(this, FName("GetHealthPercent"));
+	}
 }
 
 float ATank::GetHealthPercent() const
@@ -132,8 +150,11 @@ float ATank::TakeDamage(float Damage, struct FDamageEvent const &DamageEvent, AC
 	uint32 DamagePoints = FPlatformMath::RoundToInt(Damage);
 	uint32 DamageToApply = FMath::Clamp<uint32>(DamagePoints, 0, CurrentHealth);
 	CurrentHealth -= DamageToApply;
+
 	if (CurrentHealth <= 0)
 	{
+		CurrentHealth = 0;
+
 		if (GetOwner())
 		{
 			UE_LOG(LogTemp, Warning, TEXT("%s: DIED"), *GetOwner()->GetName());

@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
+#include "Components/ProgressBar.h"
 #include "HealthBarWidget.generated.h"
 
 UCLASS()
@@ -12,7 +13,12 @@ class BATTLETANK_API UHealthBarWidget : public UUserWidget
     GENERATED_BODY()
 
 public:
-    FORCEINLINE class UProgressBar *GetHealthBar() { return HealthBar; }
+    //FORCEINLINE class UProgressBar *GetHealthBar() { return HealthBar; }
+    FORCEINLINE void BindHealthBarPercentage(UObject *InObject, const FName &InFunctionName)
+    {
+        HealthBar->PercentDelegate.BindUFunction(InObject, InFunctionName);
+        //HealthBar->SynchronizeProperties();
+    }
 
 private:
     UPROPERTY(meta = (BindWidget))

@@ -7,8 +7,9 @@
 #include "Tank.generated.h"
 
 //Foward Declarations
+class IPlayerControllerInterface;
 class UCameraComponent;
-class ATankProjectile;
+//class ATankProjectile;
 class UWidgetComponent;
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FTankDelegate);
@@ -32,6 +33,7 @@ public:
 	FORCEINLINE class UTankTrackComponent *GetTankTrackRightComponent() const { return RightTrack; }
 	FORCEINLINE class UTankMovementComponent *GetTankMovementComponent() const { return Movement; }
 	FORCEINLINE class UAimingComponent *GetTankAimingComponent() const { return Aiming; }
+	//FORCEINLINE class UWidgetComponent *GetHealthBarWidget() const { return HealthBar; }
 
 	FTankDelegate OnDeath;
 
@@ -39,6 +41,9 @@ protected:
 	virtual void BeginPlay() override;
 
 private:
+	IPlayerControllerInterface *PlayerController{nullptr};
+	bool bIsPlayerPawn{false};
+
 	UPROPERTY(VisibleAnywhere, Category = "Components")
 	USpringArmComponent *SpringArm{nullptr};
 
@@ -83,11 +88,13 @@ private:
 	UPROPERTY(EditAnywhere, Category = "Input Action")
 	FName FireBind{"Fire"};
 
-	UPROPERTY(EditDefaultsOnly, Category = "Setup")
+	UPROPERTY(EditDefaultsOnly, Category = "Health")
 	uint16 StartingHealth{100};
 	UPROPERTY(VisibleAnywhere, Category = "Health")
 	uint16 CurrentHealth{0};
-	UFUNCTION(BlueprintPure, Category = "Health")
+
+	//UFUNCTION(BlueprintPure, Category = "Health")
+	UFUNCTION()
 	float GetHealthPercent() const;
 
 	UPROPERTY(VisibleAnywhere, Category = "Components")

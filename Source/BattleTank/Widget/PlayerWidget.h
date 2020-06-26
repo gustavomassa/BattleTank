@@ -18,13 +18,19 @@ class BATTLETANK_API UPlayerWidget : public UUserWidget
 	GENERATED_BODY()
 
 public:
+	//FORCEINLINE class UProgressBar *GetHealthBar() { return HealthBar; }
+
 	void Setup();
 	void UpdateCrosshairColor(const FLinearColor &LinearColor);
 	void UpdateAmmoText(const FText &Text);
+	void UpdateHealthBarPercent(float Percent);
+	void BindHealthBarPercentage(UObject *InObject, const FName &InFunctionName);
 
 private:
 	UPROPERTY(meta = (BindWidget))
 	class UImage *Crosshair;
 	UPROPERTY(meta = (BindWidget))
 	class UTextBlock *AmmoText;
+	UPROPERTY(meta = (BindWidget))
+	class UProgressBar *HealthBar;
 };
