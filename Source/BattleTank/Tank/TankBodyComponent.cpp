@@ -14,8 +14,8 @@ UTankBodyComponent::UTankBodyComponent()
     this->SetSimulatePhysics(true);
     this->SetEnableGravity(true);
     this->SetMassOverrideInKg(NAME_None, Mass, true);
-    this->SetLinearDamping(0.1f);
-    this->SetAngularDamping(0.2f);
+    this->SetLinearDamping(0.8f);
+    this->SetAngularDamping(4.0f);
 
     this->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
     this->SetCollisionObjectType(ECollisionChannel::ECC_Pawn);
